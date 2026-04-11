@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CMY Halftone Tool</title>
+    <style>
+      :root {
+        --bg: #f5f7fb;
+        --ink: #101828;
+        --panel: #ffffff;
+        --border: #d9e0ea;
+      }
+
+      body {
+        margin: 0;
+        font-family: Segoe UI, Arial, sans-serif;
+        color: var(--ink);
+        background: radial-gradient(circle at top left, #eef7ff, var(--bg) 40%);
+      }
+
+      .wrap {
+        max-width: 1200px;
+        margin: 24px auto;
+        padding: 0 16px 24px;
+      }
+
+      h1 {
+        margin: 0 0 14px;
+        font-size: 24px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 340px 1fr;
+        gap: 16px;
+      }
+
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 14px;
+      }
+
+      .field {
+        display: grid;
+        gap: 6px;
+        margin-bottom: 12px;
+      }
+
+      label {
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      input[type="range"] {
+        width: 100%;
+      }
+
+      .row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .row input[type="color"] {
+        width: 56px;
+        height: 34px;
+        border: 0;
+        background: transparent;
+      }
+
+      .btns {
+        display: flex;
+        gap: 8px;
+      }
+
+      button {
+        border: 1px solid #0f3e86;
+        background: #0f3e86;
+        color: #fff;
+        border-radius: 8px;
+        padding: 9px 12px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      button.secondary {
+        background: #fff;
+        color: #0f3e86;
+      }
+
+      .canvas-wrap {
+        overflow: auto;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background-image: linear-gradient(45deg, #eef1f6 25%, transparent 25%),
+          linear-gradient(-45deg, #eef1f6 25%, transparent 25%),
+          linear-gradient(45deg, transparent 75%, #eef1f6 75%),
+          linear-gradient(-45deg, transparent 75%, #eef1f6 75%);
+        background-size: 24px 24px;
+        background-position: 0 0, 0 12px, 12px -12px, -12px 0;
+      }
+
+      canvas {
+        display: block;
+        max-width: 100%;
+        height: auto;
+      }
+
+      .hint {
+        margin-top: 10px;
+        font-size: 12px;
+        color: #5a6472;
+      }
+
+      @media (max-width: 900px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>CMY Halftone Generator</h1>
+      <div class="grid">
+        <div class="panel">
+          <div class="field">
+            <label for="fileInput">Image source</label>
+            <input id="fileInput" type="file" accept="image/*" />
+          </div>
+
+          <div class="field">
+            <label>Couche 1 couleur (ombres)</label>
+            <div class="row">
+              <input id="color1" type="color" value="#003d82" />
+              <span id="color1Label">#003d82</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Couche 2 couleur (tons moyens)</label>
+            <div class="row">
+              <input id="color2" type="color" value="#00d4d4" />
+              <span id="color2Label">#00d4d4</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Couche 3 couleur (hautes lumieres)</label>
+            <div class="row">
+              <input id="color3" type="color" value="#ffc837" />
+              <span id="color3Label">#ffc837</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="t1">Threshold 1 (ombre vers moyen): <span id="t1Value">90</span></label>
+            <input id="t1" type="range" min="20" max="180" value="90" />
+          </div>
+
+          <div class="field">
+            <label for="t2">Threshold 2 (moyen vers clair): <span id="t2Value">170</span></label>
+            <input id="t2" type="range" min="80" max="245" value="170" />
+          </div>
+
+          <div class="field">
+            <label for="spacing">Espacement points: <span id="spacingValue">9</span></label>
+            <input id="spacing" type="range" min="4" max="22" value="9" />
+          </div>
+
+          <div class="field">
+            <label for="dotScale">Taille max des points: <span id="dotScaleValue">0.92</span></label>
+            <input id="dotScale" type="range" min="40" max="110" value="92" />
+          </div>
+
+          <div class="field">
+            <label for="maxSize">Taille max sortie (px): <span id="maxSizeValue">1400</span></label>
+            <input id="maxSize" type="range" min="600" max="2400" value="1400" step="50" />
+          </div>
+
+          <div class="btns">
+            <button id="renderBtn">Generer halftone</button>
+            <button id="downloadBtn" class="secondary">Exporter PNG</button>
+          </div>
+
+          <p class="hint">
+            Pipeline applique: grayscale, 3 thresholds, pattern de points, colorisation par couche.
+            Le fond de sortie reste transparent.
+          </p>
+        </div>
+
+        <div class="canvas-wrap panel">
+          <canvas id="outCanvas" width="1200" height="720"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const fileInput = document.getElementById("fileInput");
+      const outCanvas = document.getElementById("outCanvas");
+      const outCtx = outCanvas.getContext("2d");
+
+      const color1 = document.getElementById("color1");
+      const color2 = document.getElementById("color2");
+      const color3 = document.getElementById("color3");
+      const color1Label = document.getElementById("color1Label");
+      const color2Label = document.getElementById("color2Label");
+      const color3Label = document.getElementById("color3Label");
+
+      const t1 = document.getElementById("t1");
+      const t2 = document.getElementById("t2");
+      const t1Value = document.getElementById("t1Value");
+      const t2Value = document.getElementById("t2Value");
+
+      const spacing = document.getElementById("spacing");
+      const dotScale = document.getElementById("dotScale");
+      const maxSize = document.getElementById("maxSize");
+      const spacingValue = document.getElementById("spacingValue");
+      const dotScaleValue = document.getElementById("dotScaleValue");
+      const maxSizeValue = document.getElementById("maxSizeValue");
+
+      const renderBtn = document.getElementById("renderBtn");
+      const downloadBtn = document.getElementById("downloadBtn");
+
+      let img = null;
+
+      function bindLiveValue(input, label, formatter = (v) => v) {
+        const update = () => {
+          label.textContent = formatter(input.value);
+        };
+        input.addEventListener("input", update);
+        update();
+      }
+
+      bindLiveValue(color1, color1Label);
+      bindLiveValue(color2, color2Label);
+      bindLiveValue(color3, color3Label);
+      bindLiveValue(t1, t1Value);
+      bindLiveValue(t2, t2Value);
+      bindLiveValue(spacing, spacingValue);
+      bindLiveValue(dotScale, dotScaleValue, (v) => (Number(v) / 100).toFixed(2));
+      bindLiveValue(maxSize, maxSizeValue);
+
+      fileInput.addEventListener("change", async (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const dataUrl = await readFileAsDataURL(file);
+        img = await loadImage(dataUrl);
+        renderHalftone();
+      });
+
+      renderBtn.addEventListener("click", () => {
+        renderHalftone();
+      });
+
+      downloadBtn.addEventListener("click", () => {
+        const link = document.createElement("a");
+        link.download = "halftone-3-couleurs.png";
+        link.href = outCanvas.toDataURL("image/png");
+        link.click();
+      });
+
+      function readFileAsDataURL(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      }
+
+      function loadImage(src) {
+        return new Promise((resolve, reject) => {
+          const image = new Image();
+          image.onload = () => resolve(image);
+          image.onerror = reject;
+          image.src = src;
+        });
+      }
+
+      function toGray(r, g, b) {
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+      }
+
+      function samplePixel(data, w, h, x, y) {
+        if (x < 0 || y < 0 || x >= w || y >= h) {
+          return { gray: 255, alpha: 0 };
+        }
+        const xi = Math.floor(x);
+        const yi = Math.floor(y);
+        const idx = (yi * w + xi) * 4;
+        return {
+          gray: toGray(data[idx], data[idx + 1], data[idx + 2]),
+          alpha: data[idx + 3] / 255,
+        };
+      }
+
+      function layerStrength(gray, layer, th1, th2) {
+        if (layer === 0) {
+          if (gray > th1) return 0;
+          return 1 - gray / Math.max(1, th1);
+        }
+        if (layer === 1) {
+          if (gray <= th1 || gray > th2) return 0;
+          return 1 - (gray - th1) / Math.max(1, th2 - th1);
+        }
+        if (gray <= th2) return 0;
+        return 1 - (gray - th2) / Math.max(1, 255 - th2);
+      }
+
+      function drawLayer(params) {
+        const {
+          ctx,
+          sourceData,
+          srcW,
+          srcH,
+          outW,
+          outH,
+          angle,
+          spacingPx,
+          color,
+          dotMax,
+          layerIndex,
+          th1,
+          th2,
+        } = params;
+
+        const cos = Math.cos(angle);
+        const sin = Math.sin(angle);
+        const cx = outW * 0.5;
+        const cy = outH * 0.5;
+
+        const diag = Math.hypot(outW, outH) + spacingPx * 2;
+        const min = -diag * 0.5;
+        const max = diag * 0.5;
+
+        ctx.fillStyle = color;
+
+        for (let y = min; y <= max; y += spacingPx) {
+          for (let x = min; x <= max; x += spacingPx) {
+            const sx = cx + x * cos - y * sin;
+            const sy = cy + x * sin + y * cos;
+
+            const gx = (sx / outW) * srcW;
+            const gy = (sy / outH) * srcH;
+            const sample = samplePixel(sourceData, srcW, srcH, gx, gy);
+            if (sample.alpha <= 0.001) continue;
+
+            const amount = layerStrength(sample.gray, layerIndex, th1, th2) * sample.alpha;
+
+            if (amount <= 0.001) continue;
+
+            const radius = (spacingPx * 0.5) * dotMax * amount;
+            if (radius <= 0.05) continue;
+
+            ctx.beginPath();
+            ctx.arc(sx, sy, radius, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+      }
+
+      function renderHalftone() {
+        if (!img) {
+          outCtx.clearRect(0, 0, outCanvas.width, outCanvas.height);
+          outCtx.fillStyle = "#ffffff";
+          outCtx.fillRect(0, 0, outCanvas.width, outCanvas.height);
+          outCtx.fillStyle = "#243042";
+          outCtx.font = "16px Segoe UI, Arial, sans-serif";
+          outCtx.fillText("Charge une image pour generer le halftone", 24, 40);
+          return;
+        }
+
+        let th1 = Number(t1.value);
+        let th2 = Number(t2.value);
+        if (th2 <= th1 + 8) {
+          th2 = th1 + 8;
+          t2.value = String(th2);
+          t2Value.textContent = String(th2);
+        }
+
+        const spacingPx = Number(spacing.value);
+        const dotMax = Number(dotScale.value) / 100;
+        const maxDim = Number(maxSize.value);
+
+        const ratio = img.width / img.height;
+        let outW = img.width;
+        let outH = img.height;
+        if (Math.max(outW, outH) > maxDim) {
+          if (ratio >= 1) {
+            outW = maxDim;
+            outH = Math.round(maxDim / ratio);
+          } else {
+            outH = maxDim;
+            outW = Math.round(maxDim * ratio);
+          }
+        }
+
+        outCanvas.width = outW;
+        outCanvas.height = outH;
+
+        const source = document.createElement("canvas");
+        source.width = outW;
+        source.height = outH;
+        const sctx = source.getContext("2d");
+        sctx.drawImage(img, 0, 0, outW, outH);
+        const srcData = sctx.getImageData(0, 0, outW, outH).data;
+
+        outCtx.clearRect(0, 0, outW, outH);
+
+        drawLayer({
+          ctx: outCtx,
+          sourceData: srcData,
+          srcW: outW,
+          srcH: outH,
+          outW,
+          outH,
+          angle: -0.28,
+          spacingPx,
+          color: color1.value,
+          dotMax,
+          layerIndex: 0,
+          th1,
+          th2,
+        });
+
+        drawLayer({
+          ctx: outCtx,
+          sourceData: srcData,
+          srcW: outW,
+          srcH: outH,
+          outW,
+          outH,
+          angle: 0.18,
+          spacingPx,
+          color: color2.value,
+          dotMax,
+          layerIndex: 1,
+          th1,
+          th2,
+        });
+
+        drawLayer({
+          ctx: outCtx,
+          sourceData: srcData,
+          srcW: outW,
+          srcH: outH,
+          outW,
+          outH,
+          angle: 0.52,
+          spacingPx,
+          color: color3.value,
+          dotMax,
+          layerIndex: 2,
+          th1,
+          th2,
+        });
+      }
+
+      renderHalftone();
+    </script>
+  </body>
+</html>
