@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Halftone Generator - Concentric Dots</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+    .panel {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    h2 {
+      margin-top: 0;
+      font-size: 18px;
+      color: #333;
+    }
+    label {
+      display: block;
+      margin: 12px 0 4px 0;
+      font-size: 13px;
+      font-weight: 500;
+      color: #555;
+    }
+    input[type="file"] {
+      display: block;
+      margin-bottom: 20px;
+      padding: 8px;
+      width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    .color-group {
+      margin-bottom: 16px;
+      padding: 12px;
+      background: #fafafa;
+      border-radius: 4px;
+    }
+    .color-input-wrapper {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    input[type="color"] {
+      width: 50px;
+      height: 36px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    input[type="range"] {
+      flex: 1;
+      height: 6px;
+      cursor: pointer;
+    }
+    .slider-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #888;
+      margin: 6px 0 4px 0;
+    }
+    button {
+      background: #003d82;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+    }
+    button:hover {
+      background: #002850;
+    }
+    button:active {
+      transform: scale(0.98);
+    }
+    .canvas-wrapper {
+      text-align: center;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    canvas {
+      max-width: 100%;
+      height: auto;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background: white;
+    }
+    .info {
+      font-size: 12px;
+      color: #999;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Halftone Generator - Points Concentriques</h1>
+  
+  <div class="container">
+    <div class="panel">
+      <h2>Image Source</h2>
+      <input type="file" id="imageInput" accept="image/*">
+      <div class="info">Télécharge une image pour démarrer ✨</div>
+    </div>
+
+    <div class="panel">
+      <h2>Paramètres</h2>
+      
+      <div class="color-group">
+        <label>Couche 1 (Cyan)</label>
+        <div class="color-input-wrapper">
+          <input type="color" id="color1" value="#00d4d4">
+        </div>
+      </div>
+
+      <div class="color-group">
+        <label>Couche 2 (Magenta)</label>
+        <div class="color-input-wrapper">
+          <input type="color" id="color2" value="#d2158c">
+        </div>
+      </div>
+
+      <div class="color-group">
+        <label>Couche 3 (Jaune)</label>
+        <div class="color-input-wrapper">
+          <input type="color" id="color3" value="#ffc837">
+        </div>
+      </div>
+
+      <label>Espacement entre points (px)</label>
+      <div class="slider-label"><span>Petit</span> <span id="spacingVal">20</span> <span>Gros</span></div>
+      <input type="range" id="spacing" min="8" max="40" value="20" step="1">
+
+      <label>Taille max des points (px)</label>
+      <div class="slider-label"><span>Petit</span> <span id="dotScaleVal">8</span> <span>Gros</span></div>
+      <input type="range" id="dotScale" min="3" max="20" value="8" step="0.5">
+
+      <label>Seuil 1 (0-255)</label>
+      <div class="slider-label"><span>Sombre</span> <span id="th1Val">85</span> <span>Clair</span></div>
+      <input type="range" id="threshold1" min="0" max="255" value="85">
+
+      <label>Seuil 2 (0-255)</label>
+      <div class="slider-label"><span>Sombre</span> <span id="th2Val">170</span> <span>Clair</span></div>
+      <input type="range" id="threshold2" min="0" max="255" value="170">
+
+      <label>Taille output (px)</label>
+      <div class="slider-label"><span>Petit</span> <span id="outputSizeVal">1000</span> <span>Grand</span></div>
+      <input type="range" id="outputSize" min="400" max="2000" value="1000" step="100">
+
+      <button id="exportBtn">📥 Télécharger PNG</button>
+    </div>
+  </div>
+
+  <div class="canvas-wrapper">
+    <canvas id="outCanvas"></canvas>
+    <div class="info">Les points concentriques varient en taille selon la luminance</div>
+  </div>
+
+  <script>
+    const imageInput = document.getElementById('imageInput');
+    const color1Input = document.getElementById('color1');
+    const color2Input = document.getElementById('color2');
+    const color3Input = document.getElementById('color3');
+    const spacingInput = document.getElementById('spacing');
+    const dotScaleInput = document.getElementById('dotScale');
+    const threshold1Input = document.getElementById('threshold1');
+    const threshold2Input = document.getElementById('threshold2');
+    const outputSizeInput = document.getElementById('outputSize');
+    const exportBtn = document.getElementById('exportBtn');
+    const outCanvas = document.getElementById('outCanvas');
+    const ctx = outCanvas.getContext('2d', { alpha: true });
+
+    let sourceImage = null;
+
+    // Affichage temps réel des valeurs
+    spacingInput.addEventListener('input', () => {
+      document.getElementById('spacingVal').textContent = spacingInput.value;
+      if (sourceImage) renderHalftone();
+    });
+    dotScaleInput.addEventListener('input', () => {
+      document.getElementById('dotScaleVal').textContent = dotScaleInput.value;
+      if (sourceImage) renderHalftone();
+    });
+    threshold1Input.addEventListener('input', () => {
+      document.getElementById('th1Val').textContent = threshold1Input.value;
+      if (sourceImage) renderHalftone();
+    });
+    threshold2Input.addEventListener('input', () => {
+      document.getElementById('th2Val').textContent = threshold2Input.value;
+      if (sourceImage) renderHalftone();
+    });
+    outputSizeInput.addEventListener('input', () => {
+      document.getElementById('outputSizeVal').textContent = outputSizeInput.value;
+      if (sourceImage) renderHalftone();
+    });
+    color1Input.addEventListener('input', () => { if (sourceImage) renderHalftone(); });
+    color2Input.addEventListener('input', () => { if (sourceImage) renderHalftone(); });
+    color3Input.addEventListener('input', () => { if (sourceImage) renderHalftone(); });
+
+    imageInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          sourceImage = img;
+          renderHalftone();
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    function toGray(r, g, b) {
+      return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    }
+
+    function samplePixel(data, w, h, x, y) {
+      if (x < 0 || y < 0 || x >= w || y >= h) {
+        return { gray: 255, alpha: 0 };
+      }
+      const xi = Math.floor(x);
+      const yi = Math.floor(y);
+      const idx = (yi * w + xi) * 4;
+      return {
+        gray: toGray(data[idx], data[idx + 1], data[idx + 2]),
+        alpha: data[idx + 3] / 255,
+      };
+    }
+
+    function layerStrength(gray, layerIndex, th1, th2) {
+      // layer 0: zone sombre (0-th1) → intensité haute
+      // layer 1: zone médium (th1-th2) → intensité moyenne
+      // layer 2: zone claire (th2-255) → intensité basse
+      if (layerIndex === 0) return gray < th1 ? (1 - gray / th1) : 0;
+      if (layerIndex === 1) return gray >= th1 && gray < th2 ? 1 - Math.abs(gray - (th1 + th2) / 2) / ((th2 - th1) / 2) : 0;
+      if (layerIndex === 2) return gray >= th2 ? (gray - th2) / (255 - th2) : 0;
+      return 0;
+    }
+
+    function hexToRgb(hex) {
+      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16),
+      } : { r: 0, g: 0, b: 0 };
+    }
+
+    function renderHalftone() {
+      if (!sourceImage) return;
+
+      const spacing = parseInt(spacingInput.value);
+      const dotScale = parseFloat(dotScaleInput.value);
+      const th1 = parseInt(threshold1Input.value);
+      const th2 = parseInt(threshold2Input.value);
+      const outputSize = parseInt(outputSizeInput.value);
+
+      const colors = [
+        hexToRgb(color1Input.value),
+        hexToRgb(color2Input.value),
+        hexToRgb(color3Input.value),
+      ];
+
+      // Canvas source
+      const srcCanvas = document.createElement('canvas');
+      srcCanvas.width = sourceImage.width;
+      srcCanvas.height = sourceImage.height;
+      const srcCtx = srcCanvas.getContext('2d');
+      srcCtx.drawImage(sourceImage, 0, 0);
+      const imageData = srcCtx.getImageData(0, 0, srcCanvas.width, srcCanvas.height);
+      const sourceData = imageData.data;
+
+      // Canvas output
+      const scale = outputSize / Math.max(sourceImage.width, sourceImage.height);
+      outCanvas.width = Math.round(sourceImage.width * scale);
+      outCanvas.height = Math.round(sourceImage.height * scale);
+
+      ctx.fillStyle = 'white';
+      ctx.fillRect(0, 0, outCanvas.width, outCanvas.height);
+
+      // Grille unique de points concentriques
+      const scaledSpacing = spacing * scale;
+      for (let py = 0; py < outCanvas.height; py += scaledSpacing) {
+        for (let px = 0; px < outCanvas.width; px += scaledSpacing) {
+          // Position dans l'image source
+          const srcX = px / scale;
+          const srcY = py / scale;
+
+          const sample = samplePixel(sourceData, sourceImage.width, sourceImage.height, srcX, srcY);
+          if (sample.alpha <= 0.001) continue;
+
+          // Calculer les 3 forces de couche
+          const strengths = [0, 1, 2].map(layer => 
+            layerStrength(sample.gray, layer, th1, th2) * sample.alpha
+          );
+
+          // Dessiner 3 points concentriques du plus grand au plus petit
+          // (pour avoir le bon ordre de superposition)
+          for (let layerIndex = 2; layerIndex >= 0; layerIndex--) {
+            const strength = strengths[layerIndex];
+            if (strength < 0.05) continue;
+
+            const radius = (dotScale * Math.max(1, strength));
+            const color = colors[layerIndex];
+            ctx.fillStyle = `rgba(${color.r}, ${color.g}, ${color.b}, ${strength})`;
+            ctx.beginPath();
+            ctx.arc(px, py, radius, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+      }
+    }
+
+    exportBtn.addEventListener('click', () => {
+      const link = document.createElement('a');
+      link.href = outCanvas.toDataURL('image/png');
+      link.download = 'halftone-concentric.png';
+      link.click();
+    });
+  </script>
+</body>
+</html>
