@@ -3,18 +3,27 @@
 import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
 
-type FilterValue = "*" | ".branding" | ".digital" | ".motion";
+type FilterValue = "*" | ".site-marchand" | ".portfolio" | ".site-institutionnel";
 
 type IsotopeApi = {
-  isotope: (options?: unknown) => void;
+  arrange: (options?: { filter?: string }) => void;
+  layout: () => void;
+  destroy: () => void;
 };
 
-type JQueryWithIsotope = (target: Element | string) => IsotopeApi;
+type IsotopeConstructor = new (
+  element: Element,
+  options?: {
+    itemSelector?: string;
+    layoutMode?: string;
+    percentPosition?: boolean;
+  }
+) => IsotopeApi;
 
 type Project = {
   title: string;
   category: string;
-  className: "Site marchand" | "PortFolio" | "Société";
+  className: "Site Marchand" | "PortFolio" | "Site Institutionnel";
   tone: "sun" | "night" | "mint" | "sand" | "ice" | "ember";
   image: string;
   description: string;
@@ -30,22 +39,22 @@ type FloatingRect = {
 };
 
 const OVERLAY_TRANSITION_MS = 560;
-const CURSOR_PULL_MAX_PX = 8;
+const CURSOR_PULL_MAX_PX = 0;
 const CURSOR_PULL_LERP = 0.12;
 const CURSOR_PULL_EPSILON = 0.08;
 
 const filters: Array<{ label: string; value: FilterValue }> = [
   { label: "Tout", value: "*" },
-  { label: "Branding", value: ".branding" },
-  { label: "Digital", value: ".digital" },
-  { label: "Motion", value: ".motion" },
+  { label: "Site Marchand", value: ".site-marchand" },
+  { label: "PortFolio", value: ".portfolio" },
+  { label: "Site Institutionnel", value: ".site-institutionnel" },
 ];
 
 const projects: Project[] = [
   {
     title: "Groupe Leonie",
     category: "Branding",
-    className: "Société",
+    className: "Site Institutionnel",
     tone: "sun",
     image: "/img_site/groupeleonie.webp",
     description: "Site corporate au ton doux, avec une direction visuelle claire et rassurante.",
@@ -56,7 +65,7 @@ const projects: Project[] = [
   {
     title: "U-Consulting",
     category: "Digital",
-    className: "Société",
+    className: "Site Institutionnel",
     tone: "night",
     image: "/img_site/uconsulting.webp",
     description: "Experience web avec animation de particules reactive au parcours utilisateur.",
@@ -78,7 +87,7 @@ const projects: Project[] = [
   {
     title: "Site Marchand Shopify",
     category: "Site Marchand",
-    className: "Site marchand",
+    className: "Site Marchand",
     tone: "sand",
     image: "/img_site/stanleygrant.webp",
     description: "Direction graphique tech avec contraste marque et parti-pris contemporain.",
@@ -88,7 +97,7 @@ const projects: Project[] = [
   },
   {
     title: "Portfolio de photographe",
-    category: "Digital",
+    category: "PortFolio",
     className: "PortFolio",
     tone: "ice",
     image: "/img_site/pierrebazin.jpg",
@@ -98,11 +107,11 @@ const projects: Project[] = [
     details: ["Grille Isotope en plein focus", "Navigation visuelle sans surcharge", "Series et categories a enrichir"],
   },
   {
-    title: "Creation Site Corporate",
-    category: "Motion",
-    className: "PortFolio",
+    title: "Site professionel",
+    category: "Site Institutionnel",
+    className: "Site Institutionnel",
     tone: "ember",
-    image: "/img_site/unclick-600.webp",
+    image: "/img_site/mariedurand.jpg",
     description: "Conception d'un site vitrine clair, rapide et lisible pour presenter l'activite.",
     overlayDescription:
       "Un site vitrine corporate concu pour presenter une activite avec clarte, credibilite et rapidite d'acces a l'information. Le design privilegie la lisibilite sur desktop comme sur mobile.",
@@ -132,7 +141,6 @@ export default function IsotopeGallery() {
     >
   >({});
   const [activeFilter, setActiveFilter] = useState<FilterValue>("*");
-  const [jqueryReady, setJqueryReady] = useState(false);
   const [isotopeReady, setIsotopeReady] = useState(false);
   const [overlayProject, setOverlayProject] = useState<Project | null>(null);
   const [overlayRect, setOverlayRect] = useState<FloatingRect | null>(null);
@@ -140,20 +148,18 @@ export default function IsotopeGallery() {
   const [overlayDetailsVisible, setOverlayDetailsVisible] = useState(false);
 
   useEffect(() => {
-    if (!jqueryReady || !isotopeReady || !gridRef.current) {
+    if (!isotopeReady || !gridRef.current) {
       return;
     }
 
-    const jquery = (
-      window as Window & { jQuery?: JQueryWithIsotope }
-    ).jQuery;
+    const IsotopeCtor = (window as Window & { Isotope?: IsotopeConstructor })
+      .Isotope;
 
-    if (!jquery) {
+    if (!IsotopeCtor) {
       return;
     }
 
-    const instance = jquery(gridRef.current);
-    instance.isotope({
+    const instance = new IsotopeCtor(gridRef.current, {
       itemSelector: ".isotope-card",
       layoutMode: "fitRows",
       percentPosition: true,
@@ -162,18 +168,18 @@ export default function IsotopeGallery() {
     isotopeRef.current = instance;
 
     return () => {
-      isotopeRef.current?.isotope("destroy");
+      isotopeRef.current?.destroy();
       isotopeRef.current = null;
     };
-  }, [jqueryReady, isotopeReady]);
+  }, [isotopeReady]);
 
   useEffect(() => {
-    isotopeRef.current?.isotope({ filter: activeFilter });
+    isotopeRef.current?.arrange({ filter: activeFilter });
   }, [activeFilter]);
 
   useEffect(() => {
     const handleResize = () => {
-      isotopeRef.current?.isotope("layout");
+      isotopeRef.current?.layout();
 
       if (overlayProject) {
         closeOverlay();
@@ -417,7 +423,7 @@ export default function IsotopeGallery() {
 
     const card = (
       <div
-        className={`project-card project-card-shell relative h-full overflow-hidden rounded-[2rem] border border-black/15 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.09)] transition-[padding,box-shadow] duration-500 ${
+        className={`project-card project-card-shell relative h-full overflow-hidden rounded-[2rem] border border-black/15 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.09)] transition-[padding,box-shadow] duration-500 ${
           expanded ? "project-card-shell-expanded sm:p-8" : ""
         } ${interactive ? "project-card-interactive" : ""}`}
         data-tone={project.tone}
@@ -437,7 +443,7 @@ export default function IsotopeGallery() {
         ) : null}
 
         <div className="project-card-core flex h-full flex-col">
-          <div className={`project-card-media mb-6 overflow-hidden rounded-2xl border border-black/10 bg-white/70 ${expanded ? "h-[38vh] min-h-[18rem] project-card-media-expanded" : "h-48"}`}>
+          <div className={`project-card-media mb-5 overflow-hidden rounded-2xl border border-black/10 bg-white/70 ${expanded ? "h-[38vh] min-h-[18rem] project-card-media-expanded" : "h-40"}`}>
             <img
               src={project.image}
               alt={project.title}
@@ -446,7 +452,7 @@ export default function IsotopeGallery() {
             />
           </div>
 
-          <div className={`project-card-meta-row flex items-start justify-between gap-4 ${expanded ? "mb-4" : "mb-8"}`}>
+          <div className={`project-card-meta-row flex items-start justify-between gap-4 ${expanded ? "mb-4" : "mb-6"}`}>
             <span className="project-card-category" data-tone={project.tone}>
               <span className="project-card-category__label">{project.category}</span>
             </span>
@@ -499,19 +505,14 @@ export default function IsotopeGallery() {
   return (
     <>
       <Script
-        src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
-        strategy="afterInteractive"
-        onLoad={() => setJqueryReady(true)}
-      />
-      <Script
         src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js"
         strategy="afterInteractive"
         onLoad={() => setIsotopeReady(true)}
       />
 
       <div className="isotope-gallery-shell mx-auto flex w-full max-w-7xl flex-col gap-10">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-          <div className="max-w-2xl space-y-4">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between" style={{ backgroundImage: "url('/fond jaune 2.png')", backgroundSize: "auto 100%", backgroundPosition: "center center", backgroundRepeat: "no-repeat" }}>
+          <div className="max-w-2xl space-y-4 rounded-2xl p-6" >
             <p className="text-sm font-semibold uppercase tracking-[0.28em] text-black/60">
               Selection isotope
             </p>
@@ -536,8 +537,8 @@ export default function IsotopeGallery() {
                   onClick={() => setActiveFilter(filter.value)}
                   className={`rounded-full border px-5 py-3 text-sm font-semibold uppercase tracking-[0.16em] transition ${
                     isActive
-                      ? "border-[#003d82] bg-[#003d82] text-[#ffc837]"
-                      : "border-black/25 bg-white text-black/80 hover:border-black/60"
+                      ? "border-[#c8960a] bg-[#ffc837] text-[#1a1200] shadow-[0_2px_12px_rgba(255,200,55,0.45)]"
+                      : "border-black/20 bg-white/80 text-black/70 hover:border-[#ffc837] hover:bg-[#fff8e0]"
                   }`}
                 >
                   {filter.label}
@@ -547,14 +548,16 @@ export default function IsotopeGallery() {
           </div>
         </div>
 
-        <div ref={gridRef} className="isotope-grid -mx-3">
+        <div className="relative">
+          <div className="isotope-grain-band" aria-hidden="true" />
+          <div ref={gridRef} className="isotope-grid pt-4">
           {projects.map((project) => {
             const isExpanded = overlayProject?.title === project.title;
 
             return (
               <article
                 key={project.title}
-                className={`isotope-card ${project.className} w-full px-3 pb-6 md:w-1/2 xl:w-1/3`}
+                className={`isotope-card ${project.className} w-full px-2 pb-6 md:w-1/2 xl:w-1/3`}
               >
                 <div
                   ref={(element) => {
@@ -595,8 +598,8 @@ export default function IsotopeGallery() {
                       setCardPullTarget(project.title, card, 0, 0);
                     }
                   }}
-                  className={`card-enter-perspective group h-full cursor-pointer transition duration-300 ${
-                    isExpanded ? "invisible" : "hover:-translate-y-1"
+                  className={`card-enter-perspective group h-full cursor-pointer ${
+                    isExpanded ? "invisible" : ""
                   }`}
                 >
                   {renderProjectCard(project, {
@@ -607,6 +610,7 @@ export default function IsotopeGallery() {
               </article>
             );
           })}
+          </div>
         </div>
       </div>
 

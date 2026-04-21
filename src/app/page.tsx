@@ -3,6 +3,8 @@ import HeroSection from "@/components/hero-section";
 import SignatureAmauryPichat from "@/components/signature-amaury-pichat";
 import YellowLines from "@/components/yellow-lines";
 import SiteFooter from "@/components/site-footer";
+import AccompagnementPosterSection from "@/components/accompagnement-poster-section";
+import HeroPosterSection from "@/components/hero-poster-section";
 
 export default function Home() {
   return (
@@ -13,15 +15,12 @@ export default function Home() {
         <IsotopeGallery />
       </section>
 
-      <section className="home-section home-z-section px-0 py-0" aria-label="Section effet perspective">
-        <div className="z-stage">
-          <div className="z-rise-card">
-            <p className="z-rise-text">
-              <span>Plus de 20 ans d&apos;histoires communes,</span>
-              <span>10 pays, une meme energie humaine.</span>
-            </p>
-          </div>
-        </div>
+      <section className="home-section px-0 py-0" aria-label="Section accompagnement poster">
+        <AccompagnementPosterSection />
+      </section>
+
+      <section className="home-section px-0 py-0" aria-label="Section 4 hero poster sans bandes">
+        <HeroPosterSection />
       </section>
 
       <section className="home-section trend-bento-section px-6 py-14 sm:px-10 lg:px-14" aria-label="Section tendance bento editorial">

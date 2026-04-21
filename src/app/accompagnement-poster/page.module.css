@@ -1,0 +1,512 @@
+.page {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(255, 200, 55, 0.52), transparent 32%),
+    radial-gradient(circle at right 15%, rgba(0, 212, 212, 0.28), transparent 28%),
+    radial-gradient(circle at 35% 70%, rgba(0, 61, 130, 0.12), transparent 34%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(250, 251, 252, 0.96));
+  color: var(--em-ink);
+}
+
+.stage {
+  position: relative;
+  overflow: clip;
+  padding: 0.15rem;
+}
+
+.poster {
+  position: relative;
+  overflow: hidden;
+  min-height: 100vh;
+  border-radius: 0;
+  border: 1px solid rgba(10, 34, 74, 0.16);
+  background:
+    radial-gradient(circle at 54% 40%, rgba(0, 212, 212, 0.24), transparent 22%),
+    radial-gradient(circle at 64% 48%, rgba(201, 67, 87, 0.16), transparent 24%),
+    radial-gradient(circle at 30% 56%, rgba(255, 200, 55, 0.22), transparent 28%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.84), rgba(238, 244, 250, 0.98));
+  box-shadow: 0 24px 64px rgba(10, 34, 74, 0.12);
+}
+
+.imageLayer {
+  position: absolute;
+  left: -3rem;
+  top: 50%;
+  z-index: 0;
+  width: min(72vw, 68rem);
+  height: min(92vh, 54rem);
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: contain;
+  transform: translateY(-50%) scale(1);
+  transform-origin: left center;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.poster::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(0, 61, 130, 0.14) 0 2px, transparent 2.6px 100%);
+  background-size: 14px 14px;
+  opacity: 0.16;
+  mix-blend-mode: multiply;
+}
+
+.poster::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 18% 26%, rgba(0, 61, 130, 0.12), transparent 32%),
+    radial-gradient(circle at 84% 72%, rgba(0, 212, 212, 0.14), transparent 28%);
+  pointer-events: none;
+}
+
+@keyframes topBandsDrift {
+  0%,
+  100% {
+    transform: translateX(0) skewX(-7deg) rotate(-1.2deg);
+  }
+  50% {
+    transform: translateX(20vw) skewX(-7deg) rotate(-1.2deg);
+  }
+}
+
+@keyframes bottomBandsDrift {
+  0%,
+  100% {
+    transform: translateX(0) skewX(-7deg) rotate(-1.2deg);
+  }
+  50% {
+    transform: translateX(-20vw) skewX(-7deg) rotate(-1.2deg);
+  }
+}
+
+@keyframes ghostOutLeft {
+  from {
+    transform: translateX(0) skewX(-8deg) rotate(-2deg);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-120vw) skewX(-8deg) rotate(-2deg);
+    opacity: 0;
+  }
+}
+
+@keyframes ghostInLeft {
+  from {
+    transform: translateX(120vw) skewX(-8deg) rotate(-2deg);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0) skewX(-8deg) rotate(-2deg);
+    opacity: 1;
+  }
+}
+
+@keyframes titleOutLeft {
+  from {
+    transform: translateX(0) skewX(-8deg) ;
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-120vw) skewX(-8deg) ;
+    opacity: 0;
+  }
+}
+
+@keyframes titleInLeft {
+  from {
+    transform: translateX(120vw) skewX(-8deg) ;
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0) skewX(-8deg) ;
+    opacity: 1;
+  }
+}
+
+@keyframes copyOutRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(120vw);
+    opacity: 0;
+  }
+}
+
+@keyframes copyInRight {
+  from {
+    transform: translateX(-120vw);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes imageScaleOut {
+  from {
+    transform: translateY(-50%) translateX(0) scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-50%) translateX(18vw) scale(0.5);
+    opacity: 0.78;
+  }
+}
+
+@keyframes imageScaleIn {
+  from {
+    transform: translateY(-50%) translateX(-18vw) scale(0.5);
+    opacity: 0.8;
+  }
+  to {
+    transform: translateY(-50%) translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.topBands,
+.bottomBands {
+  position: absolute;
+  left: -22vw;
+  right: -22vw;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0.72rem;
+  /* background: linear-gradient(90deg, var(--logo-yellow) 0%, var(--logo-blue) 50%, var(--logo-cyan) 100%); */
+  transform-origin: center;
+  will-change: transform;
+}
+
+.topBands {
+  top: -1.2rem;
+  height: 5.6rem;
+  animation: topBandsDrift 42s ease-in-out infinite;
+}
+
+.bottomBands {
+  bottom: -1.2rem;
+  height: 5.6rem;
+  animation: bottomBandsDrift 42s ease-in-out infinite;
+}
+
+.topBands span,
+.bottomBands span {
+  box-sizing: border-box;
+  min-height: 5.6rem;
+  height: 5.6rem;
+  background-image: url("/fondbandsection3.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border: 2px solid rgba(255, 255, 255, 0.24);
+  border-top-color: rgba(255, 255, 255, 0.55);
+  border-left-color: rgba(45, 69, 98, 0.28);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 4px 14px rgba(0, 61, 130, 0.12);
+}
+
+.cornerMark {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.12rem;
+  color: #003d82;
+  text-transform: uppercase;
+  font-weight: 1000;
+}
+
+.cornerMarkSymbol {
+  font-size: clamp(1.5rem, 3vw, 2.6rem);
+  line-height: 1;
+}
+
+.cornerMarkLabel {
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+}
+
+.ghostWord {
+  position: absolute;
+  top: 19%;
+  left: 31%;
+  z-index: 1;
+  font-size: clamp(4rem, 15vw, 12rem);
+  line-height: 0.88;
+  font-weight: 1000;
+  font-style: italic;
+  letter-spacing: -0.07em;
+  white-space: nowrap;
+  transform: skewX(-8deg) rotate(-2deg);
+
+  /* glassmorphism */
+  color: transparent;
+  background-image: url("/fondbandsection3.jpg");
+  background-size: cover;
+  background-position: center;
+  background-clip: text;
+  -webkit-background-clip: text;
+  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.28)) drop-shadow(0 2px 6px rgba(255, 255, 255, 0.55));
+}
+
+.ghostMotionExit {
+  animation: ghostOutLeft 1000ms cubic-bezier(0.6, 0, 0.9, 0.2) both;
+}
+
+.ghostMotionEnter {
+  animation: ghostInLeft 1000ms cubic-bezier(0.18, 0.82, 0.2, 1) both;
+}
+
+.posterGrid {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 0.82fr 1.18fr;
+  gap: 0;
+  align-items: end;
+  min-height: 100vh;
+  padding: 4.6rem 2rem 8.4rem;
+}
+
+.cutoutZone {
+  position: relative;
+  min-height: 36rem;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+}
+
+.cutoutAura {
+  position: absolute;
+  left: 1.2rem;
+  bottom: 4rem;
+  width: 18rem;
+  height: 18rem;
+  border-radius: 1.4rem;
+  background:
+    radial-gradient(circle at 28% 62%, rgba(255, 200, 55, 0.34), transparent 14%),
+    radial-gradient(circle at 72% 44%, rgba(0, 212, 212, 0.3), transparent 18%),
+    rgba(255, 255, 255, 0.12);
+  filter: blur(2px);
+}
+
+.sticker {
+  position: absolute;
+  left: 0.95rem;
+  bottom: 1rem;
+  z-index: 4;
+  transform: rotate(-3deg);
+  padding: 0.7rem 1rem;
+  background: linear-gradient(135deg, #ffd24c 0%, #ffc837 62%, #fff1b0 100%);
+  color: #003d82;
+  font-weight: 1000;
+  font-size: clamp(1.25rem, 3vw, 2rem);
+  line-height: 1;
+  text-transform: uppercase;
+  box-shadow: 0 10px 26px rgba(0, 61, 130, 0.18);
+}
+
+.copyBlock {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 0.45rem;
+  min-height: 30rem;
+  margin: 0 0 0 0;
+  padding: 1.4rem 1.5rem 1.6rem;
+  border-radius: 1.35rem;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.56);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 16px 40px rgba(0, 61, 130, 0.12);
+}
+
+.copyMeta {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.copyMetaExit {
+  animation: copyOutRight 380ms cubic-bezier(0.6, 0, 0.9, 0.2) both;
+}
+
+.copyMetaEnter {
+  animation: copyInRight 520ms cubic-bezier(0.18, 0.82, 0.2, 1) both;
+}
+
+.titleMotion {
+  width: fit-content;
+}
+
+.titleMotionExit {
+  animation: titleOutLeft 380ms cubic-bezier(0.6, 0, 0.9, 0.2) both;
+}
+
+.titleMotionEnter {
+  animation: titleInLeft 520ms cubic-bezier(0.18, 0.82, 0.2, 1) both;
+}
+
+.imageExit {
+  animation: imageScaleOut 380ms ease both;
+}
+
+.imageEnter {
+  animation: imageScaleIn 520ms ease both;
+}
+
+.kicker {
+  margin: 0;
+  color: rgba(45, 69, 98, 0.86);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(3.2rem, 9vw, 6.2rem);
+  line-height: 0.9;
+  font-weight: 1000;
+  font-style: italic;
+  letter-spacing: -0.06em;
+  color: #003d82;
+  text-shadow: 0 4px 14px rgba(255, 255, 255, 0.6);
+  transform: skewX(-8deg);
+}
+
+.lead {
+  max-width: 34rem;
+  margin: 0;
+  color: rgba(11, 35, 71, 0.8);
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.dotsNav {
+  position: absolute;
+  left: 50%;
+  bottom: 5.9rem;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.55rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 12px 30px rgba(0, 61, 130, 0.12);
+  transform: translateX(-50%);
+}
+
+.dot {
+  width: 0.78rem;
+  height: 0.78rem;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(0, 61, 130, 0.2);
+  cursor: pointer;
+  transition:
+    transform 180ms ease,
+    background-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.dot:hover {
+  transform: scale(1.12);
+}
+
+.dotActive {
+  background: #003d82;
+  box-shadow: 0 0 0 4px rgba(0, 212, 212, 0.18);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .topBands,
+  .bottomBands,
+  .ghostMotionExit,
+  .ghostMotionEnter,
+  .titleMotionExit,
+  .titleMotionEnter,
+  .copyMetaExit,
+  .copyMetaEnter,
+  .imageExit,
+  .imageEnter {
+    animation: none;
+  }
+}
+
+@media (max-width: 980px) {
+  .imageLayer {
+    width: min(110vw, 44rem);
+    left: -4rem;
+  }
+
+  .ghostWord {
+    top: 15%;
+    left: 14%;
+    font-size: clamp(3rem, 18vw, 8rem);
+  }
+
+  .posterGrid {
+    grid-template-columns: 1fr;
+    padding-top: 5rem;
+  }
+
+  .cutoutZone {
+    min-height: 22rem;
+  }
+}
+
+@media (max-width: 720px) {
+  .imageLayer {
+    width: 38rem;
+    left: -5rem;
+  }
+
+  .topBands,
+  .bottomBands {
+    gap: 0.36rem;
+  }
+
+  .topBands span,
+  .bottomBands span {
+    min-height: 2.8rem;
+    height: 2.8rem;
+  }
+
+  .copyBlock {
+    padding: 1rem 1rem 1.1rem;
+  }
+
+  .cutoutAura {
+    width: 12rem;
+    height: 12rem;
+  }
+
+  .sticker {
+    font-size: 1.1rem;
+  }
+
+  .lead {
+    font-size: 0.94rem;
+  }
+
+  .dotsNav {
+    bottom: 3.5rem;
+  }
+}

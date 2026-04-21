@@ -173,22 +173,24 @@ export default function SculptureHalftoneCanvas() {
           return;
         }
 
-        sourceGeometry.center();
-        sourceGeometry.computeBoundingBox();
+        const geometry = sourceGeometry as THREE.BufferGeometry;
 
-        if (sourceGeometry.boundingBox) {
+        geometry.center();
+        geometry.computeBoundingBox();
+
+        if (geometry.boundingBox) {
           const boxSize = new THREE.Vector3();
-          sourceGeometry.boundingBox.getSize(boxSize);
+          geometry.boundingBox.getSize(boxSize);
           const maxDim = Math.max(boxSize.x, boxSize.y, boxSize.z, 0.0001);
           const scaleFactor = TARGET_MODEL_MAX_DIMENSION / maxDim;
-          sourceGeometry.scale(scaleFactor, scaleFactor, scaleFactor);
+          geometry.scale(scaleFactor, scaleFactor, scaleFactor);
         }
 
-        sourceGeometry.computeVertexNormals();
+        geometry.computeVertexNormals();
 
-        const positions = sourceGeometry.getAttribute("position") as THREE.BufferAttribute;
-        const normals = sourceGeometry.getAttribute("normal") as THREE.BufferAttribute;
-        const uvs = sourceGeometry.getAttribute("uv") as THREE.BufferAttribute | undefined;
+        const positions = geometry.getAttribute("position") as THREE.BufferAttribute;
+        const normals = geometry.getAttribute("normal") as THREE.BufferAttribute;
+        const uvs = geometry.getAttribute("uv") as THREE.BufferAttribute | undefined;
 
         const pos = positions.array as Float32Array;
         const nor = normals.array as Float32Array;
@@ -216,6 +218,7 @@ export default function SculptureHalftoneCanvas() {
         triangles.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
         triangles.instanceColor = new THREE.InstancedBufferAttribute(new Float32Array(pointCount * 3), 3);
         triangles.frustumCulled = false;
+        const instanceColor = triangles.instanceColor;
 
         const zAxis = new THREE.Vector3(0, 0, 1);
         const normal = new THREE.Vector3();
@@ -283,13 +286,11 @@ export default function SculptureHalftoneCanvas() {
               color.set(baseHex);
             }
 
-            triangles.instanceColor.setXYZ(i, color.r, color.g, color.b);
+            instanceColor.setXYZ(i, color.r, color.g, color.b);
           }
 
           triangles.instanceMatrix.needsUpdate = true;
-          if (triangles.instanceColor) {
-            triangles.instanceColor.needsUpdate = true;
-          }
+          instanceColor.needsUpdate = true;
           triangleMaterial.needsUpdate = true;
         };
 
@@ -297,7 +298,7 @@ export default function SculptureHalftoneCanvas() {
 
         // Modèle texturé normal
         const modelMesh = new THREE.Mesh(
-          sourceGeometry,
+          geometry,
           new THREE.MeshStandardMaterial({ map: sourceMap ?? undefined, side: THREE.DoubleSide })
         );
         group.add(modelMesh);
