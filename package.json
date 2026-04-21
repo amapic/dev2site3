@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "hf:space": "node scripts/hf-space-cli.mjs",
+    "hf:agents": "node scripts/hf-space-cli.mjs --path /agents.md --text"
   },
   "dependencies": {
     "next": "16.2.1",

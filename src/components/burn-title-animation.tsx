@@ -28,8 +28,8 @@ export default function BurnTitleAnimation() {
     canvas.width = 1920;
     canvas.height = 200;
 
-    let animationId: number;
-    let startTime = Date.now();
+    let animationId = 0;
+    const startTime = Date.now();
 
     const animate = () => {
       if (!isAnimating) {
@@ -50,18 +50,20 @@ export default function BurnTitleAnimation() {
       // Get canvas as data URL and apply as mask
       const maskUrl = canvas.toDataURL("image/png");
       title.style.maskImage = `url("${maskUrl}")`;
-      title.style.WebkitMaskImage = `url("${maskUrl}")`;
+      title.style.setProperty("-webkit-mask-image", `url("${maskUrl}")`);
 
       animationId = requestAnimationFrame(animate);
     };
 
-    video.addEventListener("loadedmetadata", () => {
+    const handleLoadedMetadata = () => {
       animate();
-    });
+    };
+
+    video.addEventListener("loadedmetadata", handleLoadedMetadata);
 
     return () => {
       cancelAnimationFrame(animationId);
-      video.removeEventListener("loadedmetadata", () => {});
+      video.removeEventListener("loadedmetadata", handleLoadedMetadata);
     };
   }, [isAnimating]);
 

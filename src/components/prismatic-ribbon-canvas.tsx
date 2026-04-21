@@ -9,6 +9,7 @@ const HAZE_TRIANGLES = 260;
 const SHARP_TRIANGLES = 260;
 const DUST_TRIANGLES = 220;
 const RANDOM_SEED = 150617;
+const DEFAULT_CAMERA_DISTANCE = 18.5;
 
 function createSeededRandom(seed: number) {
   let s = seed >>> 0;
@@ -227,6 +228,8 @@ type PrismaticRibbonCanvasProps = {
   enableControls?: boolean;
   className?: string;
   onReady?: () => void;
+  onZoomChange?: (zoomFactor: number) => void;
+  initialZoomFactor?: number;
 };
 
 export default function PrismaticRibbonCanvas({
@@ -234,11 +237,17 @@ export default function PrismaticRibbonCanvas({
   enableControls = false,
   className,
   onReady,
+  onZoomChange,
+  initialZoomFactor = 1,
 }: PrismaticRibbonCanvasProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const onReadyRef = useRef<(() => void) | undefined>(onReady);
+  const onZoomChangeRef = useRef<((zoomFactor: number) => void) | undefined>(onZoomChange);
   useEffect(() => {
     onReadyRef.current = onReady;
+  });
+  useEffect(() => {
+    onZoomChangeRef.current = onZoomChange;
   });
 
   useEffect(() => {
@@ -253,7 +262,8 @@ export default function PrismaticRibbonCanvas({
     scene.background = transparent ? null : new THREE.Color("#f5f6f4");
 
     const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
-    camera.position.set(0, 0, 18.5);
+    const safeInitialZoomFactor = Math.max(0.1, initialZoomFactor);
+    camera.position.set(0, 0, DEFAULT_CAMERA_DISTANCE / safeInitialZoomFactor);
 
     const renderer = new THREE.WebGLRenderer({
       antialias: true,
@@ -373,18 +383,22 @@ export default function PrismaticRibbonCanvas({
 
     const baseWidth = Math.max(0.001, compositionSize.x);
     const baseHeight = Math.max(0.001, compositionSize.y);
+    const initialDistance = DEFAULT_CAMERA_DISTANCE;
+
+    const emitZoomChange = () => {
+      const focusPoint = controls ? controls.target : root.position;
+      const distance = camera.position.distanceTo(focusPoint);
+      const zoomFactor = distance > 0 ? initialDistance / distance : 1;
+      onZoomChangeRef.current?.(Number.isFinite(zoomFactor) ? zoomFactor : 1);
+    };
 
     const renderScene = () => {
       renderer.render(scene, camera);
     };
 
-    let frozen = false;
+    let firstRender = true;
 
     const setSize = () => {
-      if (frozen) {
-        return;
-      }
-
       const width = container.clientWidth;
       const height = container.clientHeight;
 
@@ -408,23 +422,28 @@ export default function PrismaticRibbonCanvas({
       renderer.setSize(width, height, true);
 
       controls?.update();
+      emitZoomChange();
       renderScene();
 
-      if (!frozen) {
-        frozen = true;
+      if (firstRender) {
+        firstRender = false;
         onReadyRef.current?.();
       }
     };
 
     controls?.update();
-    controls?.addEventListener("change", renderScene);
+    const handleControlsChange = () => {
+      emitZoomChange();
+      renderScene();
+    };
+    controls?.addEventListener("change", handleControlsChange);
 
     setSize();
     window.addEventListener("resize", setSize);
 
     return () => {
       window.removeEventListener("resize", setSize);
-      controls?.removeEventListener("change", renderScene);
+      controls?.removeEventListener("change", handleControlsChange);
       controls?.dispose();
 
       scene.traverse((obj) => {
