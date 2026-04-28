@@ -1,11 +1,31 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import CookieConsent from "@/components/cookie-consent";
 import "./globals.css";
 
-const geistSans = Geist({
+const geistSansColor = localFont({
+  src: "../../public/font/Geist/Geist-Regular-COLR.ttf",
+  variable: "--font-geist-sans-color",
+  display: "swap",
+});
+
+const geistSans = localFont({
+  src: "../../public/font/Geist/static/Geist-Regular.ttf",
   variable: "--font-geist-sans",
-  subsets: ["latin"],
+  display: "swap",
+});
+
+const liebeHeide = localFont({
+  src: "../../public/font/Demo-LiebeHeide/Fontspring-DEMO-liebeheide-color.otf",
+  variable: "--font-liebe-heide",
+  display: "swap",
+});
+
+const grahamo = localFont({
+  src: "../../public/font/Grahamo/OTF File.otf",
+  variable: "--font-grahamo",
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
@@ -26,7 +46,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistSansColor.variable} ${geistMono.variable} ${liebeHeide.variable} ${grahamo.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         {children}

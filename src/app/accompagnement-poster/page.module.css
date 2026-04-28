@@ -1,4 +1,6 @@
 .page {
+  position: relative;
+  z-index: 20;
   min-height: 100vh;
   background:
     radial-gradient(circle at top left, rgba(255, 200, 55, 0.52), transparent 32%),
@@ -10,13 +12,14 @@
 
 .stage {
   position: relative;
-  overflow: clip;
+  z-index: 1;
+  overflow: visible;
   padding: 0.15rem;
 }
 
 .poster {
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   min-height: 100vh;
   border-radius: 0;
   border: 1px solid rgba(10, 34, 74, 0.16);
@@ -108,22 +111,22 @@
 
 @keyframes titleOutLeft {
   from {
-    transform: translateX(0) skewX(-8deg) ;
+    transform: translateX(0)  ;
     opacity: 1;
   }
   to {
-    transform: translateX(-120vw) skewX(-8deg) ;
+    transform: translateX(-120vw)  ;
     opacity: 0;
   }
 }
 
 @keyframes titleInLeft {
   from {
-    transform: translateX(120vw) skewX(-8deg) ;
+    transform: translateX(120vw)  ;
     opacity: 0;
   }
   to {
-    transform: translateX(0) skewX(-8deg) ;
+    transform: translateX(0)  ;
     opacity: 1;
   }
 }
@@ -156,15 +159,15 @@
     opacity: 1;
   }
   to {
-    transform: translateY(-50%) translateX(18vw) scale(0.5);
-    opacity: 0.78;
+    transform: translateY(-50%) translateX(-18vw) scale(0.5);
+    opacity: 0.0;
   }
 }
 
 @keyframes imageScaleIn {
   from {
     transform: translateY(-50%) translateX(-18vw) scale(0.5);
-    opacity: 0.8;
+    opacity: 0.0;
   }
   to {
     transform: translateY(-50%) translateX(0) scale(1);
@@ -177,7 +180,7 @@
   position: absolute;
   left: -22vw;
   right: -22vw;
-  z-index: 3;
+  z-index: 10;
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 0.72rem;
@@ -203,7 +206,8 @@
   box-sizing: border-box;
   min-height: 5.6rem;
   height: 5.6rem;
-  background-image: url("/fondbandsection3.jpg");
+  /* background-image: url("/fondbandsection3.jpg"); */
+  background-color:rgb(0, 61, 130);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -254,20 +258,21 @@
 
   /* glassmorphism */
   color: transparent;
-  background-image: url("/fondbandsection3.jpg");
+  /* background-image: url("/fondbandsection3.jpg"); */
+  background-color:rgb(0, 61, 130);
   background-size: cover;
   background-position: center;
   background-clip: text;
   -webkit-background-clip: text;
-  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.28)) drop-shadow(0 2px 6px rgba(255, 255, 255, 0.55));
+  /* filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.28)) drop-shadow(0 2px 6px rgba(255, 255, 255, 0.55)); */
 }
 
 .ghostMotionExit {
-  animation: ghostOutLeft 1000ms cubic-bezier(0.6, 0, 0.9, 0.2) both;
+  animation: ghostOutLeft 500ms cubic-bezier(0.6, 0, 0.9, 0.2) both;
 }
 
 .ghostMotionEnter {
-  animation: ghostInLeft 1000ms cubic-bezier(0.18, 0.82, 0.2, 1) both;
+  animation: ghostInLeft 500ms cubic-bezier(0.18, 0.82, 0.2, 1) both;
 }
 
 .posterGrid {
@@ -341,11 +346,11 @@
 }
 
 .copyMetaExit {
-  animation: copyOutRight 380ms cubic-bezier(0.6, 0, 0.9, 0.2) both;
+  animation: copyOutRight 190ms cubic-bezier(0.6, 0, 0.9, 0.2) both;
 }
 
 .copyMetaEnter {
-  animation: copyInRight 520ms cubic-bezier(0.18, 0.82, 0.2, 1) both;
+  animation: copyInRight 260ms cubic-bezier(0.18, 0.82, 0.2, 1) both;
 }
 
 .titleMotion {
@@ -353,19 +358,19 @@
 }
 
 .titleMotionExit {
-  animation: titleOutLeft 380ms cubic-bezier(0.6, 0, 0.9, 0.2) both;
+  animation: titleOutLeft 190ms cubic-bezier(0.6, 0, 0.9, 0.2) both;
 }
 
 .titleMotionEnter {
-  animation: titleInLeft 520ms cubic-bezier(0.18, 0.82, 0.2, 1) both;
+  animation: titleInLeft 260ms cubic-bezier(0.18, 0.82, 0.2, 1) both;
 }
 
 .imageExit {
-  animation: imageScaleOut 380ms ease both;
+  animation: imageScaleOut 190ms ease both;
 }
 
 .imageEnter {
-  animation: imageScaleIn 520ms ease both;
+  animation: imageScaleIn 260ms ease both;
 }
 
 .kicker {
