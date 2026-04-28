@@ -5,17 +5,32 @@ import YellowLines from "@/components/yellow-lines";
 import SiteFooter from "@/components/site-footer";
 import AccompagnementPosterSection from "@/components/accompagnement-poster-section";
 import HeroPosterSection from "@/components/hero-poster-section";
+import LocationMapSection from "@/components/location-map-section";
 
 export default function Home() {
   return (
     <main className="w-full bg-[var(--page-background)] text-[var(--em-ink)]">
       <HeroSection />
 
+      <section className="home-section centered-shapes-section px-6 py-14 sm:px-10 lg:px-14" aria-label="Nouvelle section editoriale centree">
+        <div className="mx-auto w-full max-w-7xl centered-shapes-content">
+          <p className="trend-kicker">Section 02 - Nouvelle intro</p>
+          <h2>Un fond a formes recentre pour creer une transition visuelle plus forte.</h2>
+          <p className="section2-grahamo-text">Les idées font du skate sur les pixels avant le cafe de 9h.</p>
+          {/* <img src="/dessin-1.svg" alt="" aria-hidden="true" className="w-full" /> */}
+          <p>
+            Cette section sert de respiration entre le hero et la galerie, avec
+            un langage graphique proche de la section suivante, mais compose
+            autour du centre de la page.
+          </p>
+        </div>
+      </section>
+
       <section className="home-section portfolio-section-bg px-6 py-12 sm:px-10 lg:px-14">
         <IsotopeGallery />
       </section>
 
-      <section className="home-section px-0 py-0" aria-label="Section accompagnement poster">
+      <section className="home-section relative z-20 overflow-visible px-0 py-0" aria-label="Section accompagnement poster">
         <AccompagnementPosterSection />
       </section>
 
@@ -23,7 +38,7 @@ export default function Home() {
         <HeroPosterSection />
       </section>
 
-      <section className="home-section trend-bento-section px-6 py-14 sm:px-10 lg:px-14" aria-label="Section tendance bento editorial">
+      {/* <section className="home-section trend-bento-section px-6 py-14 sm:px-10 lg:px-14" aria-label="Section tendance bento editorial">
         <div className="mx-auto w-full max-w-7xl">
           <p className="trend-kicker">Tendance 01 - Bento editorial</p>
           <div className="trend-bento-grid">
@@ -52,9 +67,9 @@ export default function Home() {
             </article>
           </div>
         </div>
-      </section>
+      </section> */}
 
-      <section className="home-section trend-glass-section px-6 py-14 sm:px-10 lg:px-14" aria-label="Section tendance glass blur">
+      {/* <section className="home-section trend-glass-section px-6 py-14 sm:px-10 lg:px-14" aria-label="Section tendance glass blur">
         <div className="mx-auto w-full max-w-7xl">
           <p className="trend-kicker trend-kicker-light">Tendance 02 - Glass layers</p>
           <div className="trend-glass-wrap">
@@ -71,9 +86,9 @@ export default function Home() {
             </article>
           </div>
         </div>
-      </section>
+      </section> */}
 
-      <section className="home-section trend-marquee-section px-0 py-0" aria-label="Section tendance typo marquee">
+      {/* <section className="home-section trend-marquee-section px-0 py-0" aria-label="Section tendance typo marquee">
         <div className="trend-marquee-track" aria-hidden="true">
           <span>TYPOGRAPHIE FORTE</span>
           <span>SCROLL NARRATIF</span>
@@ -94,9 +109,9 @@ export default function Home() {
             </p>
           </div>
         </div>
-      </section>
+      </section> */}
 
-      <section className="home-section signature-section px-6 py-14 sm:px-10 lg:px-14" aria-label="Signature animee Amaury PICHAT">
+      {/* <section className="home-section signature-section px-6 py-14 sm:px-10 lg:px-14" aria-label="Signature animee Amaury PICHAT">
         <div className="mx-auto grid w-full max-w-7xl gap-10 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
           <div className="space-y-4">
             <p className="trend-kicker">Signature SVG</p>
@@ -114,9 +129,9 @@ export default function Home() {
             <SignatureAmauryPichat />
           </div>
         </div>
-      </section>
+      </section> */}
 
-      <section className="home-section section-gradient px-6 py-14 sm:px-10 lg:px-14 relative overflow-hidden" aria-label="Section gradient avec lignes jaunes animees">
+      {/* <section className="home-section section-gradient px-6 py-14 sm:px-10 lg:px-14 relative overflow-hidden" aria-label="Section gradient avec lignes jaunes animees">
         <div className="mx-auto w-full max-w-7xl">
           <div className="space-y-6">
             <p className="trend-kicker">Effet Design 04 - Yellow Lines</p>
@@ -131,6 +146,10 @@ export default function Home() {
         <div className="relative mt-10 h-[28rem] w-full overflow-hidden sm:h-[34rem] lg:h-[40rem]">
           <YellowLines />
         </div>
+      </section> */}
+
+      <section className="home-section px-0 py-0" aria-label="Section contact et adresse">
+        <LocationMapSection />
       </section>
 
       <SiteFooter />

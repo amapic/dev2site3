@@ -6,43 +6,43 @@ import styles from "@/app/accompagnement-poster/page.module.css";
 const STEPS = [
   {
     ghost: "CONTACT",
-    kicker: "Étape 01 • premier échange",
-    title: "Découverte",
-    lead: "On échange sur le besoin, les objectifs, l’univers visuel et les priorités du projet pour poser une base claire.",
+    kicker: "Étape 01 • prise de contact",
+    title: "Premier échange",
+    lead: "On fait connaissance, on parle de votre besoin, de vos objectifs et du contexte du projet pour poser une première base claire avant d’aller plus loin.",
     badge: "Contact",
     image: "/carroussel/image%20(1).png",
   },
   {
     ghost: "CADRAGE",
-    kicker: "Étape 02 • structure du projet",
+    kicker: "Étape 02 • cadrage du projet",
     title: "Cadrage",
-    lead: "On définit les parcours, les contenus, la hiérarchie et le cadre technique pour lancer la réalisation efficacement.",
+    lead: "On réfléchit ensemble au périmètre, aux contenus, aux priorités et aux attentes pour que tout soit bien défini et validé entre vous et moi avant la production.",
     badge: "Cadrage",
     image: "/carroussel/image%20(4drgksrjk).png",
   },
   {
-    ghost: "DESIGN",
-    kicker: "Étape 03 • direction UI/UX",
-    title: "Design UI",
-    lead: "Les maquettes prennent forme avec un système visuel cohérent, lisible et aligné avec l’image de marque.",
-    badge: "Design",
-    image: "/carroussel/girl%20poen.png",
-  },
-  {
-    ghost: "BUILD",
-    kicker: "Étape 04 • intégration et développement",
-    title: "Production",
-    lead: "Le site est intégré proprement, optimisé et testé pour garantir une expérience fluide sur tous les écrans.",
+    ghost: "DEV",
+    kicker: "Étape 03 • développement",
+    title: "Développement",
+    lead: "Je passe à la réalisation du site: intégration, développement des fonctionnalités, structure des pages et mise en place d’une base propre, rapide et fiable.",
     badge: "Dév",
-    image: "/carroussel/girl%20poen.png",
+    image: "/carroussel/image%20(30).png",
   },
   {
-    ghost: "GO LIVE",
-    kicker: "Étape 05 • livraison finale",
-    title: "Lancement",
-    lead: "La mise en ligne se fait dans de bonnes conditions, avec les derniers réglages, les vérifications et la prise en main.",
-    badge: "Livraison",
-    image: "/carroussel/girl%20poen.png",
+    ghost: "LAUNCH",
+    kicker: "Étape 04 • mise en ligne",
+    title: "Déploiement",
+    lead: "Une fois le site prêt, je le déploie dans de bonnes conditions pour le mettre en ligne proprement, avec les derniers réglages et vérifications avant ouverture au public.",
+    badge: "Mise en ligne",
+    image: "/carroussel/image%20(34uoqfqdmu).png",
+  },
+  {
+    ghost: "SUIVI",
+    kicker: "Étape 05 • accompagnement durable",
+    title: "Suivi dans le temps",
+    lead: "Le projet ne s’arrête pas à la mise en ligne: je peux vous accompagner ensuite pour les ajustements, les évolutions, la maintenance et la suite de votre présence en ligne.",
+    badge: "Accompagnement",
+    image: "/carroussel/image%20(32).png",
   },
 ] as const;
 
@@ -80,9 +80,9 @@ export default function AccompagnementPosterSection() {
         timersRef.current.push(
           window.setTimeout(() => {
             setPhase("idle");
-          }, 1000),
+          }, 500),
         );
-      }, 1000),
+      }, 500),
     );
   };
 

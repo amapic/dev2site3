@@ -47,6 +47,18 @@ body {
   font-family: var(--font-geist-sans), sans-serif;
 }
 
+.font-geist-color {
+  font-family: var(--font-geist-sans-color), var(--font-geist-sans), sans-serif;
+}
+
+.section2-grahamo-text {
+  margin: 0;
+  font-family: var(--font-grahamo), var(--font-geist-sans), sans-serif;
+  font-size: clamp(1.2rem, 3.2vw, 2.3rem);
+  line-height: 1.05;
+  color: rgba(15, 34, 70, 0.88);
+}
+
 .box-logo {
   display: inline-block;
   background: linear-gradient(135deg, var(--logo-yellow) 0%, var(--logo-blue) 50%, var(--logo-cyan) 100%);
@@ -903,6 +915,87 @@ body {
 .portfolio-section-bg > .isotope-gallery-shell {
   position: relative;
   z-index: 1;
+}
+
+.centered-shapes-section {
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  height: 100vh;
+  display: grid;
+  align-items: center;
+  background:
+    linear-gradient(180deg, rgba(250, 251, 252, 0.58) 0%, rgba(246, 248, 249, 0.96) 24%, rgba(247, 245, 240, 0.99) 100%),
+    radial-gradient(circle at 50% 28%, rgba(255, 200, 55, 0.34), transparent 32%),
+    radial-gradient(circle at 50% 62%, rgba(0, 212, 212, 0.18), transparent 30%),
+    radial-gradient(circle at 50% 48%, rgba(0, 61, 130, 0.12), transparent 36%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(248, 246, 241, 0.98));
+}
+
+.centered-shapes-section::before,
+.centered-shapes-section::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.centered-shapes-section::before {
+  top: clamp(1rem, 3vw, 2rem);
+  width: min(82vw, 74rem);
+  height: clamp(10rem, 22vw, 16rem);
+  opacity: 0.55;
+  z-index: 0;
+  background:
+    linear-gradient(136deg, transparent 0 43%, rgba(0, 61, 130, 0.1) 43% 52%, transparent 52%),
+    linear-gradient(155deg, transparent 0 45%, rgba(255, 200, 55, 0.16) 45% 54%, transparent 54%),
+    linear-gradient(30deg, transparent 0 63%, rgba(0, 212, 212, 0.12) 63% 72%, transparent 72%);
+  clip-path: polygon(8% 0, 92% 0, 100% 55%, 86% 100%, 14% 100%, 0 56%);
+  filter: blur(14px);
+}
+
+.centered-shapes-section::after {
+  top: clamp(4.5rem, 12vw, 8rem);
+  width: min(48vw, 34rem);
+  height: clamp(8rem, 16vw, 12rem);
+  opacity: 0.42;
+  z-index: 0;
+  background:
+    linear-gradient(122deg, rgba(255, 200, 55, 0.26), transparent 60%),
+    linear-gradient(148deg, rgba(0, 61, 130, 0.2), transparent 52%),
+    linear-gradient(28deg, rgba(0, 212, 212, 0.18), transparent 52%);
+  clip-path: polygon(12% 0, 88% 0, 100% 46%, 84% 100%, 16% 100%, 0 44%);
+  filter: blur(10px);
+}
+
+.centered-shapes-content {
+  position: relative;
+  z-index: 1;
+  max-width: 56rem;
+  text-align: center;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.centered-shapes-content .trend-kicker {
+  margin: 0 0 0.35rem;
+}
+
+.centered-shapes-content h2 {
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 4rem);
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  color: #0f2246;
+}
+
+.centered-shapes-content p {
+  margin: 0;
+  color: rgba(15, 34, 70, 0.82);
+  max-width: 64ch;
+  line-height: 1.45;
+  margin-inline: auto;
 }
 
 .isotope-gallery-shell {
