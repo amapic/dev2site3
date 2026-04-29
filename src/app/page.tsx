@@ -8,21 +8,27 @@ import HeroPosterSection from "@/components/hero-poster-section";
 import LocationMapSection from "@/components/location-map-section";
 
 export default function Home() {
+  const section2IntroText =
+    "Avec près de 10 ans d'expérience dans l'informatique et la création de sites web, je mets mon expertise au service de votre présence en ligne et des besoins de gestion interne de votre entreprise. Grâce à mon écoute et ma réactivité, j'établis une relation de confiance durable avec l’ensemble de mes clients. J'aime comprendre les besoins spécifiques de chaque client pour concevoir des solutions web ou logiciel y répondant parfaitement. Spécialisé dans l’accompagnement des commerçants et des professions libérales, je m'adapte à votre secteur d'activité.";
+
   return (
     <main className="w-full bg-[var(--page-background)] text-[var(--em-ink)]">
       <HeroSection />
 
       <section className="home-section centered-shapes-section px-6 py-14 sm:px-10 lg:px-14" aria-label="Nouvelle section editoriale centree">
-        <div className="mx-auto w-full max-w-7xl centered-shapes-content">
+        <div className="mx-auto w-full  centered-shapes-content">
           <p className="trend-kicker">Section 02 - Nouvelle intro</p>
-          <h2>Un fond a formes recentre pour creer une transition visuelle plus forte.</h2>
-          <p className="section2-grahamo-text">Les idées font du skate sur les pixels avant le cafe de 9h.</p>
+          <div className="section2-title-stack">
+            <h2 className="section2-title-base">{section2IntroText}</h2>
+            <h2 className="section2-title-overlay" aria-hidden="true">{section2IntroText}</h2>
+          </div>
+          <p className="section2-grahamo-text">Dev2site</p>
           {/* <img src="/dessin-1.svg" alt="" aria-hidden="true" className="w-full" /> */}
-          <p>
+          {/* <p>
             Cette section sert de respiration entre le hero et la galerie, avec
             un langage graphique proche de la section suivante, mais compose
             autour du centre de la page.
-          </p>
+          </p> */}
         </div>
       </section>
 
@@ -30,13 +36,13 @@ export default function Home() {
         <IsotopeGallery />
       </section>
 
-      <section className="home-section relative z-20 overflow-visible px-0 py-0" aria-label="Section accompagnement poster">
+      <section className="relative isolate z-30 -mt-px overflow-visible px-0 py-0" aria-label="Section accompagnement poster">
         <AccompagnementPosterSection />
       </section>
 
-      <section className="home-section px-0 py-0" aria-label="Section 4 hero poster sans bandes">
+      {/* <section className="home-section px-0 py-0" aria-label="Section 4 hero poster sans bandes">
         <HeroPosterSection />
-      </section>
+      </section> */}
 
       {/* <section className="home-section trend-bento-section px-6 py-14 sm:px-10 lg:px-14" aria-label="Section tendance bento editorial">
         <div className="mx-auto w-full max-w-7xl">

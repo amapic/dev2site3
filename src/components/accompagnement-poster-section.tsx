@@ -111,12 +111,12 @@ export default function AccompagnementPosterSection() {
             <span />
           </div>
 
-          <div className={styles.cornerMark} aria-hidden="true">
+          {/* <div className={styles.cornerMark} aria-hidden="true">
             <span className={styles.cornerMarkSymbol}>✦</span>
             <span className={styles.cornerMarkLabel}>Template</span>
-          </div>
+          </div> */}
 
-          <span  className={`${styles.ghostWord} AAA ${ghostMotionClass}`} aria-hidden="true">
+          <span className={`${styles.ghostWord} ${ghostMotionClass}`} aria-hidden="true">
             {step.ghost}
           </span>
 

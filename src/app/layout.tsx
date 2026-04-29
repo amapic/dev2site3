@@ -5,7 +5,7 @@ import CookieConsent from "@/components/cookie-consent";
 import "./globals.css";
 
 const geistSansColor = localFont({
-  src: "../../public/font/Geist/Geist-Regular-COLR.ttf",
+  src: "../../public/font/Geist/static/Geist-Regular2.ttf",
   variable: "--font-geist-sans-color",
   display: "swap",
 });

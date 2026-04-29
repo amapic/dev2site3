@@ -15,11 +15,11 @@ export default function LocationMapSection() {
             Passez nous voir directement a l&apos;adresse suivante.
           </p>
           <p className={styles.address}>
-            8 rue Sully
+            8 rue Sully, 69006 Lyon
           </p>
           <a
             className={styles.link}
-            href="https://www.google.com/maps/search/?api=1&query=8+rue+sully"
+            href="https://www.google.com/maps/search/?api=1&query=8+rue+Sully+69006+Lyon"
             target="_blank"
             rel="noreferrer"
           >
@@ -32,8 +32,8 @@ export default function LocationMapSection() {
 
         <div className={styles.mapCard}>
           <iframe
-            title="Carte vers 8 rue Sully"
-            src="https://maps.google.com/maps?q=8%20rue%20sully&z=15&output=embed"
+            title="Carte vers 8 rue Sully, 69006 Lyon"
+            src="https://maps.google.com/maps?q=8%20rue%20Sully%2069006%20Lyon&z=15&output=embed"
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
           />
