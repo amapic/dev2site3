@@ -42,13 +42,13 @@ export default function SiteFooter() {
       <div className="site-footer__inner">
         <div className="site-footer__grid">
           <section className="site-footer__identity" aria-label="Identite">
-            <p className="site-footer__brand">votre-marque</p>
+            <p className="site-footer__brand">Dev2Site</p>
 
             <a className="site-footer__pill" href="#">
-              contact@votre-domaine.fr
+              amo@dev2site.fr
             </a>
             <a className="site-footer__pill site-footer__pill--small" href="#">
-              +33 (0)0 00 00 00 00
+              +33 (0)6 88 91 80 19
             </a>
 
             <div className="site-footer__social" aria-label="Reseaux sociaux">
@@ -63,9 +63,9 @@ export default function SiteFooter() {
           <section className="site-footer__coords" aria-label="Coordonnees">
             <h3>Coordonnees</h3>
             <p>
-              Rue exemple 12
+              8 rue Sully
               <br />
-              49000 Ville
+              69006 Lyon
               <br />
               France
             </p>
@@ -91,8 +91,8 @@ export default function SiteFooter() {
         </div>
 
         <div className="site-footer__meta">
-          <a href="#">Mentions legales</a>
-          <a href="#">Politique de confidentialite</a>
+          <a href="/mentions-legales">Mentions legales</a>
+          <a href="/confidentialite">Politique de confidentialite</a>
         </div>
 
         <div className="site-footer__line" aria-hidden="true" />

@@ -94,7 +94,7 @@ export default function HeroSection() {
             className={`box-logo w-fit ${archivoBlack.className}`}
             aria-label="Titre style skate inspire"
           >
-            DEV2SITE3
+            DEV2SITE  
           </h1>
 
           <p className="max-w-2xl text-lg leading-8 text-black/80 sm:text-xl">
@@ -103,9 +103,9 @@ export default function HeroSection() {
             projets sans casser le rythme visuel.
           </p>
 
-          <p className="w-fit rounded-full border border-black/15 bg-white/72 px-4 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-black/65">
+          {/* <p className="w-fit rounded-full border border-black/15 bg-white/72 px-4 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-black/65">
             Zoom cam canvas: {cameraZoom.toFixed(2)}x
-          </p>
+          </p> */}
         </div>
 
         <div className="hero-panel flex h-full min-h-[18rem] flex-col justify-center gap-3 rounded-[1.35rem] border border-white/25 p-4 sm:p-5 lg:min-h-[24rem] lg:rounded-[1.6rem]">

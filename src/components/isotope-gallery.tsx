@@ -3,7 +3,7 @@
 import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
 
-type FilterValue = "*" | ".site-marchand" | ".portfolio" | ".site-institutionnel";
+type FilterValue = "*" | ".site-marchand" | ".portfolio" | ".corporate";
 
 type IsotopeApi = {
   arrange: (options?: { filter?: string }) => void;
@@ -23,7 +23,9 @@ type IsotopeConstructor = new (
 type Project = {
   title: string;
   category: string;
-  className: "Site Marchand" | "PortFolio" | "Site Institutionnel";
+  className: "Site Marchand" | "PortFolio" | "Site Corporate";
+  filterClass: "site-marchand" | "portfolio" | "corporate";
+  year: number;
   tone: "sun" | "night" | "mint" | "sand" | "ice" | "ember";
   image: string;
   description: string;
@@ -47,14 +49,16 @@ const filters: Array<{ label: string; value: FilterValue }> = [
   { label: "Tout", value: "*" },
   { label: "Site Marchand", value: ".site-marchand" },
   { label: "PortFolio", value: ".portfolio" },
-  { label: "Site Institutionnel", value: ".site-institutionnel" },
+  { label: "Site Corporate", value: ".corporate" },
 ];
 
 const projects: Project[] = [
   {
     title: "Groupe Leonie",
-    category: "Branding",
-    className: "Site Institutionnel",
+    category: "Corporate",
+    className: "Site Corporate",
+    filterClass: "corporate",
+    year: 2025,
     tone: "sun",
     image: "/img_site/groupeleonie.webp",
     description: "Site corporate au ton doux, avec une direction visuelle claire et rassurante.",
@@ -64,8 +68,10 @@ const projects: Project[] = [
   },
   {
     title: "U-Consulting",
-    category: "Digital",
-    className: "Site Institutionnel",
+    category: "Corporate",
+    className: "Site Corporate",
+    filterClass: "corporate",
+    year: 2026,
     tone: "night",
     image: "/img_site/uconsulting.webp",
     description: "Experience web avec animation de particules reactive au parcours utilisateur.",
@@ -75,8 +81,10 @@ const projects: Project[] = [
   },
   {
     title: "Portfolio de designer UX UI",
-    category: "Motion",
+    category: "Portfolio",
     className: "PortFolio",
+    filterClass: "portfolio",
+    year: 2025,
     tone: "mint",
     image: "/img_site/giulia.webp",
     description: "Portfolio orienté produit et interface, avec une lecture claire des cas d'usage.",
@@ -86,8 +94,10 @@ const projects: Project[] = [
   },
   {
     title: "Site Marchand Shopify",
-    category: "Site Marchand",
+    category: "E-commerce",
     className: "Site Marchand",
+    filterClass: "site-marchand",
+    year: 2026,
     tone: "sand",
     image: "/img_site/stanleygrant.webp",
     description: "Direction graphique tech avec contraste marque et parti-pris contemporain.",
@@ -99,6 +109,8 @@ const projects: Project[] = [
     title: "Portfolio de photographe",
     category: "PortFolio",
     className: "PortFolio",
+    filterClass: "portfolio",
+    year: 2024,
     tone: "ice",
     image: "/img_site/pierrebazin.jpg",
     description: "Portfolio de photographe minimaliste, centre sur l'essentiel avec une grille Isotope fluide.",
@@ -108,8 +120,10 @@ const projects: Project[] = [
   },
   {
     title: "Site professionel",
-    category: "Site Institutionnel",
-    className: "Site Institutionnel",
+    category: "Corporate",
+    className: "Site Corporate",
+    filterClass: "corporate",
+    year: 2025,
     tone: "ember",
     image: "/img_site/mariedurand.jpg",
     description: "Conception d'un site vitrine clair, rapide et lisible pour presenter l'activite.",
@@ -457,7 +471,7 @@ export default function IsotopeGallery() {
               <span className="project-card-category__label">{project.category}</span>
             </span>
             <span className="text-xs font-semibold uppercase tracking-[0.22em] text-black/55">
-              {expanded ? "Apercu etendu" : "2026"}
+              {expanded ? `Apercu etendu - ${project.year}` : project.year}
             </span>
           </div>
 
@@ -557,7 +571,7 @@ export default function IsotopeGallery() {
             return (
               <article
                 key={project.title}
-                className={`isotope-card ${project.className} w-full px-2 pb-6 md:w-1/2 xl:w-1/3`}
+                className={`isotope-card ${project.filterClass} w-full px-2 pb-6 md:w-1/2 xl:w-1/3`}
               >
                 <div
                   ref={(element) => {
