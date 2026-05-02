@@ -1,0 +1,358 @@
+.page,
+.page *,
+.page *::before,
+.page *::after {
+  box-sizing: border-box;
+}
+
+.page {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(255, 200, 55, 0.48), transparent 34%),
+    radial-gradient(circle at right 18%, rgba(0, 212, 212, 0.24), transparent 30%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(250, 251, 252, 0.98));
+  color: #0f1118;
+  font-family: var(--font-geist-sans), sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  padding: clamp(8px, 1.6vw, 20px);
+}
+
+.hero {
+  width: 100%;
+  min-height: calc(100vh - 2 * clamp(8px, 1.6vw, 20px));
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(360px, 0.9fr) minmax(320px, 1.1fr);
+  padding: clamp(24px, 3.6vw, 52px) clamp(22px, 4vw, 56px) clamp(76px, 6.5vw, 110px);
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  overflow: hidden;
+}
+
+  .crystalBg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  pointer-events: none;
+}
+
+.left {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-left: clamp(24px, 5vw, 72px);
+}
+
+.sideLabel {
+  position: absolute;
+  left: -4px;
+  top: 34%;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.62rem;
+  color: rgba(26, 36, 65, 0.5);
+}
+
+.brand {
+  display: grid;
+  gap: 8px;
+  align-items: start;
+  margin-bottom: clamp(16px, 2.6vw, 32px);
+}
+
+.brandName {
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: clamp(1.6rem, 2.4vw, 2.2rem);
+  letter-spacing: 0.02em;
+  color: #0a101f;
+}
+
+.brandAccent {
+  color: var(--em-yellow);
+  padding: 0 2px;
+}
+
+.brandTag {
+  font-size: 0.62rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(18, 30, 58, 0.7);
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(3.6rem, 10.5vw, 10rem);
+  line-height: 0.92;
+  letter-spacing: 0.01em;
+  font-weight: 900;
+  -webkit-text-stroke: 0.01em rgba(15, 17, 24, 0.08);
+  width: max-content;
+}
+
+.titleGradient {
+  background: linear-gradient(110deg, var(--em-yellow) 0%, var(--em-cyan) 45%, var(--em-blue) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.baselineRow {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 1.05rem;
+  margin-top: 6px;
+}
+
+.baseline {
+  margin: 0;
+  color: rgba(15, 22, 36, 0.8);
+}
+
+.baselineStrong {
+  margin: 0;
+  font-weight: 700;
+  color: #111;
+}
+
+.separator {
+  width: 180px;
+  height: 3px;
+  border-radius: 999px;
+  margin: 10px 0 6px;
+  background: linear-gradient(90deg, var(--em-blue) 0%, rgba(0, 212, 212, 0.65) 58%, transparent 100%);
+}
+
+.description {
+  margin: 0;
+  max-width: 30ch;
+  font-size: 1.02rem;
+  line-height: 1.6;
+  color: rgba(16, 24, 40, 0.9);
+}
+
+.description strong {
+  font-weight: 700;
+}
+
+.highlightBlue {
+  color: var(--em-blue);
+  font-weight: 700;
+}
+
+.highlightYellow {
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
+  text-decoration-color: rgba(255, 200, 55, 0.82);
+}
+
+.cta {
+  margin-top: clamp(20px, 3vw, 32px);
+  width: fit-content;
+  border: none;
+  background: linear-gradient(100deg, #061227 0%, #003d82 62%, #00a9c6 100%);
+  color: #f4f6ff;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.78rem;
+  padding: 14px 26px;
+  box-shadow: 0 12px 24px rgba(11, 26, 72, 0.35);
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.ctaArrow {
+  font-size: 1rem;
+}
+
+.right {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-end;
+  overflow: hidden;
+}
+
+.rightTag {
+  position: absolute;
+  right: clamp(16px, 3vw, 40px);
+  top: clamp(18px, 3vw, 40px);
+  text-align: right;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.8rem;
+  color: rgba(14, 26, 58, 0.7);
+  z-index: 3;
+}
+
+.rightTag strong {
+  display: block;
+  color: var(--em-blue);
+}
+
+.rightBackdrop {
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  z-index: 0;
+}
+
+.rightLines {
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  opacity: 1;
+  z-index: 2;
+}
+
+.bottomStrip {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-top: 1px solid rgba(20, 30, 60, 0.08);
+  background: transparent;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(160px, 1fr));
+  gap: 16px;
+  padding: 18px clamp(12px, 2.2vw, 28px) 20px;
+  z-index: 2;
+}
+
+.feature {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.featureIcon {
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+
+.featureIconSvg {
+  width: 36px;
+  height: 36px;
+}
+
+.iconRing,
+.iconLine,
+.iconLineSoft {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.iconRing {
+  stroke: currentColor;
+  stroke-width: 1.4;
+  opacity: 0.65;
+}
+
+.iconLine {
+  stroke: currentColor;
+  stroke-width: 1.8;
+}
+
+.iconLineSoft {
+  stroke: currentColor;
+  stroke-width: 1.4;
+  opacity: 0.7;
+}
+
+.iconFill {
+  fill: currentColor;
+}
+
+.featureIconDesign {
+  color: var(--em-yellow);
+}
+
+.featureIconTech {
+  color: #0b5fb0;
+}
+
+.featureIconPerformance {
+  color: var(--em-blue);
+}
+
+.featureIconSupport {
+  color: var(--em-cyan);
+}
+
+.featureTitle {
+  margin: 0;
+  text-transform: uppercase;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #1a233b;
+}
+
+.featureText {
+  margin: 4px 0 0;
+  font-size: 0.78rem;
+  color: rgba(25, 36, 60, 0.74);
+  line-height: 1.35;
+}
+
+@media (max-width: 1100px) {
+  .hero {
+    grid-template-columns: 1fr;
+    padding-bottom: clamp(120px, 16vw, 180px);
+  }
+
+  .right {
+    min-height: 320px;
+  }
+
+  .bottomStrip {
+    position: static;
+    grid-template-columns: repeat(2, minmax(180px, 1fr));
+  }
+
+  .sideLabel {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .title {
+    font-size: clamp(2.6rem, 16vw, 5.1rem);
+  }
+
+  .baselineRow {
+    flex-wrap: wrap;
+  }
+
+  .bottomStrip {
+    grid-template-columns: 1fr;
+  }
+}
