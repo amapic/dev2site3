@@ -1,14 +1,192 @@
+@use "sass:math";
+
 @import "tailwindcss";
+
+$section2-fringe-count: 20;
+$section2-fringe-center-start: 6.1;
+$section2-fringe-center-end: 89;
+$section2-fringe-spacing-ease: "ease-in-cubic "; // linear | ease-in-quad | ease-out-quad | ease-in-cubic | ease-out-cubic | hyper-left | hyper-right
+$section2-fringe-spacing-power: 1;
+$section2-fringe-spacing-epsilon: 0.1;
+$section2-fringe-wave: "sinus"; // sinus | triangle | creneau
+$section2-fringe-rudeness: 0.7; // 0 = very soft transition, 1 = very harsh transition
+$section2-fringe-alpha-min: 1;
+$section2-fringe-alpha-max: 1;
+
+@function s2-clamp($value, $min, $max) {
+  @if $value < $min {
+    @return $min;
+  }
+
+  @if $value > $max {
+    @return $max;
+  }
+
+  @return $value;
+}
+
+@function s2-lerp($start, $end, $t) {
+  @return $start + ($end - $start) * $t;
+}
+
+@function s2-ease-position($x) {
+  $t: s2-clamp($x, 0, 1);
+
+  @if $section2-fringe-spacing-ease == "linear" {
+    @return $t;
+  }
+
+  @if $section2-fringe-spacing-ease == "ease-in-quad" {
+    @return math.pow($t, 2 * $section2-fringe-spacing-power);
+  }
+
+  @if $section2-fringe-spacing-ease == "ease-out-quad" {
+    $u: 1 - $t;
+    @return 1 - math.pow($u, 2 * $section2-fringe-spacing-power);
+  }
+
+  @if $section2-fringe-spacing-ease == "ease-in-cubic" {
+    @return math.pow($t, 3 * $section2-fringe-spacing-power);
+  }
+
+  @if $section2-fringe-spacing-ease == "ease-out-cubic" {
+    $u: 1 - $t;
+    @return 1 - math.pow($u, 3 * $section2-fringe-spacing-power);
+  }
+
+  // Very compressed on the right, expanded on the left.
+  @if $section2-fringe-spacing-ease == "hyper-left" {
+    $e: s2-clamp($section2-fringe-spacing-epsilon, 0.0001, 1);
+    $num: math.log(math.div($t + $e, $e));
+    $den: math.log(math.div(1 + $e, $e));
+    @return math.pow(s2-clamp(math.div($num, $den), 0, 1), $section2-fringe-spacing-power);
+  }
+
+  // Very compressed on the left, expanded on the right.
+  @if $section2-fringe-spacing-ease == "hyper-right" {
+    $e: s2-clamp($section2-fringe-spacing-epsilon, 0.0001, 1);
+    $u: 1 - $t;
+    $num: math.log(math.div($u + $e, $e));
+    $den: math.log(math.div(1 + $e, $e));
+    @return 1 - math.pow(s2-clamp(math.div($num, $den), 0, 1), $section2-fringe-spacing-power);
+  }
+
+  @return $t;
+}
+
+@function s2-center-at($index) {
+  $count: if($section2-fringe-count > 0, $section2-fringe-count, 1);
+  $t: if($count == 1, 0.5, math.div($index - 1, $count - 1));
+  $mapped: s2-ease-position($t);
+  @return s2-lerp($section2-fringe-center-start, $section2-fringe-center-end, $mapped);
+}
+
+@function s2-wave-unit($phase) {
+  $t: s2-clamp($phase, 0, 1);
+  $r: s2-clamp($section2-fringe-rudeness, 0, 1);
+
+  @if $section2-fringe-wave == "creneau" {
+    $edge: s2-lerp(0.35, 0.01, $r);
+
+    @if $t < $edge {
+      @return math.div($t, $edge);
+    }
+
+    @if $t > 1 - $edge {
+      @return math.div(1 - $t, $edge);
+    }
+
+    @return 1;
+  }
+
+  @if $section2-fringe-wave == "triangle" {
+    $tri: 1 - math.abs(2 * $t - 1);
+    $pow: s2-lerp(2.4, 0.35, $r);
+    @return math.pow(s2-clamp($tri, 0, 1), $pow);
+  }
+
+  // Default is sinusoidal profile.
+  $sin: math.sin($t * math.$pi);
+  $pow: s2-lerp(2.0, 0.45, $r);
+  @return math.pow(s2-clamp($sin, 0, 1), $pow);
+}
+
+@function s2-alpha-at($phase) {
+  $u: s2-wave-unit($phase);
+  @return s2-clamp(s2-lerp($section2-fringe-alpha-min, $section2-fringe-alpha-max, $u), 0, 1);
+}
+
+@function s2-append-fringe($stops, $left, $center, $right) {
+  $l: s2-clamp($left, 0, 100);
+  $c: s2-clamp($center, 0, 100);
+  $r: s2-clamp($right, 0, 100);
+
+  @if $section2-fringe-wave == "creneau" {
+    $edge: s2-lerp(0.35, 0.01, s2-clamp($section2-fringe-rudeness, 0, 1));
+    $li: s2-lerp($l, $c, $edge);
+    $ri: s2-lerp($r, $c, $edge);
+    $stops: append($stops, rgba(15, 34, 70, $section2-fringe-alpha-min) ($l * 1%), comma);
+    $stops: append($stops, rgba(15, 34, 70, $section2-fringe-alpha-max) ($li * 1%), comma);
+    $stops: append($stops, rgba(15, 34, 70, $section2-fringe-alpha-max) ($ri * 1%), comma);
+    $stops: append($stops, rgba(15, 34, 70, $section2-fringe-alpha-min) ($r * 1%), comma);
+    @return $stops;
+  }
+
+  @if $section2-fringe-wave == "triangle" {
+    $stops: append($stops, rgba(15, 34, 70, $section2-fringe-alpha-min) ($l * 1%), comma);
+    $stops: append($stops, rgba(15, 34, 70, $section2-fringe-alpha-max) ($c * 1%), comma);
+    $stops: append($stops, rgba(15, 34, 70, $section2-fringe-alpha-min) ($r * 1%), comma);
+    @return $stops;
+  }
+
+  // sinus: a few key points, still only one lobe per fringe.
+  $q1: s2-lerp($l, $c, 0.5);
+  $q3: s2-lerp($c, $r, 0.5);
+  $aQuarter: s2-alpha-at(0.25);
+  $stops: append($stops, rgba(15, 34, 70, $section2-fringe-alpha-min) ($l * 1%), comma);
+  $stops: append($stops, rgba(15, 34, 70, $aQuarter) ($q1 * 1%), comma);
+  $stops: append($stops, rgba(15, 34, 70, $section2-fringe-alpha-max) ($c * 1%), comma);
+  $stops: append($stops, rgba(15, 34, 70, $aQuarter) ($q3 * 1%), comma);
+  $stops: append($stops, rgba(15, 34, 70, $section2-fringe-alpha-min) ($r * 1%), comma);
+
+  @return $stops;
+}
+
+@function s2-fringe-stops() {
+  @if $section2-fringe-count <= 0 {
+    @return (
+      rgba(15, 34, 70, $section2-fringe-alpha-min) 0%,
+      rgba(15, 34, 70, $section2-fringe-alpha-min) 100%
+    );
+  }
+
+  $stops: (rgba(15, 34, 70, $section2-fringe-alpha-min) 0%);
+  $count: if($section2-fringe-count > 0, $section2-fringe-count, 1);
+
+  @for $i from 1 through $count {
+    $c: s2-center-at($i);
+    $prev-c: if($i > 1, s2-center-at($i - 1), null);
+    $next-c: if($i < $count, s2-center-at($i + 1), null);
+
+    $left: if($i == 1, $section2-fringe-center-start, math.div($prev-c + $c, 2));
+    $right: if($i == $count, $section2-fringe-center-end, math.div($c + $next-c, 2));
+
+    $stops: s2-append-fringe($stops, $left, $c, $right);
+  }
+
+  $stops: append($stops, rgba(15, 34, 70, $section2-fringe-alpha-min) 100%, comma);
+  @return $stops;
+}
 
 :root {
   --background: #fafbfc;
-  --foreground: #111111;
+  --foreground: #0f2246;
   --text-opacity-global: 0.88;
   --page-background: #fafbfc;
   --em-yellow: #ffc837;
   --em-blue: #003d82;
   --em-cyan: #00d4d4;
-  --em-ink: #111111;
+  --em-ink: #0f2246;
   --em-paper: #ffffff;
   --logo-yellow: #ffc837;
   --logo-blue: #003d82;
@@ -25,12 +203,12 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #fafbfc;
-    --foreground: #111111;
+    --foreground: #0f2246;
     --page-background: #fafbfc;
     --em-yellow: #ffc837;
     --em-blue: #003d82;
     --em-cyan: #00d4d4;
-    --em-ink: #111111;
+    --em-ink: #0f2246;
     --em-paper: #ffffff;
     --logo-yellow: #ffc837;
     --logo-blue: #003d82;
@@ -1049,6 +1227,50 @@ body {
   width: min(100%, 100rem);
 }
 
+.tri-grain-demo {
+  position: relative;
+  margin: 0.35rem 0 0.65rem;
+  width: min(100%, 36rem);
+  height: clamp(5.2rem, 13vw, 7.4rem);
+  border-radius: 0.7rem;
+  overflow: hidden;
+  background:
+    linear-gradient(132deg, rgba(126, 208, 201, 0.34), rgba(18, 70, 112, 0.26) 34%, rgba(241, 114, 92, 0.3) 62%, rgba(42, 98, 141, 0.24) 100%),
+    linear-gradient(172deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0));
+  box-shadow: inset 0 0 0 1px rgba(15, 34, 70, 0.08);
+}
+
+.tri-grain-demo::before,
+.tri-grain-demo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.tri-grain-demo::before {
+  background-image:
+    radial-gradient(circle at 22% 36%, rgba(255, 255, 255, 0.14), transparent 42%),
+    radial-gradient(circle at 74% 62%, rgba(255, 255, 255, 0.1), transparent 44%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 100% 100%, 100% 100%, 68px 68px;
+  background-position: center, center, center;
+  mix-blend-mode: multiply;
+  opacity: 0.72;
+}
+
+.tri-grain-demo::after {
+  background-image:
+    radial-gradient(circle at 18% 34%, rgba(255, 255, 255, 0.09), transparent 44%),
+    radial-gradient(circle at 76% 66%, rgba(255, 255, 255, 0.08), transparent 42%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n2'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.35' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n2)'/%3E%3C/svg%3E");
+  background-size: 100% 100%, 100% 100%, 58px 58px, 34px 34px;
+  background-position: center, center, center, center;
+  mix-blend-mode: color-burn;
+  opacity: 0.62;
+}
+
 .section2-title-stack h2 {
   margin: 0;
   font-size: clamp(1.75rem, 4.3vw, 3.4rem);
@@ -1062,48 +1284,13 @@ body {
   font-family: var(--font-geist) !important;
   font-synthesis: none;
   font-weight: 600;
-  /* background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(15, 34, 70, 0.64) 3.2%,
-    rgba(15, 34, 70, 1) 6.1%,
-    rgba(15, 34, 70, 0.64) 9.3%,
-    transparent 12.6%,
-    rgba(15, 34, 70, 0.8) 16.1%,
-    rgba(15, 34, 70, 1) 18.8%,
-    rgba(15, 34, 70, 0.8) 22%,
-    transparent 25.6%,
-    rgba(15, 34, 70, 0.88) 29%,
-    rgba(15, 34, 70, 1) 31.5%,
-    rgba(15, 34, 70, 0.88) 34.8%,
-    transparent 38.2%,
-    rgba(15, 34, 70, 0.96) 41.4%,
-    rgba(15, 34, 70, 1) 43.8%,
-    rgba(15, 34, 70, 0.96) 47%,
-    transparent 50.2%,
-    rgba(15, 34, 70, 1) 53.2%,
-    rgba(15, 34, 70, 1) 55.5%,
-    rgba(15, 34, 70, 1) 58.6%,
-    transparent 61.6%,
-    rgba(15, 34, 70, 1) 64.5%,
-    rgba(15, 34, 70, 1) 66.8%,
-    rgba(15, 34, 70, 1) 69.7%,
-    transparent 72.5%,
-    rgba(15, 34, 70, 1) 75.2%,
-    rgba(15, 34, 70, 1) 77.6%,
-    rgba(15, 34, 70, 1) 80.6%,
-    transparent 83.5%,
-    rgba(15, 34, 70, 1) 86.4%,
-    rgba(15, 34, 70, 1) 89%,
-    rgba(15, 34, 70, 1) 92.2%,
-    transparent 100%
-  ); */
-  background-size: 10% 100%;
-  background-repeat: repeat-x;
+  background: linear-gradient(90deg, s2-fringe-stops()...);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  /* opacity: 0.5; */
+  opacity: 1;
   /* -webkit-text-fill-color: transparent; */
 }
 
@@ -1200,7 +1387,7 @@ body {
   --chip-bg-a: rgba(255, 200, 55, 0.92);
   --chip-bg-b: rgba(255, 255, 255, 0.74);
   --chip-bg-c: rgba(0, 61, 130, 0.16);
-  --chip-ink: #111111;
+  --chip-ink: #0f2246;
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -1777,7 +1964,7 @@ body {
 .burn-demo-container h2 {
   font-size: 1.25rem;
   margin-bottom: 3rem;
-  color: #111;
+  color: #0f2246;
 }
 
 .burn-title-container {
@@ -1792,8 +1979,8 @@ body {
   font-weight: 900;
   line-height: 1.1;
   letter-spacing: -0.05em;
-  color: #111111;
-  background: linear-gradient(135deg, #111111 0%, #333333 100%);
+  color: #0f2246;
+  background: linear-gradient(135deg, #0f2246 0%, #2a3d6a 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;

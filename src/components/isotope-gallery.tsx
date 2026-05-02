@@ -448,7 +448,7 @@ export default function IsotopeGallery() {
             type="button"
             aria-label="Fermer la carte"
             onClick={options.onClose}
-            className={`absolute right-4 top-4 z-10 grid h-11 w-11 place-items-center rounded-full border border-black/12 bg-white/88 text-2xl leading-none text-black/80 shadow-[0_10px_24px_rgba(0,0,0,0.12)] transition-all duration-300 hover:scale-105 hover:bg-white ${
+            className={`absolute right-4 top-4 z-10 grid h-11 w-11 place-items-center rounded-full border border-black/12 bg-white/88 text-2xl leading-none text-[rgba(15,34,70,0.80)] shadow-[0_10px_24px_rgba(0,0,0,0.12)] transition-all duration-300 hover:scale-105 hover:bg-white ${
               expanded ? "opacity-100" : "pointer-events-none opacity-0"
             }`}
           >
@@ -470,7 +470,7 @@ export default function IsotopeGallery() {
             <span className="project-card-category" data-tone={project.tone}>
               <span className="project-card-category__label">{project.category}</span>
             </span>
-            <span className="text-xs font-semibold uppercase tracking-[0.22em] text-black/55">
+            <span className="text-xs font-semibold uppercase tracking-[0.22em] text-[rgba(15,34,70,0.55)]">
               {expanded ? `Apercu etendu - ${project.year}` : project.year}
             </span>
           </div>
@@ -479,7 +479,7 @@ export default function IsotopeGallery() {
             <h3 className={`font-black uppercase leading-none tracking-[-0.05em] text-[var(--em-ink)] transition-[font-size] duration-500 ${expanded ? "text-4xl sm:text-5xl" : "text-3xl"}`}>
               {project.title}
             </h3>
-            <p className={`leading-7 text-black/80 transition-[font-size] duration-500 ${expanded ? "max-w-2xl text-base sm:text-lg" : "text-sm sm:text-base"}`}>
+            <p className={`leading-7 text-[rgba(15,34,70,0.80)] transition-[font-size] duration-500 ${expanded ? "max-w-2xl text-base sm:text-lg" : "text-sm sm:text-base"}`}>
               {project.description}
             </p>
           </div>
@@ -488,16 +488,16 @@ export default function IsotopeGallery() {
             <div className={`project-card-extra ${revealExtra ? "project-card-extra-expanded" : ""}`}>
               <div className="grid gap-5 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
                 <div className="space-y-4">
-                  <p className="max-w-2xl text-sm leading-7 text-black/68 sm:text-base">
+                  <p className="max-w-2xl text-sm leading-7 text-[rgba(15,34,70,0.68)] sm:text-base">
                     {project.overlayDescription}
                   </p>
                 </div>
 
                 <div className="rounded-[1.4rem] border border-black/10 bg-white/62 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.6)]">
-                  <p className="mb-3 text-xs font-black uppercase tracking-[0.2em] text-black/50">
+                  <p className="mb-3 text-xs font-black uppercase tracking-[0.2em] text-[rgba(15,34,70,0.50)]">
                     Plus d'info
                   </p>
-                  <ul className="space-y-3 text-sm leading-6 text-black/78 sm:text-base">
+                  <ul className="space-y-3 text-sm leading-6 text-[rgba(15,34,70,0.78)] sm:text-base">
                     {project.details.map((detail) => (
                       <li key={detail} className="border-b border-black/8 pb-3 last:border-b-0 last:pb-0">
                         {detail}
@@ -527,16 +527,30 @@ export default function IsotopeGallery() {
       <div className="isotope-gallery-shell mx-auto flex w-full max-w-7xl flex-col gap-10">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between" style={{ backgroundImage: "url('/fond jaune 2.png')", backgroundSize: "auto 100%", backgroundPosition: "center center", backgroundRepeat: "no-repeat" }}>
           <div className="max-w-2xl space-y-4 rounded-2xl p-6" >
-            <p className="text-sm font-semibold uppercase tracking-[0.28em] text-black/60">
-              Selection isotope
+            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[rgba(15,34,70,0.60)]">
+              Direction creative digitale
             </p>
-            <h2 className="text-4xl font-black uppercase leading-none tracking-[-0.06em] text-[var(--em-ink)] sm:text-5xl lg:text-6xl">
-              Une grille filtrable, rapide et responsive.
+
+            <h2
+              className="w-full text-[clamp(2.5rem,7vw,5.4rem)] font-black leading-[0.92] tracking-[-0.045em] text-[var(--em-ink)] lg:w-[50vw]"
+              style={{ fontFamily: "'Playfair Display', 'Playfair Display Fallback', serif" }}
+            >
+              Un site marchand,
+              <br />
+              portfolio ou corporate
             </h2>
-            <p className="max-w-xl text-base leading-7 text-black/75 sm:text-lg">
-              Les cartes se reordonnent sans casser la lecture mobile. Les
-              filtres restent tactiles, lisibles et stables sur petit comme
-              grand ecran.
+
+            <p className="text-sm font-semibold uppercase tracking-[0.11em] text-[rgba(15,34,70,0.72)] sm:text-base">
+              {/* n&apos;est jamais le fruit du hasard. */}
+              3 possibilités
+            </p>
+
+            <div className="h-[3px] w-44 rounded-full bg-gradient-to-r from-[var(--em-blue)] via-[var(--em-cyan)] to-transparent" />
+
+            <p className="max-w-xl text-base leading-7 text-[rgba(15,34,70,0.75)] sm:text-lg">
+               Boutique
+              en ligne, portfolio ou corporate: chaque format est calibré pour
+              performer.
             </p>
           </div>
 
@@ -552,7 +566,7 @@ export default function IsotopeGallery() {
                   className={`rounded-full border px-5 py-3 text-sm font-semibold uppercase tracking-[0.16em] transition ${
                     isActive
                       ? "border-[#c8960a] bg-[#ffc837] text-[#1a1200] shadow-[0_2px_12px_rgba(255,200,55,0.45)]"
-                      : "border-black/20 bg-white/80 text-black/70 hover:border-[#ffc837] hover:bg-[#fff8e0]"
+                      : "border-black/20 bg-white/80 text-[rgba(15,34,70,0.70)] hover:border-[#ffc837] hover:bg-[#fff8e0]"
                   }`}
                 >
                   {filter.label}

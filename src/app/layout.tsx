@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import CookieConsent from "@/components/cookie-consent";
-import "./globals.css";
+import "./globals.scss";
 
 const geistSansColor = localFont({
   src: "../../public/font/Geist/static/Geist-Regular2.ttf",

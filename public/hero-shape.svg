@@ -1,0 +1,26 @@
+<svg width="900" height="700" viewBox="0 0 900 700" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g1" x1="120" y1="90" x2="760" y2="520" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF8A00"/>
+      <stop offset="0.4" stop-color="#FF3CAC"/>
+      <stop offset="1" stop-color="#2B86C5"/>
+    </linearGradient>
+    <linearGradient id="g2" x1="200" y1="120" x2="840" y2="640" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF" stop-opacity="0.7"/>
+      <stop offset="1" stop-color="#6FA8E6" stop-opacity="0.2"/>
+    </linearGradient>
+    <filter id="blur" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="14"/>
+    </filter>
+  </defs>
+
+  <polygon points="160,590 520,70 860,510" fill="url(#g1)" opacity="0.65"/>
+  <polygon points="70,510 420,150 630,650" fill="#1F2D66" opacity="0.25"/>
+  <polygon points="300,610 640,180 880,640" fill="url(#g2)" opacity="0.55"/>
+  <polygon points="220,500 420,250 560,520" fill="#FFFFFF" opacity="0.36"/>
+
+  <g opacity="0.2" filter="url(#blur)">
+    <circle cx="430" cy="360" r="140" fill="#FF3CAC"/>
+    <circle cx="600" cy="420" r="120" fill="#2B86C5"/>
+  </g>
+</svg>

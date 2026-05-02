@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import styles from "@/app/accompagnement-poster/page.module.css";
+import PrismaticRibbonBandCanvas from "@/components/prismatic-ribbon-band-canvas";
 
 const STEPS = [
   {
@@ -94,6 +95,37 @@ export default function AccompagnementPosterSection() {
 
   return (
     <div className={styles.page}>
+      <div className={styles.topBands} aria-hidden="true">
+        <PrismaticRibbonBandCanvas transparent className={styles.bandCanvas} />
+      </div>
+
+      <section className={styles.intro} aria-label="Introduction a la section accompagnement">
+        <div className={styles.introBox} aria-hidden="true" />
+        <div className={styles.introInner}>
+          <p className={styles.introKicker}>Direction creative digitale</p>
+
+          <h2
+            className={styles.introTitle}
+            style={{ fontFamily: "'Playfair Display', 'Playfair Display Fallback', serif" }}
+          >
+            Un projet web,
+            <br />
+            se construit avec methode
+          </h2>
+
+          <p className={styles.introBaseline}>du premier echange a la mise en ligne.</p>
+
+          <div className={styles.introSeparator} />
+
+          <p className={styles.introText}>
+            Chaque etape compte: cadrer le besoin, structurer les contenus,
+            {/* designer avec justesse, developper proprement et deployer dans de
+            bonnes conditions. Le carousel ci-dessous montre comment le projet
+            avance de facon claire et concrete. */}
+          </p>
+        </div>
+      </section>
+
       <section className={styles.stage} aria-label="Poster visuel pour carrousel">
         <article className={styles.poster}>
           <div
@@ -101,15 +133,6 @@ export default function AccompagnementPosterSection() {
             style={{ backgroundImage: `url("${step.image}")` }}
             aria-hidden="true"
           />
-
-          <div className={styles.topBands} aria-hidden="true">
-            <span />
-            <span />
-            <span />
-            <span />
-            <span />
-            <span />
-          </div>
 
           {/* <div className={styles.cornerMark} aria-hidden="true">
             <span className={styles.cornerMarkSymbol}>✦</span>
@@ -155,12 +178,7 @@ export default function AccompagnementPosterSection() {
           </nav>
 
           <div className={styles.bottomBands} aria-hidden="true">
-            <span />
-            <span />
-            <span />
-            <span />
-            <span />
-            <span />
+            <PrismaticRibbonBandCanvas transparent className={`${styles.bandCanvas} ${styles.bandCanvasMirror}`} />
           </div>
         </article>
       </section>

@@ -6,37 +6,17 @@ import SiteFooter from "@/components/site-footer";
 import AccompagnementPosterSection from "@/components/accompagnement-poster-section";
 import HeroPosterSection from "@/components/hero-poster-section";
 import LocationMapSection from "@/components/location-map-section";
+import { HeroPreciseSection } from "@/app/hero-precise/page";
 
 export default function Home() {
-  const section2IntroText =
-    "Avec près de 10 ans d'expérience dans l'informatique et la création de sites web, je mets mon expertise au service de votre présence en ligne et des besoins de gestion interne de votre entreprise. Grâce à mon écoute et ma réactivité, j'établis une relation de confiance durable avec l’ensemble de mes clients. J'aime comprendre les besoins spécifiques de chaque client pour concevoir des solutions web ou logiciel y répondant parfaitement. Spécialisé dans l’accompagnement des commerçants et des professions libérales, je m'adapte à votre secteur d'activité.";
-
   return (
     <main className="w-full bg-[var(--page-background)] text-[var(--em-ink)]">
       <HeroSection />
 
-      <section className="home-section centered-shapes-section px-6 py-14 sm:px-10 lg:px-14" aria-label="Nouvelle section editoriale centree">
-        <div className="mx-auto w-full  centered-shapes-content">
-          <p className="trend-kicker">Section 02 - Nouvelle intro</p>
-          <div className="section2-title-stack">
-            <h2 className="section2-title-base">{section2IntroText}</h2>
-            <h2 className="section2-title-overlay" aria-hidden="true">{section2IntroText}</h2>
-          </div>
-          <p className="section2-grahamo-text">Dev2site</p>
-          {/* <img src="/dessin-1.svg" alt="" aria-hidden="true" className="w-full" /> */}
-          {/* <p>
-            Cette section sert de respiration entre le hero et la galerie, avec
-            un langage graphique proche de la section suivante, mais compose
-            autour du centre de la page.
-          </p> */}
-        </div>
-      </section>
+      <HeroPreciseSection asSection />
 
-      <section className="home-section portfolio-section-bg px-6 py-12 sm:px-10 lg:px-14">
+      <section className="home-section portfolio-section-bg min-h-[120vh] px-6 py-12 sm:px-10 lg:px-14" aria-label="Portfolio et accompagnement">
         <IsotopeGallery />
-      </section>
-
-      <section className="relative isolate z-30 -mt-px overflow-visible px-0 py-0" aria-label="Section accompagnement poster">
         <AccompagnementPosterSection />
       </section>
 
