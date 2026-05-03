@@ -100,17 +100,18 @@ export default function AccompagnementPosterSection() {
       </div>
 
       <section className={styles.intro} aria-label="Introduction a la section accompagnement">
-        <div className={styles.introBox} aria-hidden="true" />
         <div className={styles.introInner}>
           <p className={styles.introKicker}>Direction creative digitale</p>
 
           <h2
-            className={styles.introTitle}
+            className={`${styles.introTitle} ${styles.introTitleMasked}`}
             style={{ fontFamily: "'Playfair Display', 'Playfair Display Fallback', serif" }}
           >
-            Un projet web,
-            <br />
-            se construit avec methode
+            <span>
+              Un projet web,
+              <br />
+              se construit avec methode
+            </span>
           </h2>
 
           <p className={styles.introBaseline}>du premier echange a la mise en ligne.</p>

@@ -22,36 +22,7 @@
 .intro {
   position: relative;
   z-index: 32;
-  overflow: visible;
   padding: clamp(4.8rem, 9vw, 7.2rem) clamp(1rem, 4vw, 3rem) clamp(1.2rem, 3vw, 2.4rem);
-}
-
-.introBox {
-  position: absolute;
-  right: 10px;
-  top: clamp(2.4rem, 5vw, 5rem);
-  bottom: calc(-0.15rem - 16px);
-  width: clamp(200px, 38%, 520px);
-  border: 1px solid rgba(10, 34, 74, 0.16);
-  border-bottom: none;
-  border-radius: 10px 10px 0 0;
-  background:
-    radial-gradient(circle at right 15%, rgba(0, 212, 212, 0.14), transparent 28%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(250, 251, 252, 0.98));
-  z-index: 5;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-.introBox::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle, rgba(0, 61, 130, 0.14) 0 2px, transparent 2.6px 100%);
-  background-size: 14px 14px;
-  opacity: 0.16;
-  mix-blend-mode: multiply;
-  pointer-events: none;
 }
 
 .introInner {
@@ -79,6 +50,41 @@
   line-height: 0.92;
   letter-spacing: -0.045em;
   font-weight: 900;
+}
+
+/*
+  Masque image sur le titre :
+  - Blanc dans l'image masque  → lettre visible (dégradé affiché)
+  - Noir dans l'image masque   → lettre transparente (fond de page visible à travers)
+  Placez votre fichier masque dans /public/ et remplacez 'mask-title.png' ci-dessous.
+  Si votre image est dans le sens inverse (noir=visible), inversez-la dans Gimp
+  ou décommentez la ligne mask-image avec filter: invert(1) dans le span interne.
+*/
+/* Wrapper : rien de spécial, laisse passer */
+.introTitleMasked {
+  display: block;
+}
+
+/* Span interne : masque + gradient clip sur le même élément inline-block */
+.introTitleMasked span {
+  display: inline-block;
+  background:
+    radial-gradient(circle at top left, rgba(255, 200, 55, 0.72), transparent 32%),
+    radial-gradient(circle at right 15%, rgba(0, 212, 212, 0.5), transparent 28%),
+    linear-gradient(180deg, #003d82 0%, #00d4d4 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-mask-image: url('/texte%20section%202/output_2ysbsl.png');
+  mask-image: url('/texte%20section%202/output_2ysbsl.png');
+  -webkit-mask-size: cover;
+  mask-size: cover;
+  -webkit-mask-position: left center;
+  mask-position: left center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-mode: alpha;
+  mask-mode: alpha;
 }
 
 .introBaseline {
