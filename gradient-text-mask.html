@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gradient Text Mask</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #111;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3rem;
+      font-family: system-ui, sans-serif;
+      padding: 2rem;
+    }
+
+    .label {
+      font-size: 11px;
+      color: #555;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: -2rem;
+      align-self: flex-start;
+    }
+
+    /* ── 1. Mask horizontal — fade centre ── */
+    .text-1 {
+      font-size: clamp(40px, 10vw, 90px);
+      font-weight: 700;
+      display: inline-block;
+      line-height: 1.2;
+
+      background: linear-gradient(90deg, #e96cff, #5b8fff, #00e5c0);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+
+      -webkit-mask-image: url('output_2ysbsl.png');
+      mask-image:         url('output_2ysbsl.png');
+      -webkit-mask-size: cover;
+      mask-size: cover;
+    }
+
+    /* ── 2. Mask radial — fade bords ── */
+    .text-2 {
+      font-size: clamp(40px, 10vw, 90px);
+      font-weight: 700;
+      display: inline-block;
+      line-height: 1.2;
+
+      background: linear-gradient(135deg, #ff6b6b, #ffd93d, #6bcb77, #4d96ff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+
+      -webkit-mask-image: url('output_2ysbsl.png');
+      mask-image:         url('output_2ysbsl.png');
+      -webkit-mask-size: cover;
+      mask-size: cover;
+    }
+
+    /* ── 3. Mask vertical — fade bas ── */
+    .text-3 {
+      font-size: clamp(40px, 10vw, 90px);
+      font-weight: 700;
+      display: inline-block;
+      line-height: 1.2;
+
+      background: linear-gradient(90deg, #f857a6, #ff5858);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+
+      -webkit-mask-image: url('output_2ysbsl.png');
+      mask-image:         url('output_2ysbsl.png');
+      -webkit-mask-size: cover;
+      mask-size: cover;
+    }
+  </style>
+</head>
+<body>
+
+  <span class="label">mask horizontal — fade centre</span>
+  <span class="text-1">BONJOUR</span>
+
+  <span class="label">mask radial — fade bords</span>
+  <span class="text-2">MONDE</span>
+
+  <span class="label">mask vertical — fade bas</span>
+  <span class="text-3">FADE OUT</span>
+
+</body>
+</html>

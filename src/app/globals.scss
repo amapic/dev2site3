@@ -291,6 +291,25 @@ body {
   -webkit-text-fill-color: transparent;
 }
 
+.box-logo2 {
+  display: inline-block;
+  // background: linear-gradient(135deg, var(--logo-yellow) 0%, var(--logo-blue) 50%, var(--logo-cyan) 100%);
+  color: var(--em-ink);
+  // font-size: clamp(2rem, 9vw, 6rem);
+  // line-height: 0.9;
+  // letter-spacing: -0.085em;
+  font-kerning: none;
+  // text-transform: uppercase;
+  // font-style: italic;
+  // font-weight: 900;
+  padding: 0.2em 0.3em 0.26em;
+  // transform: skewX(-8deg) scaleX(0.95);
+  box-shadow: 0 16px 34px rgba(0, 61, 130, 0.24);
+  // background-clip: text;
+  // -webkit-background-clip: text;
+  // -webkit-text-fill-color: transparent;
+}
+
 .title-blot-reveal {
   position: relative;
   isolation: isolate;

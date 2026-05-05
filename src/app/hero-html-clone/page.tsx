@@ -12,7 +12,7 @@ export default function HeroHtmlClonePage() {
         <div className={styles.heroContent}>
           <p className={styles.subtitle}>DIRECTION CREATIVE DIGITALE</p>
 
-          <h1 className={`${styles.title} ${playfair.className}`}>
+          <h1 className={`${styles.title} ${playfair.className} box-logo`}>
             Un <span className={styles.gradientText}>site</span>
             <br />
             <span className={styles.gradientText}>efficace</span>

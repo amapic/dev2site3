@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>GLB Viewer Pro</title>
+
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      background: transparent;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+    }
+
+    model-viewer {
+      width: 100vw;
+      height: 100vh;
+      background: transparent;
+    }
+
+    #loader {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 18px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+<div id="loader">Chargement du modèle...</div>
+
+<model-viewer
+  id="viewer"
+  src="PlantOrchid001_Blender_Cycles.glb"
+  alt="Modèle 3D"
+  auto-rotate
+  camera-controls
+  shadow-intensity="1"
+  exposure="1"
+  environment-image="https://modelviewer.dev/shared-assets/environments/neutral.hdr"
+  skybox-image="https://modelviewer.dev/shared-assets/environments/neutral.hdr"
+>
+</model-viewer>
+
+<script>
+  const viewer = document.getElementById('viewer');
+  const loader = document.getElementById('loader');
+
+  viewer.addEventListener('load', () => {
+    loader.style.display = 'none';
+  });
+</script>
+
+</body>
+</html>
+```

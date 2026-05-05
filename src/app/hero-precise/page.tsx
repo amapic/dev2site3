@@ -84,7 +84,7 @@ export function HeroPreciseSection({ asSection = false }: HeroPreciseSectionProp
             <div className={styles.brandTag}>Direction creative digitale</div>
           </header>
 
-          <h1 className={`${styles.title} ${playfair.className}`}>
+          <h1 className={`${styles.title} ${playfair.className} `}>
             Un <span className={styles.titleGradient}>site</span>
             <br />
             <span className={styles.titleGradient}>efficace</span>
