@@ -104,7 +104,7 @@ export default function AccompagnementPosterSection() {
           <p className={styles.introKicker}>Direction creative digitale</p>
 
           <h2
-            className={`${styles.introTitle} ${styles.introTitleMasked}`}
+            className={`${styles.introTitle}  `}
             style={{ fontFamily: "'Playfair Display', 'Playfair Display Fallback', serif" }}
           >
             <span>
@@ -130,7 +130,7 @@ export default function AccompagnementPosterSection() {
       <section className={styles.stage} aria-label="Poster visuel pour carrousel">
         <article className={styles.poster}>
           <div
-            className={`${styles.imageLayer} ${imageMotionClass}`}
+            className={`imagenb ${styles.imageLayer} ${imageMotionClass}`}
             style={{ backgroundImage: `url("${step.image}")` }}
             aria-hidden="true"
           />
@@ -140,13 +140,36 @@ export default function AccompagnementPosterSection() {
             <span className={styles.cornerMarkLabel}>Template</span>
           </div> */}
 
+          <nav className={styles.dotsNav} aria-label="Navigation du carrousel">
+            <span
+              className={styles.dotTrail}
+              style={{ "--dot-i": activeIndex } as React.CSSProperties}
+              aria-hidden="true"
+            />
+            <span
+              className={styles.dotGlider}
+              style={{ "--dot-i": activeIndex } as React.CSSProperties}
+              aria-hidden="true"
+            />
+            {STEPS.map((item, index) => (
+              <button
+                key={item.title}
+                type="button"
+                aria-label={`Aller à l’étape ${index + 1}`}
+                aria-pressed={index === activeIndex}
+                className={`${styles.dot} ${index === activeIndex ? styles.dotActive : ""}`}
+                onClick={() => handleSelect(index)}
+              />
+            ))}
+          </nav>
+
           <span className={`${styles.ghostWord} ${ghostMotionClass}`} aria-hidden="true">
             {step.ghost}
           </span>
 
           <div className={styles.posterGrid}>
             <div className={styles.cutoutZone}>
-              <div className={styles.cutoutAura} aria-hidden="true" />
+              {/* <div className={styles.cutoutAura} aria-hidden="true" /> */}
               <div className={styles.sticker}>{step.badge}</div>
             </div>
 
@@ -165,18 +188,7 @@ export default function AccompagnementPosterSection() {
             </div>
           </div>
 
-          <nav className={styles.dotsNav} aria-label="Navigation du carrousel">
-            {STEPS.map((item, index) => (
-              <button
-                key={item.title}
-                type="button"
-                aria-label={`Aller à l’étape ${index + 1}`}
-                aria-pressed={index === activeIndex}
-                className={`${styles.dot} ${index === activeIndex ? styles.dotActive : ""}`}
-                onClick={() => handleSelect(index)}
-              />
-            ))}
-          </nav>
+          
 
           <div className={styles.bottomBands} aria-hidden="true">
             <PrismaticRibbonBandCanvas transparent className={`${styles.bandCanvas} ${styles.bandCanvasMirror}`} />

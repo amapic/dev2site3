@@ -45,7 +45,7 @@
 .introTitle {
   margin: 0;
   width: min(75vw, 72rem);
-  color: #0f2246;
+  color: var(--em-ink);
   font-size: clamp(2.5rem, 7vw, 5.4rem);
   line-height: 0.92;
   letter-spacing: -0.045em;
@@ -73,10 +73,11 @@
     radial-gradient(circle at right 15%, rgba(0, 212, 212, 0.5), transparent 28%),
     linear-gradient(180deg, #003d82 0%, #00d4d4 100%);
   -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   background-clip: text;
   color: transparent;
-  -webkit-mask-image: url('/texte%20section%202/output_2ysbsl.png');
-  mask-image: url('/texte%20section%202/output_2ysbsl.png');
+  -webkit-mask-image: url('/wmremove-transformed.png');
+  mask-image: url('/wmremove-transformed.png');
   -webkit-mask-size: cover;
   mask-size: cover;
   -webkit-mask-position: left center;
@@ -296,13 +297,13 @@
 }
 
 .topBands {
-  top: -1.2rem;
+  top: -3rem;
   height: 5.6rem;
   animation: topBandsDrift 42s ease-in-out infinite;
 }
 
 .bottomBands {
-  bottom: -1.2rem;
+  bottom: -5rem;
   height: 5.6rem;
   animation: bottomBandsDrift 42s ease-in-out infinite;
 }
@@ -369,7 +370,7 @@
   position: absolute;
   top: 19%;
   left: 31%;
-  z-index: 1;
+  z-index: 10;
   font-size: clamp(4rem, 15vw, 12rem);
   line-height: 0.88;
   font-weight: 1000;
@@ -378,6 +379,7 @@
   white-space: nowrap;
   transform: skewX(-8deg) rotate(-2deg);
   color: rgba(15, 34, 70, 0.22);
+  color:var(--em-ink);
   text-shadow: 0 8px 24px rgba(0, 0, 0, 0.16), 0 2px 6px rgba(255, 255, 255, 0.28);
 }
 
@@ -521,18 +523,54 @@
 .dotsNav {
   position: absolute;
   left: 50%;
-  bottom: 5.9rem;
+  bottom: 40rem;
   z-index: 6;
+  isolation: isolate;
   display: flex;
   align-items: center;
   gap: 0.7rem;
   padding: 0.55rem 0.8rem;
+  border: 1px solid rgba(255, 200, 55, 0.22);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.55);
   backdrop-filter: blur(8px);
   box-shadow: 0 12px 30px rgba(0, 61, 130, 0.12);
   transform: translateX(-50%);
 }
+
+.dotsNav::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
+  width: 0.42rem;
+  height: 0.42rem;
+  inset: auto;
+  background: radial-gradient(circle, #ffd74f 0%, #ffc837 58%, #ffb300 100%);
+  border-radius: 999px;
+  box-shadow:
+    0 0 0.28rem rgba(255, 235, 140, 1),
+    0 0 0.95rem rgba(255, 200, 55, 0.95),
+    0 0 1.9rem rgba(255, 200, 55, 0.75),
+    0 0 2.8rem rgba(255, 200, 55, 0.48);
+  offset-path: inset(0 round 999px);
+  offset-distance: 0%;
+  opacity: 1;
+  animation: navOrbiter 6s linear infinite;
+}
+
+@keyframes navOrbiter {
+  from {
+    offset-distance: 0%;
+  }
+  to {
+    offset-distance: 100%;
+  }
+}
+
+
 
 .dot {
   width: 0.78rem;
@@ -552,8 +590,33 @@
 }
 
 .dotActive {
+  /* active fill handled by .dotGlider */
+}
+
+.dotGlider,
+.dotTrail {
+  position: absolute;
+  left: calc(1.19rem + var(--dot-i, 0) * 1.48rem);
+  top: 50%;
+  width: 0.78rem;
+  height: 0.78rem;
+  border-radius: 999px;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+.dotGlider {
   background: #003d82;
   box-shadow: 0 0 0 4px rgba(0, 212, 212, 0.18);
+  transition: left 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 2;
+}
+
+.dotTrail {
+  background: rgba(0, 61, 130, 0.5);
+  filter: blur(5px);
+  transition: left 520ms cubic-bezier(0.2, 0, 0.8, 1);
+  z-index: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -568,6 +631,15 @@
   .imageExit,
   .imageEnter {
     animation: none;
+  }
+
+  .dotsNav::after {
+    animation: none;
+  }
+
+  .dotGlider,
+  .dotTrail {
+    transition: none;
   }
 }
 
@@ -635,7 +707,7 @@
     font-size: 0.94rem;
   }
 
-  .dotsNav {
-    bottom: 3.5rem;
-  }
+  /* .dotsNav {
+    top: 3.5rem;
+  } */
 }
