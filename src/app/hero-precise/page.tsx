@@ -85,7 +85,10 @@ export function HeroPreciseSection({ asSection = false }: HeroPreciseSectionProp
           </header>
 
           <h1 className={`${styles.title} ${playfair.className} `}>
+<h1 className={`${styles.title} ${playfair.className} `}>
             Un <span className={styles.titleGradient}>site</span>
+            <br />
+          </h1>
             <br />
             <span className={styles.titleGradient}>efficace</span>
           </h1>

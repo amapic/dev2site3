@@ -122,9 +122,20 @@ function InstancedRefractionMeshes({ count = 50}: { count?: number }) {
     return Float32Array.from(Array.from({ length: count }, (_, index) => pickColor(index)).flat());
   }, [count]);
 
+  const instances = useMemo(
+    () =>
+      Array.from({ length: count }, (_, index) => ({
+        key: `crystal-${index}`,
+        position: positions[index],
+        rotation: rotations[index],
+        scale: scales[index],
+      })),
+    [count, positions, rotations, scales]
+  );
+
   return (
     <Physics>
-      <InstancedRigidBodies positions={positions} rotations={rotations} scales={scales} colliders="hull">
+      <InstancedRigidBodies instances={instances} colliders="hull">
         <instancedMesh args={[geometry, undefined, count]} castShadow receiveShadow>
           <instancedBufferAttribute attach="geometry-attributes-color" args={[colors, 3]} />
           <MeshRefractionMaterial
