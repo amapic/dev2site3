@@ -85,10 +85,7 @@ export function HeroPreciseSection({ asSection = false }: HeroPreciseSectionProp
           </header>
 
           <h1 className={`${styles.title} ${playfair.className} `}>
-<h1 className={`${styles.title} ${playfair.className} `}>
             Un <span className={styles.titleGradient}>site</span>
-            <br />
-          </h1>
             <br />
             <span className={styles.titleGradient}>efficace</span>
           </h1>
@@ -126,6 +123,9 @@ export function HeroPreciseSection({ asSection = false }: HeroPreciseSectionProp
             <div>
               <h3 className={styles.featureTitle}>Design sur mesure</h3>
               <p className={styles.featureText}>Des interfaces uniques, pensees pour votre identite.</p>
+              <div className={styles.featureDetail}>
+                <p>Processus créatif, maquettes, prototypes et livrables détaillés.</p>
+              </div>
             </div>
           </article>
 
@@ -134,6 +134,9 @@ export function HeroPreciseSection({ asSection = false }: HeroPreciseSectionProp
             <div>
               <h3 className={styles.featureTitle}>Technologies modernes</h3>
               <p className={styles.featureText}>Des sites rapides, securises et optimises pour durer.</p>
+              <div className={styles.featureDetail}>
+                <p>Utilisation de React, Next.js, optimisation SEO et performances.</p>
+              </div>
             </div>
           </article>
 
@@ -142,6 +145,9 @@ export function HeroPreciseSection({ asSection = false }: HeroPreciseSectionProp
             <div>
               <h3 className={styles.featureTitle}>Oriente performance</h3>
               <p className={styles.featureText}>Chaque detail est pense pour maximiser vos conversions.</p>
+              <div className={styles.featureDetail}>
+                <p>Analyse de performance, temps de chargement, Core Web Vitals.</p>
+              </div>
             </div>
           </article>
 
@@ -150,6 +156,9 @@ export function HeroPreciseSection({ asSection = false }: HeroPreciseSectionProp
             <div>
               <h3 className={styles.featureTitle}>Accompagnement personnalise</h3>
               <p className={styles.featureText}>A vos cotes a chaque etape, meme apres la mise en ligne.</p>
+              <div className={styles.featureDetail}>
+                <p>Support continu, maintenance, évolutions et conseils post‑lancement.</p>
+              </div>
             </div>
           </article>
         </div>
