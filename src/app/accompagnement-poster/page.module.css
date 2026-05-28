@@ -398,7 +398,7 @@
   grid-template-columns: 0.82fr 1.18fr;
   gap: 0;
   align-items: end;
-  /* min-height: 100vh; */
+  min-height: 50vh;
   margin:0 50px;
   border-radius: 1.4rem;
   padding: 0rem 2rem 8.4rem;
@@ -669,7 +669,16 @@
   }
 
   .cutoutZone {
-    min-height: 22rem;
+    min-height: 35rem;
+  }
+
+  .copyBlock {
+    /* padding: 1rem 1rem 1.1rem; */
+    min-height: 20rem;
+  }
+
+  .dotsNav {
+    bottom: 28rem;
   }
 }
 
@@ -692,6 +701,7 @@
 
   .copyBlock {
     padding: 1rem 1rem 1.1rem;
+    /* min-height: 20rem; */
   }
 
   .cutoutAura {
@@ -705,6 +715,15 @@
 
   .lead {
     font-size: 0.94rem;
+  }
+
+  .cutoutZone {
+    min-height: 30rem;
+  }
+
+  .posterGrid {
+    padding-right: 0rem;
+    padding-left: 0rem;
   }
 
   /* .dotsNav {

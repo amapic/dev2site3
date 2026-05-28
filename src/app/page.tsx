@@ -9,7 +9,11 @@ import { HeroPreciseSection } from "@/app/hero-precise/page";
 
 export default function Home() {
   return (
-    <main className="w-full bg-[var(--page-background)] text-[var(--em-ink)]">
+    <main
+      id="top"
+      className="w-full"
+      style={{ backgroundColor: "var(--page-background)", color: "var(--em-ink)" }}
+    >
       <HeroSection />
 
       <HeroPreciseSection asSection />
@@ -130,7 +134,7 @@ export default function Home() {
         </div>
       </section> */}
 
-      <section className="home-section px-0 py-0" aria-label="Section contact et adresse">
+      <section id="contact" className="home-section px-0 py-0" aria-label="Section contact et adresse">
         <LocationMapSection />
       </section>
 

@@ -1,40 +1,4 @@
-type FooterLink = {
-  label: string;
-  href: string;
-};
-
-type FooterGroup = {
-  title: string;
-  links: FooterLink[];
-};
-
-const footerGroups: FooterGroup[] = [
-  {
-    title: "Navigation",
-    links: [
-      { label: "Lien 01", href: "#" },
-      { label: "Lien 02", href: "#" },
-      { label: "Lien 03", href: "#" },
-      { label: "Lien 04", href: "#" },
-      { label: "Lien 05", href: "#" },
-      { label: "Lien 06", href: "#" },
-    ],
-  },
-  {
-    title: "Services",
-    links: [
-      { label: "Service 01", href: "#" },
-      { label: "Service 02", href: "#" },
-      { label: "Service 03", href: "#" },
-    ],
-  },
-  {
-    title: "Expertise",
-    links: [{ label: "Expertise 01", href: "#" }],
-  },
-];
-
-const partnerMarks = ["ANG", "ADM", "WN", "CJD", "CII"];
+import Link from "next/link";
 
 export default function SiteFooter() {
   return (
@@ -42,22 +6,19 @@ export default function SiteFooter() {
       <div className="site-footer__inner">
         <div className="site-footer__grid">
           <section className="site-footer__identity" aria-label="Identite">
-            <p className="site-footer__brand">Dev2Site</p>
+            <p className="site-footer__brand">Dev<span className="site-footer__brand-2">2</span>Site</p>
+            <p className="site-footer__copy">
+              Dev2Site conçoit des sites web sur mesure, rapides, soignés et
+              pensés pour mettre en valeur votre activité.
+            </p>
 
-            <a className="site-footer__pill" href="#">
-              amo@dev2site.fr
+            <a className="site-footer__pill" href="mailto:amo@dev2site.net">
+              amo@dev2site.net
             </a>
-            <a className="site-footer__pill site-footer__pill--small" href="#">
+            <a className="site-footer__pill site-footer__pill--small" href="tel:+33688918019">
               +33 (0)6 88 91 80 19
             </a>
 
-            <div className="site-footer__social" aria-label="Reseaux sociaux">
-              <a href="#" aria-label="LinkedIn">LI</a>
-              <a href="#" aria-label="Facebook">FB</a>
-              <a href="#" aria-label="Instagram">IG</a>
-              <a href="#" aria-label="X">X</a>
-              <a href="#" aria-label="GitHub">GH</a>
-            </div>
           </section>
 
           <section className="site-footer__coords" aria-label="Coordonnees">
@@ -76,32 +37,33 @@ export default function SiteFooter() {
             </p>
           </section>
 
-          {footerGroups.map((group) => (
-            <nav key={group.title} className="site-footer__links" aria-label={group.title}>
-              <h3>{group.title}</h3>
-              <ul>
-                {group.links.map((link) => (
-                  <li key={link.label}>
-                    <a href={link.href}>{link.label}</a>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          ))}
+          <section className="site-footer__social-panel" aria-label="Reseaux sociaux">
+            <h3>Reseaux</h3>
+            <div className="site-footer__social site-footer__social--large">
+              <a href="https://www.linkedin.com/company/107937126" target="_blank" rel="noreferrer">
+                <img
+                  src="/logo/LinkedIn_icon.svg"
+                  alt="LinkedIn"
+                  className="site-footer__social-logo site-footer__social-logo--linkedin"
+                />
+              </a>
+              <a href="https://www.instagram.com/dev2site" target="_blank" rel="noreferrer">
+                <img
+                  src="/logo/insta.png"
+                  alt="Instagram"
+                  className="site-footer__social-logo site-footer__social-logo--instagram"
+                />
+              </a>
+            </div>
+          </section>
         </div>
 
         <div className="site-footer__meta">
-          <a href="/mentions-legales">Mentions legales</a>
-          <a href="/confidentialite">Politique de confidentialite</a>
+          <Link href="/mentions-legales">Mentions legales</Link>
+          <Link href="/confidentialite">Politique de confidentialite</Link>
         </div>
 
         <div className="site-footer__line" aria-hidden="true" />
-
-        <div className="site-footer__partners" aria-label="Partenaires">
-          {partnerMarks.map((mark) => (
-            <span key={mark}>{mark}</span>
-          ))}
-        </div>
       </div>
 
       <a className="site-footer__backtop" href="#top" aria-label="Retour en haut">

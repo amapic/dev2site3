@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Topo Terrain OBJ Viewer</title>
+  <style>
+    :root {
+      --bg: #f4f0e6;
+      --panel: #fff8ea;
+      --ink: #2f2a24;
+      --accent: #2f7d4b;
+    }
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 20% 10%, #fff9ef 0%, var(--bg) 55%, #e9dfd0 100%);
+      color: var(--ink);
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+    #app {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+    #hud {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      z-index: 10;
+      background: color-mix(in srgb, var(--panel) 88%, white 12%);
+      border: 1px solid #dfd2ba;
+      border-radius: 14px;
+      padding: 12px 14px;
+      box-shadow: 0 12px 30px rgba(64, 45, 19, 0.12);
+      max-width: 360px;
+      line-height: 1.45;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+      letter-spacing: 0.02em;
+    }
+    p {
+      margin: 0;
+      font-size: 0.9rem;
+    }
+    .chip {
+      display: inline-block;
+      margin-top: 8px;
+      background: #e8f5ec;
+      color: #155d34;
+      border: 1px solid #b6d8c0;
+      border-radius: 999px;
+      padding: 3px 10px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    canvas {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div id="hud">
+      <h1>Terrain 3D depuis courbes de niveau</h1>
+      <p>Glisser: rotation, molette: zoom, clic droit: déplacement. Le fichier chargé est <strong>topoexport_terrain.obj</strong>.</p>
+      <span class="chip" id="status">Chargement...</span>
+    </div>
+  </div>
+
+  <script type="module">
+    import * as THREE from 'https://unpkg.com/three@0.166.1/build/three.module.js';
+    import { OrbitControls } from 'https://unpkg.com/three@0.166.1/examples/jsm/controls/OrbitControls.js';
+    import { OBJLoader } from 'https://unpkg.com/three@0.166.1/examples/jsm/loaders/OBJLoader.js';
+
+    const app = document.getElementById('app');
+    const statusEl = document.getElementById('status');
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    app.appendChild(renderer.domElement);
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color('#efe5d4');
+
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100000);
+    camera.position.set(300, 250, 300);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.target.set(0, 0, 0);
+
+    scene.add(new THREE.HemisphereLight('#fff5d8', '#8a7455', 1.1));
+    const sun = new THREE.DirectionalLight('#ffffff', 1.0);
+    sun.position.set(250, 400, 180);
+    scene.add(sun);
+
+    const grid = new THREE.GridHelper(1200, 24, '#6a7f66', '#b8b9a4');
+    grid.position.y = -2;
+    scene.add(grid);
+
+    const loader = new OBJLoader();
+    loader.load(
+      './topoexport_terrain.obj',
+      (obj) => {
+        const material = new THREE.MeshStandardMaterial({
+          color: '#7ca37a',
+          roughness: 0.82,
+          metalness: 0.04,
+          flatShading: false,
+        });
+
+        obj.traverse((child) => {
+          if (child.isMesh) {
+            child.material = material;
+            child.castShadow = false;
+            child.receiveShadow = true;
+            child.geometry.computeVertexNormals();
+          }
+        });
+
+        const box = new THREE.Box3().setFromObject(obj);
+        const center = box.getCenter(new THREE.Vector3());
+        obj.position.sub(center);
+
+        const size = box.getSize(new THREE.Vector3());
+        const maxDim = Math.max(size.x, size.y, size.z);
+        const fitDistance = maxDim * 1.2;
+        camera.position.set(fitDistance, fitDistance * 0.75, fitDistance);
+        controls.target.set(0, 0, 0);
+        controls.update();
+
+        scene.add(obj);
+        statusEl.textContent = 'OBJ chargé avec succès';
+      },
+      undefined,
+      (err) => {
+        console.error(err);
+        statusEl.textContent = 'Erreur de chargement OBJ';
+      }
+    );
+
+    function animate() {
+      requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>

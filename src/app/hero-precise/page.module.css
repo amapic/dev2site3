@@ -7,6 +7,7 @@
 
 .page {
   min-height: 100vh;
+  min-height: 100dvh;
   background:
     radial-gradient(circle at top left, rgba(255, 200, 55, 0.48), transparent 34%),
     radial-gradient(circle at right 18%, rgba(0, 212, 212, 0.24), transparent 30%),
@@ -22,6 +23,7 @@
 .hero {
   width: 100%;
   min-height: calc(100vh - 2 * clamp(8px, 1.6vw, 20px));
+  min-height: calc(100dvh - 2 * clamp(8px, 1.6vw, 20px));
   position: relative;
   display: grid;
   grid-template-columns: minmax(360px, 0.9fr) minmax(320px, 1.1fr);
@@ -327,6 +329,8 @@
 
 .featureTitle {
   margin: 0;
+  margin-left: -2px;
+  padding-left: 2px;
   text-transform: uppercase;
   font-size: 0.82rem;
   font-weight: 700;
@@ -340,9 +344,10 @@
   right: 0;
   bottom: 100%;
   margin-bottom: 17px;
-  background: var(--background);
+  /* background: var(--background); */
+  background: rgba(255, 255, 255, 0.72);
   color: #0f1118;
-  padding: 8px 12px;
+  padding: 8px 112px 8px 48px;
   border: 1px solid rgba(20, 30, 60, 0.08);
   border-bottom: none; /* remove bottom border to hide line with bottomStrip */
   border-radius: 8px 8px 0 0; /* rounded top corners, flat bottom to attach to bottomStrip */
@@ -350,7 +355,25 @@
   transform: translateY(10px);
   transition: opacity 0.2s ease, transform 0.2s ease;
   pointer-events: none;
+  overflow: hidden;
+  overflow-y: auto;
   z-index: 3;
+}
+
+.featureDetail p {
+  margin-left: 0;
+  padding-left: 0;
+}
+
+.featureDetailVideo {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 4px;
+  transform: translate(30%, -50%);
 }
 
 /* Slight upward shift of the detail panel when the title (h3) is hovered */
@@ -361,6 +384,7 @@
 .feature:hover .featureDetail {
   opacity: 1;
   transform: translateY(0);
+  pointer-events: auto;
 }
 
 .featureText {
@@ -371,6 +395,11 @@
 }
 
 @media (max-width: 1100px) {
+  .featureDetail {
+    max-height: 38vh;
+    overflow-y: auto;
+  }
+
   .hero {
     grid-template-columns: 1fr;
     padding-bottom: clamp(120px, 16vw, 180px);
@@ -390,7 +419,26 @@
   }
 }
 
+@media (max-width: 1024px) {
+  .hero {
+    background-image: url('/fond section 2.JPG');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: 60% center;
+  }
+
+  .page {
+    padding: 0;
+  }
+
+
+  .crystalBg {
+    display: none;
+  }
+}
+
 @media (max-width: 640px) {
+  
   .title {
     font-size: clamp(2.6rem, 16vw, 5.1rem);
   }
@@ -401,5 +449,9 @@
 
   .bottomStrip {
     grid-template-columns: 1fr;
+  }
+
+  .featureDetail {
+    display: none;
   }
 }

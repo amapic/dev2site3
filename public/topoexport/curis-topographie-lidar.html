@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Topographie LiDAR HD - Curis-au-Mont-d'Or</title>
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+  <style>
+    :root {
+      --bg: #f3efe5;
+      --panel: rgba(255, 251, 241, 0.94);
+      --ink: #2b241c;
+      --accent: #6f8f58;
+      --line: #d7c9ae;
+    }
+
+    html,
+    body,
+    #map {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
+    }
+
+    body {
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--ink);
+    }
+
+    .panel {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      z-index: 1000;
+      width: min(360px, calc(100vw - 32px));
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--panel);
+      box-shadow: 0 14px 40px rgba(55, 38, 16, 0.16);
+      backdrop-filter: blur(8px);
+    }
+
+    .panel h1 {
+      margin: 0 0 10px;
+      font-size: 1.1rem;
+      line-height: 1.2;
+    }
+
+    .panel p {
+      margin: 0 0 10px;
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+
+    .panel code {
+      font-family: "Consolas", "Courier New", monospace;
+      font-size: 0.86rem;
+      background: rgba(111, 143, 88, 0.09);
+      border-radius: 6px;
+      padding: 0 4px;
+    }
+
+    .legend {
+      margin-top: 8px;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+
+    .legend strong {
+      color: #314a24;
+    }
+
+    .leaflet-control-layers {
+      border-radius: 14px;
+      box-shadow: 0 10px 30px rgba(55, 38, 16, 0.14);
+      border: 1px solid var(--line);
+    }
+  </style>
+</head>
+<body>
+  <div class="panel">
+    <h1>Topographie LiDAR HD autour de Curis-au-Mont-d'Or</h1>
+    <p>
+      Cette carte utilise les flux officiels GeoPF/IGN. Le relief principal provient de la couche
+      <code>IGNF_LIDAR-HD_MNT_ELEVATION.ELEVATIONGRIDCOVERAGE.SHADOW</code>, avec les
+      courbes <code>ELEVATION.CONTOUR.LINE</code>.
+    </p>
+    <p id="status">Chargement du contour communal...</p>
+    <div class="legend">
+      <div><strong>Fond :</strong> Plan IGN</div>
+      <div><strong>Topographie :</strong> ombrage LiDAR HD MNT</div>
+      <div><strong>Détail :</strong> courbes de niveau IGN</div>
+    </div>
+  </div>
+  <div id="map"></div>
+
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+  <script>
+    const statusEl = document.getElementById('status');
+
+    const map = L.map('map', {
+      zoomControl: true,
+      preferCanvas: true,
+    }).setView([45.869014, 4.821683], 13);
+
+    const attribution = '&copy; IGN / GeoPF';
+
+    const planIgn = L.tileLayer(
+      'https://data.geopf.fr/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2&STYLE=normal&FORMAT=image/png&TILEMATRIXSET=PM&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}',
+      {
+        attribution,
+        minZoom: 6,
+        maxZoom: 18,
+      }
+    ).addTo(map);
+
+    const lidarShadow = L.tileLayer(
+      'https://data.geopf.fr/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=IGNF_LIDAR-HD_MNT_ELEVATION.ELEVATIONGRIDCOVERAGE.SHADOW&STYLE=normal&FORMAT=image/png&TILEMATRIXSET=PM&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}',
+      {
+        attribution,
+        minZoom: 6,
+        maxZoom: 18,
+        opacity: 0.72,
+      }
+    ).addTo(map);
+
+    const contours = L.tileLayer(
+      'https://data.geopf.fr/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=ELEVATION.CONTOUR.LINE&STYLE=normal&FORMAT=image/png&TILEMATRIXSET=PM&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}',
+      {
+        attribution,
+        minZoom: 6,
+        maxZoom: 18,
+        opacity: 0.92,
+      }
+    ).addTo(map);
+
+    const slopes = L.tileLayer(
+      'https://data.geopf.fr/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=ELEVATION.SLOPES.HIGHRES&STYLE=normal&FORMAT=image/png&TILEMATRIXSET=PM&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}',
+      {
+        attribution,
+        minZoom: 6,
+        maxZoom: 16,
+        opacity: 0.45,
+      }
+    );
+
+    let communeLayer;
+
+    fetch('./curis-au-mont-dor.geojson')
+      .then((response) => response.json())
+      .then((data) => {
+        communeLayer = L.geoJSON(data, {
+          style: {
+            color: '#af3e32',
+            weight: 2,
+            opacity: 1,
+            fillColor: '#d68b69',
+            fillOpacity: 0.08,
+          },
+        }).addTo(map);
+
+        map.fitBounds(communeLayer.getBounds().pad(0.35));
+        statusEl.textContent = 'Contour communal charge et carte centree sur Curis-au-Mont-d\'Or.';
+      })
+      .catch((error) => {
+        console.error(error);
+        statusEl.textContent = 'Impossible de charger le contour communal.';
+      });
+
+    L.control.layers(
+      {
+        'Plan IGN': planIgn,
+      },
+      {
+        'Ombrage LiDAR HD MNT': lidarShadow,
+        'Courbes de niveau': contours,
+        'Pentes haute resolution': slopes,
+      },
+      {
+        collapsed: false,
+      }
+    ).addTo(map);
+  </script>
+</body>
+</html>

@@ -5,7 +5,8 @@ export default function PortfolioAccompagnementSections() {
   return (
     <>
       <section
-        className="home-section portfolio-section-bg min-h-[120vh] px-6 py-12 sm:px-10 lg:px-14"
+        id="portfolio"
+        className="home-section portfolio-section-bg min-h-[120vh] px-0 py-12 sm:px-10 lg:px-14"
         aria-label="Section portfolio"
       >
         <IsotopeGallery />

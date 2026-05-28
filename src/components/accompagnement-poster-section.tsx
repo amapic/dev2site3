@@ -35,7 +35,7 @@ const STEPS = [
     title: "Déploiement",
     lead: "Une fois le site prêt, je le déploie dans de bonnes conditions pour le mettre en ligne proprement, avec les derniers réglages et vérifications avant ouverture au public.",
     badge: "Mise en ligne",
-    image: "/carroussel/image%20(34uoqfqdmu).png",
+    image: "/carroussel/image%20(33).png",
   },
   {
     ghost: "SUIVI",

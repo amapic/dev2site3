@@ -59,19 +59,26 @@ export default function HeroSection() {
 
   return (
     <section
-      className="home-section home-hero px-6 py-10 sm:px-10 lg:px-14 relative overflow-hidden pb-16"
+      className="h-[100vh] home-section home-hero px-6 py-10 sm:px-10 lg:px-14 relative overflow-hidden pb-16"
       aria-label="Section hero avec elements graphiques"
     >
       {/* Loading overlay — visible until canvas first renders */}
-      <div
+      {/* <div
         className={`hero-loading-screen${isReady ? " hero-loading-screen--hidden" : ""}`}
         aria-hidden="true"
       >
         <span className="hero-loading-dot" />
-      </div>
+      </div> */}
 
-      {/* Canvas background */}
-      <div className="hero-prismatic-bg" aria-hidden="true">
+      {/* Image background for mobile/tablet */}
+      <div
+        className="hero-section-img-bg absolute inset-0 h-full w-full bg-cover bg-center lg:hidden"
+        style={{ backgroundImage: "url('/fond section 1.JPG')" }}
+        aria-hidden="true"
+      />
+
+      {/* Canvas background (desktop only) */}
+      <div className="hero-prismatic-bg hidden lg:block" aria-hidden="true">
         <PrismaticRibbonCanvas
           transparent
           className="hero-prismatic-bg__canvas"
@@ -83,7 +90,7 @@ export default function HeroSection() {
 
       {/* Hero content — revealed once canvas is ready */}
       <div
-        className={`hero-grid mx-auto grid h-full w-full max-w-7xl gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-end hero-content-reveal${isReady ? " hero-content-reveal--visible" : ""}`}
+        className={`hero-grid mx-auto grid h-full w-full max-w-7xl gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-start hero-content-reveal${isReady ? " hero-content-reveal--visible" : ""}`}
       >
         <div className="flex flex-col justify-center gap-6">
           <p className="text-sm font-semibold uppercase tracking-[0.32em] text-black/60">
@@ -91,24 +98,21 @@ export default function HeroSection() {
           </p>
 
           <h1
-            className={`box-logo w-fit ${archivoBlack.className}`}
+            className={`box-logo box-logo--gradient w-fit ${archivoBlack.className}`}
             aria-label="Titre style skate inspire"
           >
-            DEV2SITE  
+            Dev2Site
           </h1>
 
           <p className="max-w-2xl text-lg leading-8 text-black/80 sm:text-xl">
-            Une premiere section manifeste, puis une seconde section pleine
-            hauteur avec une grille Isotope responsive pour filtrer les
-            projets sans casser le rythme visuel.
+            Dev2Site conçoit des sites web sur mesure, rapides, soignés et
+            pensés pour mettre en valeur votre activité.
           </p>
 
-          {/* <p className="w-fit rounded-full border border-black/15 bg-white/72 px-4 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-black/65">
-            Zoom cam canvas: {cameraZoom.toFixed(2)}x
-          </p> */}
+        
         </div>
 
-        <div className="hero-panel flex h-full min-h-[18rem] flex-col justify-center gap-3 rounded-[1.35rem] border border-white/25 p-4 sm:p-5 lg:min-h-[24rem] lg:rounded-[1.6rem]">
+        {/* <div className="hero-panel flex h-full min-h-[18rem] flex-col justify-center gap-3 rounded-[1.35rem] border border-white/25 p-4 sm:p-5 lg:min-h-[24rem] lg:rounded-[1.6rem]">
           {NAV_ROWS.map((row) => (
             <div key={row.subtitle} className="flex flex-col gap-1">
               <p className="pl-1 text-[12px] font-semibold uppercase tracking-[0.22em] text-[#2d4562]/65 sm:text-[13px]">
@@ -145,7 +149,7 @@ export default function HeroSection() {
               </div>
             </div>
           ))}
-        </div>
+        </div> */}
       </div>
       
       <HeroMarqueeScroll />

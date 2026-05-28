@@ -188,6 +188,22 @@ export default function IsotopeGallery() {
   }, [isotopeReady]);
 
   useEffect(() => {
+    if (!isotopeReady || !gridRef.current || typeof ResizeObserver === "undefined") {
+      return;
+    }
+
+    const grid = gridRef.current;
+    const observer = new ResizeObserver(() => {
+      isotopeRef.current?.layout();
+    });
+
+    observer.observe(grid);
+    return () => {
+      observer.disconnect();
+    };
+  }, [isotopeReady]);
+
+  useEffect(() => {
     isotopeRef.current?.arrange({ filter: activeFilter });
   }, [activeFilter]);
 
@@ -220,6 +236,17 @@ export default function IsotopeGallery() {
       });
     };
   }, []);
+
+  useEffect(() => {
+    if (overlayExpanded) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [overlayExpanded]);
 
   useEffect(() => {
     const observers: IntersectionObserver[] = [];
@@ -437,8 +464,8 @@ export default function IsotopeGallery() {
 
     const card = (
       <div
-        className={`project-card project-card-shell relative h-full overflow-hidden rounded-[2rem] border border-black/15 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.09)] transition-[padding,box-shadow] duration-500 ${
-          expanded ? "project-card-shell-expanded sm:p-8" : ""
+        className={`project-card project-card-shell relative h-full rounded-[2rem] border border-black/15 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.09)] transition-[padding,box-shadow] duration-500 ${
+          expanded ? "project-card-shell-expanded overflow-y-auto px-2 sm:p-8" : "overflow-hidden"
         } ${interactive ? "project-card-interactive" : ""}`}
         data-tone={project.tone}
         data-expanded={expanded ? "true" : "false"}
@@ -585,7 +612,7 @@ export default function IsotopeGallery() {
             return (
               <article
                 key={project.title}
-                className={`isotope-card ${project.filterClass} w-full px-2 pb-6 md:w-1/2 xl:w-1/3`}
+                className={`isotope-card ${project.filterClass} px-2 pb-6`}
               >
                 <div
                   ref={(element) => {

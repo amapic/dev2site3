@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Curis-au-Mont-d'Or en 3D</title>
+  <style>
+    :root {
+      --bg: #efe7d9;
+      --panel: rgba(255, 250, 240, 0.92);
+      --ink: #2a241e;
+      --line: #d9cbb0;
+      --accent: #a24637;
+    }
+
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-image: radial-gradient(circle at top, rgba(250, 246, 238, 0.92) 0%, rgba(239, 231, 217, 0.86) 55%, rgba(227, 214, 191, 0.82) 100%), url("../image%20(12).webp");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: var(--ink);
+      font-family: Georgia, "Times New Roman", serif;
+    }
+
+    #app {
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    .panel {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      z-index: 10;
+      width: min(380px, calc(100vw - 32px));
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--panel);
+      box-shadow: 0 18px 45px rgba(55, 38, 16, 0.16);
+      padding: 14px 16px;
+      backdrop-filter: blur(10px);
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 1.15rem;
+      line-height: 1.2;
+    }
+
+    p {
+      margin: 0 0 8px;
+      line-height: 1.45;
+      font-size: 0.95rem;
+    }
+
+    .chip {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(162, 70, 55, 0.1);
+      border: 1px solid rgba(162, 70, 55, 0.2);
+      color: var(--accent);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .legend {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+      font-size: 0.87rem;
+      line-height: 1.55;
+    }
+
+    .fog-controls {
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--line);
+      font-size: 0.84rem;
+      line-height: 1.35;
+    }
+
+    .fog-title {
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .fog-controls label {
+      display: grid;
+      grid-template-columns: 1fr 150px 46px;
+      gap: 8px;
+      align-items: center;
+      margin-top: 6px;
+    }
+
+    .fog-controls input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+    }
+
+    .fog-controls .value {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      color: #6d5c46;
+    }
+
+    .sketchfab-embed-wrapper {
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+    }
+
+    .sketchfab-embed-wrapper iframe {
+      width: 100%;
+      height: 240px;
+      border: 1px solid rgba(120, 98, 74, 0.25);
+      border-radius: 10px;
+      background: #f7f1e6;
+    }
+
+    canvas {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="panel">
+      <h1>Carte 3D de Curis-au-Mont-d'Or</h1>
+      <p>
+        Relief genere depuis le MNT haute resolution IGN/GeoPF, avec ombrage LiDAR HD et courbes de niveau
+        drapees sur le terrain.
+      </p>
+      <p>
+        Les variations de couleur viennent surtout de l'ombrage LiDAR HD utilise comme texture, puis du materiau beige
+        et de la lumiere rasante de la scene 3D.
+      </p>
+      <p>
+        <strong>Batiments:</strong> Donnees precises extraites du DXF BDTOPO (234 bâtiments geolocalises avec precision au metre).
+      </p>
+      <p id="status">Chargement du terrain 3D...</p>
+      <span class="chip">orbite: clic gauche | zoom: molette | deplacement: clic droit</span>
+      <div class="legend">
+        <div><strong>Relief:</strong> IGN ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES</div>
+        <div><strong>Texture:</strong> IGN IGNF_LIDAR-HD ombrage LiDAR</div>
+        <div><strong>Batiments:</strong> BDTOPO (DXF) - 234 emprises geolocs</div>
+        <div><strong>Forets:</strong> OSM landuse=forest / natural=wood (vert vif)</div>
+        <div><strong>Arbres:</strong> meshes places regulierement dans les zones boisees</div>
+        <div><strong>Champs:</strong> OSM landuse=farmland (jaune dore)</div>
+        <div><strong>Vignes:</strong> OSM landuse=vineyard (violet)</div>
+      </div>
+      <div class="fog-controls" aria-label="Controle brume">
+        <div class="fog-title">Brume</div>
+        <label for="fogIntensity">
+          Intensite
+          <input type="range" id="fogIntensity" min="0" max="1" step="0.01" value="0.55" />
+          <span class="value" id="fogIntensityValue">0.55</span>
+        </label>
+        <label for="fogNear">
+          Proximite
+          <input type="range" id="fogNear" min="200" max="8000" step="50" value="2000" />
+          <span class="value" id="fogNearValue">2000</span>
+        </label>
+        <label for="fogFar">
+          Distance
+          <input type="range" id="fogFar" min="2000" max="20000" step="100" value="10000" />
+          <span class="value" id="fogFarValue">10000</span>
+        </label>
+        <label for="fogTint">
+          Teinte
+          <input type="range" id="fogTint" min="0" max="100" step="1" value="45" />
+          <span class="value" id="fogTintValue">45</span>
+        </label>
+      </div>
+      <div class="sketchfab-embed-wrapper">
+        <iframe
+          title="Robin on a rock"
+          frameborder="0"
+          allowfullscreen
+          mozallowfullscreen="true"
+          webkitallowfullscreen="true"
+          allow="autoplay; fullscreen; xr-spatial-tracking"
+          xr-spatial-tracking
+          execution-while-out-of-viewport
+          execution-while-not-rendered
+          web-share
+          src="https://sketchfab.com/models/f1e26d9cdba644a8a4d1ed4b173ddcc6/embed"
+        ></iframe>
+        <p style="font-size: 13px; font-weight: normal; margin: 5px; color: #4A4A4A;">
+          <a
+            href="https://sketchfab.com/3d-models/robin-on-a-rock-f1e26d9cdba644a8a4d1ed4b173ddcc6?utm_medium=embed&utm_campaign=share-popup&utm_content=f1e26d9cdba644a8a4d1ed4b173ddcc6"
+            target="_blank"
+            rel="nofollow"
+            style="font-weight: bold; color: #1CAAD9;"
+          >
+            Robin on a rock
+          </a>
+          by
+          <a
+            href="https://sketchfab.com/arthur.brgs?utm_medium=embed&utm_campaign=share-popup&utm_content=f1e26d9cdba644a8a4d1ed4b173ddcc6"
+            target="_blank"
+            rel="nofollow"
+            style="font-weight: bold; color: #1CAAD9;"
+          >
+            Arthur Bourgeais
+          </a>
+          on
+          <a
+            href="https://sketchfab.com?utm_medium=embed&utm_campaign=share-popup&utm_content=f1e26d9cdba644a8a4d1ed4b173ddcc6"
+            target="_blank"
+            rel="nofollow"
+            style="font-weight: bold; color: #1CAAD9;"
+          >
+            Sketchfab
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.166.1/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.166.1/examples/jsm/"
+      }
+    }
+  </script>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+    const app = document.getElementById('app');
+    const statusEl = document.getElementById('status');
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    app.appendChild(renderer.domElement);
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color('#f1e8d7');
+    scene.fog = new THREE.Fog('#f1e8d7', 2000, 10000);
+
+    const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 40000);
+    camera.position.set(1600, 1200, 1900);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.target.set(0, 180, 0);
+
+    scene.add(new THREE.HemisphereLight('#fff1d9', '#665641', 1.4));
+    const sun = new THREE.DirectionalLight('#fff6e6', 1.25);
+    sun.position.set(1200, 1800, 900);
+    scene.add(sun);
+
+    const groundGrid = new THREE.GridHelper(5000, 24, '#8a826f', '#cdbfa5');
+    groundGrid.position.y = -5;
+    scene.add(groundGrid);
+
+    const loader = new THREE.TextureLoader();
+
+    const fogSettings = {
+      intensity: 0.55,
+      near: 2000,
+      far: 10000,
+      tint: 45,
+    };
+    const fogColorWarm = new THREE.Color('#eadcc6');
+    const fogColorCool = new THREE.Color('#f6f1e8');
+    const fogColor = fogColorWarm.clone();
+    const fog = new THREE.Fog(fogColor, fogSettings.near, fogSettings.far);
+    scene.fog = fog;
+    scene.background = fogColor;
+
+    function applyFogSettings() {
+      const tint = fogSettings.tint / 100;
+      fog.color.copy(fogColorWarm).lerp(fogColorCool, tint);
+
+      const baseNear = Math.max(1, fogSettings.near);
+      const baseFar = Math.max(baseNear + 100, fogSettings.far);
+      const intensity = THREE.MathUtils.clamp(fogSettings.intensity, 0, 1);
+
+      const near = Math.max(1, baseNear * (1 - intensity * 0.35));
+      const far = Math.max(near + 100, baseFar * (1 - intensity * 0.25));
+      fog.near = near;
+      fog.far = far;
+
+      if (scene.background && scene.background.isColor) {
+        scene.background.copy(fog.color);
+      }
+    }
+
+    function initFogControls() {
+      const intensityInput = document.getElementById('fogIntensity');
+      const nearInput = document.getElementById('fogNear');
+      const farInput = document.getElementById('fogFar');
+      const tintInput = document.getElementById('fogTint');
+      const intensityValue = document.getElementById('fogIntensityValue');
+      const nearValue = document.getElementById('fogNearValue');
+      const farValue = document.getElementById('fogFarValue');
+      const tintValue = document.getElementById('fogTintValue');
+
+      if (!intensityInput || !nearInput || !farInput || !tintInput) {
+        applyFogSettings();
+        return;
+      }
+
+      const syncLabels = () => {
+        if (intensityValue) intensityValue.textContent = fogSettings.intensity.toFixed(2);
+        if (nearValue) nearValue.textContent = Math.round(fogSettings.near).toString();
+        if (farValue) farValue.textContent = Math.round(fogSettings.far).toString();
+        if (tintValue) tintValue.textContent = Math.round(fogSettings.tint).toString();
+      };
+
+      const updateFromUI = () => {
+        fogSettings.intensity = Number(intensityInput.value);
+        fogSettings.near = Number(nearInput.value);
+        fogSettings.far = Number(farInput.value);
+        fogSettings.tint = Number(tintInput.value);
+
+        if (fogSettings.far <= fogSettings.near + 100) {
+          fogSettings.far = fogSettings.near + 100;
+          farInput.value = String(fogSettings.far);
+        }
+
+        syncLabels();
+        applyFogSettings();
+      };
+
+      intensityInput.addEventListener('input', updateFromUI);
+      nearInput.addEventListener('input', updateFromUI);
+      farInput.addEventListener('input', updateFromUI);
+      tintInput.addEventListener('input', updateFromUI);
+
+      syncLabels();
+      applyFogSettings();
+    }
+
+    initFogControls();
+
+    function clampByte(value) {
+      return Math.max(0, Math.min(255, value));
+    }
+
+    function createPatternTexture({
+      size = 256,
+      base = '#f1e8d6',
+      line = 'rgba(108, 86, 56, 0.22)',
+      lineWidth = 2,
+      spacing = 12,
+      angle = 0,
+      dotColor = '',
+      dotSize = 2,
+      dotSpacing = 18,
+      sprinkle = 0,
+      sprinkleColor = 'rgba(98, 82, 58, 0.25)',
+      noise = 0.04,
+    }) {
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        return new THREE.CanvasTexture(canvas);
+      }
+
+      ctx.fillStyle = base;
+      ctx.fillRect(0, 0, size, size);
+
+      if (spacing > 0 && lineWidth > 0) {
+        ctx.save();
+        ctx.translate(size / 2, size / 2);
+        ctx.rotate(angle);
+        ctx.translate(-size / 2, -size / 2);
+        ctx.strokeStyle = line;
+        ctx.lineWidth = lineWidth;
+        for (let x = -size; x <= size * 2; x += spacing) {
+          ctx.beginPath();
+          ctx.moveTo(x, -size);
+          ctx.lineTo(x, size * 2);
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+
+      if (dotColor) {
+        ctx.fillStyle = dotColor;
+        for (let y = 0; y <= size; y += dotSpacing) {
+          for (let x = 0; x <= size; x += dotSpacing) {
+            const jitterX = (Math.random() - 0.5) * dotSize * 0.9;
+            const jitterY = (Math.random() - 0.5) * dotSize * 0.9;
+            ctx.beginPath();
+            ctx.arc(x + jitterX, y + jitterY, dotSize, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+      }
+
+      if (sprinkle > 0) {
+        ctx.fillStyle = sprinkleColor;
+        for (let i = 0; i < sprinkle; i += 1) {
+          const x = Math.random() * size;
+          const y = Math.random() * size;
+          const r = Math.random() * 1.6 + 0.6;
+          ctx.beginPath();
+          ctx.arc(x, y, r, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      if (noise > 0) {
+        const image = ctx.getImageData(0, 0, size, size);
+        const data = image.data;
+        const strength = 255 * noise;
+        for (let i = 0; i < data.length; i += 4) {
+          const n = (Math.random() - 0.5) * strength;
+          data[i] = clampByte(data[i] + n);
+          data[i + 1] = clampByte(data[i + 1] + n);
+          data[i + 2] = clampByte(data[i + 2] + n);
+        }
+        ctx.putImageData(image, 0, 0);
+      }
+
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.colorSpace = THREE.SRGBColorSpace;
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
+      texture.anisotropy = 4;
+      return texture;
+    }
+
+    function softenShadowTexture(texture, strength = 0.35, blurPx = 1.2) {
+      const image = texture.image;
+      if (!image || !image.width || !image.height) {
+        return texture;
+      }
+
+      const canvas = document.createElement('canvas');
+      canvas.width = image.width;
+      canvas.height = image.height;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        return texture;
+      }
+
+      ctx.filter = blurPx > 0 ? `blur(${blurPx}px)` : 'none';
+      ctx.drawImage(image, 0, 0);
+      ctx.filter = 'none';
+
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const data = imageData.data;
+      const blend = Math.max(0, Math.min(1, strength));
+      const inv = 1 - blend;
+      for (let i = 0; i < data.length; i += 4) {
+        const gray = (data[i] + data[i + 1] + data[i + 2]) / 3;
+        const mixed = gray * blend + 255 * inv;
+        data[i] = mixed;
+        data[i + 1] = mixed;
+        data[i + 2] = mixed;
+      }
+      ctx.putImageData(imageData, 0, 0);
+
+      const softened = new THREE.CanvasTexture(canvas);
+      softened.colorSpace = THREE.SRGBColorSpace;
+      softened.wrapS = texture.wrapS;
+      softened.wrapT = texture.wrapT;
+      softened.anisotropy = texture.anisotropy || 4;
+      return softened;
+    }
+
+    function setTextureRepeat(texture, metersX, metersZ, metersPerTile) {
+      texture.repeat.set(
+        Math.max(1, metersX / metersPerTile),
+        Math.max(1, metersZ / metersPerTile)
+      );
+      texture.needsUpdate = true;
+    }
+
+    function createLabelSprite(text, color) {
+      const size = 128;
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        return new THREE.Sprite();
+      }
+
+      ctx.clearRect(0, 0, size, size);
+      ctx.fillStyle = color;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.font = '700 72px Georgia';
+      ctx.fillText(text, size / 2, size / 2 + 4);
+
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.colorSpace = THREE.SRGBColorSpace;
+      texture.minFilter = THREE.LinearFilter;
+      texture.magFilter = THREE.LinearFilter;
+
+      const material = new THREE.SpriteMaterial({
+        map: texture,
+        transparent: true,
+        depthWrite: false,
+        depthTest: false,
+        toneMapped: false,
+      });
+      const sprite = new THREE.Sprite(material);
+      return sprite;
+    }
+
+    function lonLatToScene(lon, lat, metadata) {
+      const minLon = metadata.bbox.minLon;
+      const maxLon = metadata.bbox.maxLon;
+      const minLat = metadata.bbox.minLat;
+      const maxLat = metadata.bbox.maxLat;
+      const metersX = (maxLon - minLon) * metadata.metersPerDegree.lon;
+      const metersZ = (maxLat - minLat) * metadata.metersPerDegree.lat;
+      const u = (lon - minLon) / (maxLon - minLon);
+      const v = 1 - (lat - minLat) / (maxLat - minLat);
+
+      return {
+        u,
+        v,
+        x: u * metersX - metersX / 2,
+        z: v * metersZ - metersZ / 2,
+      };
+    }
+
+    function bilinearHeight(data, width, height, u, v, minHeight, heightScale) {
+      const x = THREE.MathUtils.clamp(u * (width - 1), 0, width - 1);
+      const y = THREE.MathUtils.clamp(v * (height - 1), 0, height - 1);
+      const x0 = Math.floor(x);
+      const x1 = Math.min(width - 1, x0 + 1);
+      const y0 = Math.floor(y);
+      const y1 = Math.min(height - 1, y0 + 1);
+      const tx = x - x0;
+      const ty = y - y0;
+
+      const idx00 = y0 * width + x0;
+      const idx10 = y0 * width + x1;
+      const idx01 = y1 * width + x0;
+      const idx11 = y1 * width + x1;
+
+      const z00 = data[idx00];
+      const z10 = data[idx10];
+      const z01 = data[idx01];
+      const z11 = data[idx11];
+
+      const z0 = z00 * (1 - tx) + z10 * tx;
+      const z1 = z01 * (1 - tx) + z11 * tx;
+      return ((z0 * (1 - ty) + z1 * ty) - minHeight) * heightScale;
+    }
+
+    function downsampleHeights(data, width, height, step) {
+      if (step <= 1) {
+        return { data, width, height };
+      }
+
+      const outWidth = Math.floor(width / step);
+      const outHeight = Math.floor(height / step);
+      const out = new Float32Array(outWidth * outHeight);
+      let outIndex = 0;
+
+      for (let y = 0; y < outHeight; y += 1) {
+        const srcY = y * step;
+        for (let x = 0; x < outWidth; x += 1) {
+          const srcX = x * step;
+          let sum = 0;
+          let count = 0;
+          for (let oy = 0; oy < step; oy += 1) {
+            const row = (srcY + oy) * width + srcX;
+            for (let ox = 0; ox < step; ox += 1) {
+              const v = data[row + ox];
+              if (!Number.isFinite(v)) continue;
+              sum += v;
+              count += 1;
+            }
+          }
+          out[outIndex] = count ? sum / count : 0;
+          outIndex += 1;
+        }
+      }
+
+      return { data: out, width: outWidth, height: outHeight };
+    }
+
+    async function main() {
+      const metadata = await fetch('./curis-terrain-metadata.json').then((r) => r.json());
+      const lidarMetadata = await fetch('../data_map/curis-lidar-1m-metadata.json').then((r) => r.json());
+      const demBuffer = await fetch(`../data_map/${lidarMetadata.demFile}`).then((r) => r.arrayBuffer());
+      const sourceHeights = new Float32Array(demBuffer);
+      const sourceWidth = lidarMetadata.width;
+      const sourceHeight = lidarMetadata.height;
+      const maxGrid = 1024;
+      const step = Math.max(1, Math.ceil(Math.max(sourceWidth, sourceHeight) / maxGrid));
+      const downsampled = downsampleHeights(sourceHeights, sourceWidth, sourceHeight, step);
+      const heights = downsampled.data;
+      const width = downsampled.width;
+      const height = downsampled.height;
+      const shadowTexture = await loader.loadAsync(`./${metadata.shadowFile}`);
+      const contourTexture = await loader.loadAsync(`./${metadata.contourFile}`);
+      const [buildingCollection, roadCollection, forestCollection, landuseCollection] = await Promise.all([
+        fetch('./curis-dxf-buildings.geojson').then((r) => r.json()),
+        fetch('./curis-map-features.geojson').then((r) => r.json()),
+        fetch('./curis-forest-features.geojson').then((r) => r.json()),
+        fetch('./curis-landuse-features-lidar10cm.geojson').then((r) => r.json()),
+      ]);
+
+      shadowTexture.colorSpace = THREE.SRGBColorSpace;
+      contourTexture.colorSpace = THREE.SRGBColorSpace;
+      shadowTexture.anisotropy = 4;
+      contourTexture.anisotropy = 4;
+      const terrainShadowTexture = softenShadowTexture(shadowTexture, 0.35, 1.2);
+
+      const minLon = metadata.bbox.minLon;
+      const maxLon = metadata.bbox.maxLon;
+      const minLat = metadata.bbox.minLat;
+      const maxLat = metadata.bbox.maxLat;
+      const metersX = (maxLon - minLon) * metadata.metersPerDegree.lon;
+      const metersZ = (maxLat - minLat) * metadata.metersPerDegree.lat;
+      const minHeight = lidarMetadata.elevation.min;
+      const maxHeight = lidarMetadata.elevation.max;
+      const relief = maxHeight - minHeight;
+      const heightScale = 2.8;
+      const overlayLiftMeters = 0.1;
+      const overlayLift = overlayLiftMeters * heightScale;
+
+      const landuseTextures = {
+        farmland: createPatternTexture({
+          base: '#efe0bf',
+          line: 'rgba(124, 98, 64, 0.28)',
+          lineWidth: 2,
+          spacing: 12,
+          angle: Math.PI / 7,
+          noise: 0.045,
+        }),
+        vineyard: createPatternTexture({
+          base: '#dccbb9',
+          line: 'rgba(94, 73, 58, 0.33)',
+          lineWidth: 1.6,
+          spacing: 8,
+          angle: Math.PI / 3,
+          noise: 0.05,
+        }),
+        orchard: createPatternTexture({
+          base: '#e6d2b5',
+          lineWidth: 0,
+          spacing: 0,
+          dotColor: 'rgba(99, 79, 55, 0.55)',
+          dotSize: 2.6,
+          dotSpacing: 18,
+          noise: 0.05,
+        }),
+      };
+
+      const forestTexture = createPatternTexture({
+        base: '#c6c8a2',
+        line: 'rgba(86, 95, 65, 0.24)',
+        lineWidth: 1.8,
+        spacing: 14,
+        angle: -Math.PI / 6,
+        dotColor: 'rgba(79, 89, 60, 0.5)',
+        dotSize: 2.1,
+        dotSpacing: 14,
+        sprinkle: 110,
+        sprinkleColor: 'rgba(70, 80, 54, 0.35)',
+        noise: 0.06,
+      });
+
+      setTextureRepeat(landuseTextures.farmland, metersX, metersZ, 180);
+      setTextureRepeat(landuseTextures.vineyard, metersX, metersZ, 120);
+      setTextureRepeat(landuseTextures.orchard, metersX, metersZ, 150);
+      setTextureRepeat(forestTexture, metersX, metersZ, 170);
+
+      const geometry = new THREE.PlaneGeometry(metersX, metersZ, width - 1, height - 1);
+      geometry.rotateX(-Math.PI / 2);
+
+      const pos = geometry.attributes.position;
+      for (let j = 0; j < height; j += 1) {
+        for (let i = 0; i < width; i += 1) {
+          const idx = j * width + i;
+          const vertexIndex = idx;
+          const y = (heights[idx] - minHeight) * heightScale;
+          pos.setY(vertexIndex, y);
+        }
+      }
+      geometry.computeVertexNormals();
+
+      const terrainMaterial = new THREE.MeshStandardMaterial({
+        map: terrainShadowTexture,
+        color: '#f3ead8',
+        roughness: 0.97,
+        metalness: 0.01,
+      });
+      const terrainMesh = new THREE.Mesh(geometry, terrainMaterial);
+      scene.add(terrainMesh);
+
+      const showContours = false;
+      if (showContours) {
+        const contourMaterial = new THREE.MeshBasicMaterial({
+          map: contourTexture,
+          color: '#8f7d69',
+          transparent: true,
+          opacity: 0.62,
+          depthWrite: false,
+          polygonOffset: true,
+          polygonOffsetFactor: -1,
+          polygonOffsetUnits: -1,
+        });
+        const contourMesh = new THREE.Mesh(geometry.clone(), contourMaterial);
+        contourMesh.position.y = 3;
+        scene.add(contourMesh);
+      }
+
+      const roadGroups = new Map();
+      const roadColors = {
+        motorway: '#8d4a3f',
+        trunk: '#9c5b4a',
+        primary: '#a86a52',
+        secondary: '#b07a5a',
+        tertiary: '#b9996f',
+        residential: '#cdb99a',
+        unclassified: '#cdb99a',
+        service: '#c6b8a6',
+        living_street: '#d2c2ab',
+      };
+
+      function roadAccumulator(type) {
+        if (!roadGroups.has(type)) {
+          roadGroups.set(type, []);
+        }
+        return roadGroups.get(type);
+      }
+
+      const forestTriangles = [];
+      const forestPolygons = [];
+      const landuseTriangles = {
+        farmland: [],
+        vineyard: [],
+        orchard: [],
+      };
+
+      function pointInRing(point, ring) {
+        let inside = false;
+        for (let i = 0, j = ring.length - 1; i < ring.length; j = i, i += 1) {
+          const xi = ring[i].x;
+          const zi = ring[i].z;
+          const xj = ring[j].x;
+          const zj = ring[j].z;
+          const intersect = ((zi > point.z) !== (zj > point.z))
+            && (point.x < ((xj - xi) * (point.z - zi)) / ((zj - zi) || 1e-9) + xi);
+          if (intersect) inside = !inside;
+        }
+        return inside;
+      }
+
+      function sceneToUV(x, z, metersX, metersZ) {
+        return {
+          u: (x + metersX / 2) / metersX,
+          v: (z + metersZ / 2) / metersZ,
+        };
+      }
+
+      function hashNoise2D(x, z) {
+        const s = Math.sin(x * 12.9898 + z * 78.233) * 43758.5453;
+        return s - Math.floor(s);
+      }
+
+      function pushForestPolygon(ring) {
+        if (!Array.isArray(ring) || ring.length < 4) return;
+        const outer = ring.slice(0, -1).map(([lon, lat]) => lonLatToScene(lon, lat, metadata));
+        if (outer.length < 3) return;
+
+        let minX = Number.POSITIVE_INFINITY;
+        let maxX = Number.NEGATIVE_INFINITY;
+        let minZ = Number.POSITIVE_INFINITY;
+        let maxZ = Number.NEGATIVE_INFINITY;
+        for (const point of outer) {
+          if (point.x < minX) minX = point.x;
+          if (point.x > maxX) maxX = point.x;
+          if (point.z < minZ) minZ = point.z;
+          if (point.z > maxZ) maxZ = point.z;
+        }
+
+        const ringPoints = outer.map((point) => ({ x: point.x, z: point.z }));
+        forestPolygons.push({
+          ring: ringPoints,
+          minX,
+          maxX,
+          minZ,
+          maxZ,
+        });
+
+        const spanX = Math.max(1, maxX - minX);
+        const spanZ = Math.max(1, maxZ - minZ);
+        const cellSize = 28;
+        const cols = Math.max(1, Math.ceil(spanX / cellSize));
+        const rows = Math.max(1, Math.ceil(spanZ / cellSize));
+        const stepX = spanX / cols;
+        const stepZ = spanZ / rows;
+
+        const grid = [];
+        const gridPositions = [];
+
+        for (let zi = 0; zi <= rows; zi += 1) {
+          const row = [];
+          const z = minZ + zi * stepZ;
+
+          for (let xi = 0; xi <= cols; xi += 1) {
+            const x = minX + xi * stepX;
+            if (!pointInRing({ x, z }, ringPoints)) {
+              row.push(-1);
+              continue;
+            }
+
+            const uv = sceneToUV(x, z, metersX, metersZ);
+            const y = bilinearHeight(heights, width, height, uv.u, uv.v, minHeight, heightScale) + overlayLift;
+            const index = gridPositions.length / 3;
+            gridPositions.push(x, y, z);
+            row.push(index);
+          }
+
+          grid.push(row);
+        }
+
+        function pushTriangle(a, b, c) {
+          forestTriangles.push(
+            gridPositions[a * 3], gridPositions[a * 3 + 1], gridPositions[a * 3 + 2],
+            gridPositions[b * 3], gridPositions[b * 3 + 1], gridPositions[b * 3 + 2],
+            gridPositions[c * 3], gridPositions[c * 3 + 1], gridPositions[c * 3 + 2]
+          );
+        }
+
+        for (let zi = 0; zi < rows; zi += 1) {
+          for (let xi = 0; xi < cols; xi += 1) {
+            const a = grid[zi][xi];
+            const b = grid[zi][xi + 1];
+            const c = grid[zi + 1][xi];
+            const d = grid[zi + 1][xi + 1];
+
+            if (a < 0 || b < 0 || c < 0 || d < 0) {
+              continue;
+            }
+
+            pushTriangle(a, c, b);
+            pushTriangle(b, c, d);
+          }
+        }
+      }
+
+      function pushLandusePolygon(ring, target, lift) {
+        if (!Array.isArray(ring) || ring.length < 4) return;
+        const outer = ring.slice(0, -1).map((coord) => {
+          const lon = coord[0];
+          const lat = coord[1];
+          const elevation = coord.length > 2 ? Number(coord[2]) : null;
+          const base = lonLatToScene(lon, lat, metadata);
+          return { ...base, elevation };
+        });
+        if (outer.length < 3) return;
+
+        const shape = outer.map((point) => new THREE.Vector2(point.x, point.z));
+        const triangles = THREE.ShapeUtils.triangulateShape(shape, []);
+        const heightsOnTerrain = outer.map((point) => {
+          if (Number.isFinite(point.elevation)) {
+            return (point.elevation - minHeight) * heightScale;
+          }
+          return bilinearHeight(heights, width, height, point.u, point.v, minHeight, heightScale) + lift;
+        });
+
+        for (const tri of triangles) {
+          for (const idx of tri) {
+            const point = outer[idx];
+            target.push(point.x, heightsOnTerrain[idx], point.z);
+          }
+        }
+      }
+
+      const buildingPositions = [];
+      let buildingCount = 0;
+      let roadCount = 0;
+      let buildingCenterX = 0;
+      let buildingCenterY = 0;
+      let buildingCenterZ = 0;
+
+      console.log(`Loading ${buildingCollection.features?.length || 0} DXF buildings and ${roadCollection.features?.length || 0} OSM features`);
+
+      for (const feature of roadCollection.features || []) {
+        if (feature.geometry?.type === 'LineString' && feature.properties?.kind === 'road') {
+          roadCount += 1;
+          const coords = feature.geometry.coordinates || [];
+          if (coords.length < 2) continue;
+          const positions = roadAccumulator(feature.properties.highway || 'road');
+          for (let index = 0; index < coords.length - 1; index += 1) {
+            const a = lonLatToScene(coords[index][0], coords[index][1], metadata);
+            const b = lonLatToScene(coords[index + 1][0], coords[index + 1][1], metadata);
+            const ay = bilinearHeight(heights, width, height, a.u, a.v, minHeight, heightScale) + 2.5;
+            const by = bilinearHeight(heights, width, height, b.u, b.v, minHeight, heightScale) + 2.5;
+            positions.push(a.x, ay, a.z, b.x, by, b.z);
+          }
+        }
+      }
+
+      for (const feature of buildingCollection.features || []) {
+        if (feature.geometry?.type === 'Polygon' && feature.properties?.kind === 'building') {
+          const ring = feature.geometry.coordinates?.[0] || [];
+          if (ring.length < 4) continue;
+
+          const outer = ring.slice(0, -1).map(([lon, lat]) => lonLatToScene(lon, lat, metadata));
+          if (outer.length < 3) continue;
+
+          buildingCount += 1;
+
+          const roof2D = outer.map((point) => new THREE.Vector2(point.x, point.z));
+          const roofTriangles = THREE.ShapeUtils.triangulateShape(roof2D, []);
+          const baseHeights = outer.map((point) => bilinearHeight(heights, width, height, point.u, point.v, minHeight, heightScale) + 1.5);
+          const buildingHeight = Math.max(5, Number(feature.properties.height || 8));
+          const topHeights = baseHeights.map((value) => value + buildingHeight * 1.35);
+
+          // Accumulate centroid to place initial camera near the building cluster.
+          const avgX = outer.reduce((sum, point) => sum + point.x, 0) / outer.length;
+          const avgZ = outer.reduce((sum, point) => sum + point.z, 0) / outer.length;
+          const avgY = baseHeights.reduce((sum, value) => sum + value, 0) / baseHeights.length + buildingHeight * 0.7;
+          buildingCenterX += avgX;
+          buildingCenterY += avgY;
+          buildingCenterZ += avgZ;
+
+          for (const tri of roofTriangles) {
+            for (const idx of tri) {
+              const point = outer[idx];
+              buildingPositions.push(point.x, topHeights[idx], point.z);
+            }
+          }
+
+          for (let index = 0; index < outer.length; index += 1) {
+            const next = (index + 1) % outer.length;
+            const a = outer[index];
+            const b = outer[next];
+            const ab = baseHeights[index];
+            const bb = baseHeights[next];
+            const at = topHeights[index];
+            const bt = topHeights[next];
+
+            buildingPositions.push(a.x, ab, a.z, b.x, bb, b.z, b.x, bt, b.z);
+            buildingPositions.push(a.x, ab, a.z, b.x, bt, b.z, a.x, at, a.z);
+          }
+        }
+      }
+
+      if (buildingPositions.length > 0) {
+        const buildingGeometry = new THREE.BufferGeometry();
+        buildingGeometry.setAttribute('position', new THREE.Float32BufferAttribute(buildingPositions, 3));
+        buildingGeometry.computeVertexNormals();
+        const buildingMesh = new THREE.Mesh(
+          buildingGeometry,
+          new THREE.MeshStandardMaterial({
+            color: '#d6b38a',
+            roughness: 0.9,
+            metalness: 0.02,
+            side: THREE.DoubleSide,
+          })
+        );
+        scene.add(buildingMesh);
+        console.log(`Rendered ${buildingCount} buildings with ${buildingPositions.length / 3} vertices`);
+      } else {
+        console.warn(`No buildings rendered! buildingCount=${buildingCount}, buildingPositions.length=${buildingPositions.length}`);
+      }
+
+      for (const [roadType, positions] of roadGroups) {
+        if (!positions.length) continue;
+        const roadGeometry = new THREE.BufferGeometry();
+        roadGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+        const roadMaterial = new THREE.LineBasicMaterial({ color: roadColors[roadType] || '#d4c7b4' });
+        scene.add(new THREE.LineSegments(roadGeometry, roadMaterial));
+      }
+
+      let forestCount = 0;
+      for (const feature of forestCollection.features || []) {
+        if (feature.properties?.kind !== 'forest') continue;
+
+        if (feature.geometry?.type === 'Polygon') {
+          pushForestPolygon(feature.geometry.coordinates?.[0] || []);
+          forestCount += 1;
+        } else if (feature.geometry?.type === 'MultiPolygon') {
+          for (const polygon of feature.geometry.coordinates || []) {
+            pushForestPolygon(polygon?.[0] || []);
+          }
+          forestCount += 1;
+        }
+      }
+
+      if (forestTriangles.length > 0) {
+        const forestGeometry = new THREE.BufferGeometry();
+        forestGeometry.setAttribute('position', new THREE.Float32BufferAttribute(forestTriangles, 3));
+        forestGeometry.computeVertexNormals();
+
+        const forestMesh = new THREE.Mesh(
+          forestGeometry,
+          new THREE.MeshStandardMaterial({
+            map: forestTexture,
+            color: '#ffffff',
+            roughness: 0.9,
+            metalness: 0.0,
+            transparent: true,
+            opacity: 0.78,
+            side: THREE.DoubleSide,
+          })
+        );
+        scene.add(forestMesh);
+      }
+
+      const landuseCounts = {
+        farmland: 0,
+        vineyard: 0,
+        orchard: 0,
+      };
+      for (const feature of landuseCollection.features || []) {
+        const kind = feature.properties?.kind;
+        if (!kind || !(kind in landuseTriangles)) continue;
+
+        if (feature.geometry?.type === 'Polygon') {
+          pushLandusePolygon(feature.geometry.coordinates?.[0] || [], landuseTriangles[kind], overlayLift);
+          landuseCounts[kind] += 1;
+        } else if (feature.geometry?.type === 'MultiPolygon') {
+          for (const polygon of feature.geometry.coordinates || []) {
+            pushLandusePolygon(polygon?.[0] || [], landuseTriangles[kind], overlayLift);
+          }
+          landuseCounts[kind] += 1;
+        }
+      }
+
+      const landuseStyles = {
+        farmland: { map: landuseTextures.farmland, opacity: 0.64, roughness: 0.92 },
+        vineyard: { map: landuseTextures.vineyard, opacity: 0.68, roughness: 0.9 },
+        orchard: { map: landuseTextures.orchard, opacity: 0.65, roughness: 0.92 },
+      };
+
+      for (const key of Object.keys(landuseTriangles)) {
+        const positions = landuseTriangles[key];
+        if (!positions.length) continue;
+        const style = landuseStyles[key];
+
+        const meshGeometry = new THREE.BufferGeometry();
+        meshGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+        meshGeometry.computeVertexNormals();
+
+        const mesh = new THREE.Mesh(
+          meshGeometry,
+          new THREE.MeshStandardMaterial({
+            map: style.map,
+            color: '#ffffff',
+            roughness: style.roughness,
+            metalness: 0.0,
+            transparent: true,
+            opacity: style.opacity,
+            side: THREE.DoubleSide,
+          })
+        );
+        scene.add(mesh);
+      }
+
+      const treeSpacing = 34;
+      const maxTrees = 9000;
+      const treePoints = [];
+
+      for (let z = -metersZ / 2; z <= metersZ / 2; z += treeSpacing) {
+        for (let x = -metersX / 2; x <= metersX / 2; x += treeSpacing) {
+          if (treePoints.length >= maxTrees) break;
+
+          const jx = (hashNoise2D(x, z) - 0.5) * treeSpacing * 0.35;
+          const jz = (hashNoise2D(z, x) - 0.5) * treeSpacing * 0.35;
+          const px = x + jx;
+          const pz = z + jz;
+
+          let inForest = false;
+          for (const polygon of forestPolygons) {
+            if (px < polygon.minX || px > polygon.maxX || pz < polygon.minZ || pz > polygon.maxZ) continue;
+            if (pointInRing({ x: px, z: pz }, polygon.ring)) {
+              inForest = true;
+              break;
+            }
+          }
+
+          if (!inForest) continue;
+          treePoints.push({ x: px, z: pz });
+        }
+        if (treePoints.length >= maxTrees) break;
+      }
+
+      let treeCount = 0;
+      if (treePoints.length > 0) {
+        const trunkGeometry = new THREE.CylinderGeometry(0.7, 1.0, 5.5, 6);
+        const crownGeometry = new THREE.ConeGeometry(3.8, 10.5, 7);
+        const trunkMaterial = new THREE.MeshStandardMaterial({ color: '#7a5a3b', roughness: 0.96, metalness: 0.0 });
+        const crownMaterial = new THREE.MeshStandardMaterial({ color: '#7e8a5a', roughness: 0.9, metalness: 0.0, flatShading: true });
+
+        const trunks = new THREE.InstancedMesh(trunkGeometry, trunkMaterial, treePoints.length);
+        const crowns = new THREE.InstancedMesh(crownGeometry, crownMaterial, treePoints.length);
+        const dummy = new THREE.Object3D();
+
+        for (let i = 0; i < treePoints.length; i += 1) {
+          const point = treePoints[i];
+          const uv = sceneToUV(point.x, point.z, metersX, metersZ);
+          const groundY = bilinearHeight(heights, width, height, uv.u, uv.v, minHeight, heightScale) + 4.6;
+          const scaleNoise = 0.75 + hashNoise2D(point.x * 0.2, point.z * 0.2) * 0.65;
+
+          dummy.position.set(point.x, groundY + 2.5 * scaleNoise, point.z);
+          dummy.rotation.set(0, hashNoise2D(point.x, point.z) * Math.PI, 0);
+          dummy.scale.set(scaleNoise, scaleNoise, scaleNoise);
+          dummy.updateMatrix();
+          trunks.setMatrixAt(i, dummy.matrix);
+
+          dummy.position.set(point.x, groundY + 8.8 * scaleNoise, point.z);
+          dummy.rotation.set(0, hashNoise2D(point.z, point.x) * Math.PI, 0);
+          dummy.scale.set(scaleNoise, scaleNoise, scaleNoise);
+          dummy.updateMatrix();
+          crowns.setMatrixAt(i, dummy.matrix);
+        }
+
+        trunks.instanceMatrix.needsUpdate = true;
+        crowns.instanceMatrix.needsUpdate = true;
+        scene.add(trunks);
+        scene.add(crowns);
+        treeCount = treePoints.length;
+      }
+
+      const borderPoints = metadata.boundary.map(([lon, lat]) => {
+        const u = (lon - minLon) / (maxLon - minLon);
+        const v = 1 - (lat - minLat) / (maxLat - minLat);
+        const x = u * metersX - metersX / 2;
+        const z = v * metersZ - metersZ / 2;
+        const y = bilinearHeight(heights, width, height, u, v, minHeight, heightScale) + 10;
+        return new THREE.Vector3(x, y, z);
+      });
+
+      const borderGeometry = new THREE.BufferGeometry().setFromPoints(borderPoints);
+      const borderMaterial = new THREE.LineBasicMaterial({ color: '#9e4a3f' });
+      const borderLine = new THREE.Line(borderGeometry, borderMaterial);
+      scene.add(borderLine);
+
+      const baseFootprint = new THREE.Mesh(
+        new THREE.PlaneGeometry(metersX * 1.02, metersZ * 1.02),
+        new THREE.MeshBasicMaterial({ color: '#eadcc6', transparent: true, opacity: 0.42 })
+      );
+      baseFootprint.rotation.x = -Math.PI / 2;
+      baseFootprint.position.y = -2;
+      scene.add(baseFootprint);
+
+      const peakY = relief * heightScale;
+      const maxDim = Math.max(metersX, metersZ, peakY);
+      const hasBuildings = buildingCount > 0;
+      const focusX = hasBuildings ? (buildingCenterX / buildingCount) : 0;
+      const focusY = hasBuildings ? (buildingCenterY / buildingCount) : peakY * 0.3;
+      const focusZ = hasBuildings ? (buildingCenterZ / buildingCount) : 0;
+
+      camera.position.set(focusX + maxDim * 0.45, focusY + peakY * 0.7 + 450, focusZ + maxDim * 0.35);
+      controls.target.set(focusX, focusY, focusZ);
+      controls.update();
+
+      const axisLength = Math.min(metersX, metersZ) * 0.16;
+      const axisU = THREE.MathUtils.clamp((focusX + metersX / 2) / metersX, 0, 1);
+      const axisV = THREE.MathUtils.clamp((focusZ + metersZ / 2) / metersZ, 0, 1);
+      const axisY = bilinearHeight(heights, width, height, axisU, axisV, minHeight, heightScale) + 14;
+
+      const axisMaterial = new THREE.LineBasicMaterial({
+        color: '#4d3628',
+        depthTest: false,
+        transparent: true,
+        opacity: 0.95,
+      });
+      const axisGeometry = new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(focusX, axisY, focusZ - axisLength),
+        new THREE.Vector3(focusX, axisY, focusZ + axisLength),
+      ]);
+      const axisLine = new THREE.Line(axisGeometry, axisMaterial);
+      axisLine.renderOrder = 999;
+      scene.add(axisLine);
+
+      const labelSize = Math.max(70, axisLength * 0.11);
+      const northLabel = createLabelSprite('N', '#3f2a1e');
+      northLabel.position.set(focusX, axisY + 20, focusZ - axisLength - labelSize * 0.45);
+      northLabel.scale.set(labelSize, labelSize, 1);
+      northLabel.renderOrder = 1000;
+      scene.add(northLabel);
+
+      const southLabel = createLabelSprite('S', '#3f2a1e');
+      southLabel.position.set(focusX, axisY + 20, focusZ + axisLength + labelSize * 0.45);
+      southLabel.scale.set(labelSize, labelSize, 1);
+      southLabel.renderOrder = 1000;
+      scene.add(southLabel);
+
+      statusEl.textContent = `Relief charge: ${Math.round(relief)} m de denivele, ${buildingCount} batiments BDTOPO, ${roadCount} routes OSM, ${forestCount} forets, ${landuseCounts.farmland} champs, ${landuseCounts.vineyard} vignes, ${landuseCounts.orchard} vergers et ${treeCount} arbres meshes.`;
+    }
+
+    main().catch((error) => {
+      console.error(error);
+      statusEl.textContent = 'Erreur de chargement de la carte 3D.';
+    });
+
+    function animate() {
+      requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>

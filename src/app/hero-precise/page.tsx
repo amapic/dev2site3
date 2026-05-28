@@ -77,9 +77,9 @@ export function HeroPreciseSection({ asSection = false }: HeroPreciseSectionProp
 
           <header className={styles.brand}>
             <div className={styles.brandName}>
-              <span>DEV</span>
-              <span className={styles.brandAccent}>2</span>
-              <span>SITE</span>
+              <span>  </span>
+              <span className={styles.brandAccent}> </span>
+              <span>  </span>
             </div>
             <div className={styles.brandTag}>Direction creative digitale</div>
           </header>
@@ -91,7 +91,7 @@ export function HeroPreciseSection({ asSection = false }: HeroPreciseSectionProp
           </h1>
 
           <div className={styles.baselineRow}>
-            <p className={styles.baseline}>n&apos;est jamais le fruit du</p>
+            <p className={styles.baseline}>n'est jamais le fruit du</p>
             <p className={styles.baselineStrong}>hasard.</p>
           </div>
 
@@ -103,9 +103,7 @@ export function HeroPreciseSection({ asSection = false }: HeroPreciseSectionProp
             <span className={styles.highlightYellow}> resultats concrets</span>.
           </p>
 
-          <button type="button" className={styles.cta}>
-            Decouvrir mon approche <span className={styles.ctaArrow}>→</span>
-          </button>
+    
         </div>
 
         <aside className={styles.right}>
@@ -124,6 +122,12 @@ export function HeroPreciseSection({ asSection = false }: HeroPreciseSectionProp
               <h3 className={styles.featureTitle}>Design sur mesure</h3>
               <p className={styles.featureText}>Des interfaces uniques, pensees pour votre identite.</p>
               <div className={styles.featureDetail}>
+                <img
+                  className={styles.featureDetailVideo}
+                  src="/515443-PIOR9O-202.png"
+                  alt=""
+                  aria-hidden="true"
+                />
                 <p>Processus créatif, maquettes, prototypes et livrables détaillés.</p>
               </div>
             </div>
@@ -135,6 +139,12 @@ export function HeroPreciseSection({ asSection = false }: HeroPreciseSectionProp
               <h3 className={styles.featureTitle}>Technologies modernes</h3>
               <p className={styles.featureText}>Des sites rapides, securises et optimises pour durer.</p>
               <div className={styles.featureDetail}>
+                <img
+                  className={styles.featureDetailVideo}
+                  src="/515443-PIOR9O-202.png"
+                  alt=""
+                  aria-hidden="true"
+                />
                 <p>Utilisation de React, Next.js, optimisation SEO et performances.</p>
               </div>
             </div>
@@ -146,6 +156,12 @@ export function HeroPreciseSection({ asSection = false }: HeroPreciseSectionProp
               <h3 className={styles.featureTitle}>Oriente performance</h3>
               <p className={styles.featureText}>Chaque detail est pense pour maximiser vos conversions.</p>
               <div className={styles.featureDetail}>
+                <img
+                  className={styles.featureDetailVideo}
+                  src="/515443-PIOR9O-202.png"
+                  alt=""
+                  aria-hidden="true"
+                />
                 <p>Analyse de performance, temps de chargement, Core Web Vitals.</p>
               </div>
             </div>
@@ -157,7 +173,13 @@ export function HeroPreciseSection({ asSection = false }: HeroPreciseSectionProp
               <h3 className={styles.featureTitle}>Accompagnement personnalise</h3>
               <p className={styles.featureText}>A vos cotes a chaque etape, meme apres la mise en ligne.</p>
               <div className={styles.featureDetail}>
-                <p>Support continu, maintenance, évolutions et conseils post‑lancement.</p>
+                <img
+                  className={styles.featureDetailVideo}
+                  src="/515443-PIOR9O-202.png"
+                  alt=""
+                  aria-hidden="true"
+                />
+                <p>Support continu, maintenance, evolutions et conseils post‑lancement.</p>
               </div>
             </div>
           </article>

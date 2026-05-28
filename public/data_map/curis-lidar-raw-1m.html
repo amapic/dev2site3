@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Curis LIDAR brut 1m</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f0e3;
+      --panel: #f3e6d0;
+      --ink: #3f2a1e;
+      --muted: #6e5b4a;
+      --accent: #8b5a3a;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Trebuchet MS", "Verdana", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+
+    .panel {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      z-index: 10;
+      background: var(--panel);
+      padding: 14px 16px;
+      border-radius: 10px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+      max-width: 320px;
+    }
+
+    .panel h1 {
+      font-size: 16px;
+      margin: 0 0 8px 0;
+      letter-spacing: 0.3px;
+      color: var(--accent);
+    }
+
+    .panel p {
+      margin: 6px 0;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .panel label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 6px 0;
+      font-size: 13px;
+    }
+
+    .canvas-wrap {
+      padding: 80px 16px 24px 16px;
+    }
+
+    canvas {
+      width: 100%;
+      max-width: 1100px;
+      height: auto;
+      border-radius: 12px;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+      image-rendering: pixelated;
+      background: #ffffff;
+    }
+
+    .readout {
+      font-size: 13px;
+      margin-top: 10px;
+      color: var(--muted);
+    }
+
+    .status {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="panel">
+    <h1>Donnees LIDAR brutes 1m</h1>
+    <p id="meta">Chargement...</p>
+    <label>
+      <input type="checkbox" id="flipY" />
+      Inverser axe Y
+    </label>
+    <label>
+      <input type="checkbox" id="autoContrast" checked />
+      Contraste min/max
+    </label>
+    <div class="readout" id="readout">Survol: --</div>
+    <div class="status" id="status"></div>
+  </div>
+
+  <div class="canvas-wrap">
+    <canvas id="lidar"></canvas>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('lidar');
+    const ctx = canvas.getContext('2d');
+    const metaEl = document.getElementById('meta');
+    const readoutEl = document.getElementById('readout');
+    const statusEl = document.getElementById('status');
+    const flipYInput = document.getElementById('flipY');
+    const autoContrastInput = document.getElementById('autoContrast');
+
+    const state = {
+      width: 0,
+      height: 0,
+      heights: null,
+      min: 0,
+      max: 1,
+      flipY: false,
+      autoContrast: true,
+    };
+
+    function clamp01(value) {
+      return Math.max(0, Math.min(1, value));
+    }
+
+    function computeMinMax(data) {
+      let min = Infinity;
+      let max = -Infinity;
+      for (let i = 0; i < data.length; i += 1) {
+        const v = data[i];
+        if (!Number.isFinite(v)) continue;
+        if (v < min) min = v;
+        if (v > max) max = v;
+      }
+      return { min, max };
+    }
+
+    function indexFor(x, y) {
+      const row = state.flipY ? (state.height - 1 - y) : y;
+      return row * state.width + x;
+    }
+
+    function renderLidar() {
+      const { width, height, heights, min, max, autoContrast } = state;
+      if (!heights || !width || !height) return;
+
+      canvas.width = width;
+      canvas.height = height;
+      const image = ctx.createImageData(width, height);
+      const data = image.data;
+
+      const span = Math.max(1e-6, max - min);
+      for (let y = 0; y < height; y += 1) {
+        for (let x = 0; x < width; x += 1) {
+          const idx = indexFor(x, y);
+          const h = heights[idx];
+          const t = autoContrast ? clamp01((h - min) / span) : clamp01((h - 150) / 400);
+          const v = Math.round(t * 255);
+          const p = (y * width + x) * 4;
+          data[p] = v;
+          data[p + 1] = v;
+          data[p + 2] = v;
+          data[p + 3] = 255;
+        }
+      }
+
+      ctx.putImageData(image, 0, 0);
+    }
+
+    function updateReadout(event) {
+      if (!state.heights) return;
+      const rect = canvas.getBoundingClientRect();
+      const x = Math.floor((event.clientX - rect.left) * (state.width / rect.width));
+      const y = Math.floor((event.clientY - rect.top) * (state.height / rect.height));
+      if (x < 0 || y < 0 || x >= state.width || y >= state.height) {
+        readoutEl.textContent = 'Survol: --';
+        return;
+      }
+      const idx = indexFor(x, y);
+      const h = state.heights[idx];
+      readoutEl.textContent = `Survol: x ${x}, y ${y}, h ${h.toFixed(2)} m`;
+    }
+
+    flipYInput.addEventListener('change', () => {
+      state.flipY = flipYInput.checked;
+      renderLidar();
+    });
+
+    autoContrastInput.addEventListener('change', () => {
+      state.autoContrast = autoContrastInput.checked;
+      renderLidar();
+    });
+
+    canvas.addEventListener('mousemove', updateReadout);
+    canvas.addEventListener('mouseleave', () => {
+      readoutEl.textContent = 'Survol: --';
+    });
+
+    async function main() {
+      try {
+        const metadata = await fetch('./curis-lidar-1m-metadata.json').then((r) => r.json());
+        const demBuffer = await fetch(`./${metadata.demFile}`).then((r) => r.arrayBuffer());
+        const heights = new Float32Array(demBuffer);
+
+        const width = metadata.width;
+        const height = metadata.height;
+        const expected = width * height;
+        if (heights.length !== expected) {
+          throw new Error(`DEM size ${heights.length} != ${expected}`);
+        }
+
+        const stats = metadata.elevation || computeMinMax(heights);
+        state.width = width;
+        state.height = height;
+        state.heights = heights;
+        state.min = stats.min;
+        state.max = stats.max;
+
+        metaEl.textContent = `DEM ${metadata.demFile} | ${width} x ${height} | min ${stats.min.toFixed(2)} m | max ${stats.max.toFixed(2)} m`;
+        statusEl.textContent = 'Astuce: donnees 1m issues de la mosaique LIDAR HD.';
+        renderLidar();
+      } catch (error) {
+        statusEl.textContent = `Erreur: ${error.message}`;
+      }
+    }
+
+    main();
+  </script>
+</body>
+</html>
