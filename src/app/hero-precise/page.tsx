@@ -2,9 +2,17 @@ import { Playfair_Display } from 'next/font/google';
 import styles from './page.module.css';
 import CrystalBurstCanvas from '@/components/crystal-burst-canvas';
 
+import localFont from 'next/font/local';
+
+const playfair = localFont({
+  src: '../../../public/font/PlayfairDisplay-Bold.ttf',
+  variable: '--font-playfair-regular',
+  display: 'swap',
+});
+
 type FeatureKind = 'design' | 'tech' | 'performance' | 'support';
 
-const playfair = Playfair_Display({ subsets: ['latin'], weight: ['600', '700'] });
+const playfairOld = Playfair_Display({ subsets: ['latin'], weight: ['600', '700'] });
 
 function FeatureIcon({ kind }: { kind: FeatureKind }) {
   if (kind === 'design') {
@@ -85,7 +93,8 @@ export function HeroPreciseSection({ asSection = false }: HeroPreciseSectionProp
           </header>
 
           <h1 className={`${styles.title} ${playfair.className} `}>
-            Un <span className={styles.titleGradient}>site</span>
+            <span className={`${playfair.className}`}>Un </span> 
+            <span className={styles.titleGradient}>site</span>
             <br />
             <span className={styles.titleGradient}>efficace</span>
           </h1>

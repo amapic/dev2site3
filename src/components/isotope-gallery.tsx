@@ -40,10 +40,23 @@ type FloatingRect = {
   height: number;
 };
 
+type SpinState = {
+  timeoutId: number | null;
+  animationEndHandler: ((event: Event) => void) | null;
+  card: HTMLDivElement | null;
+};
+
 const OVERLAY_TRANSITION_MS = 560;
 const CURSOR_PULL_MAX_PX = 0;
 const CURSOR_PULL_LERP = 0.12;
 const CURSOR_PULL_EPSILON = 0.08;
+const ISOTOPE_SPIN_MIN_TURNS = 1;
+const ISOTOPE_SPIN_MAX_TURNS = 3;
+const ISOTOPE_SPIN_MIN_DELAY_MS = 700;
+const ISOTOPE_SPIN_MAX_DELAY_MS = 2400;
+const ISOTOPE_SPIN_DURATION_MS = 1250;
+const ISOTOPE_SPIN_EASING = "cubic-bezier(0.16, 1, 0.22, 1)";
+const ISOTOPE_SPIN_RETRY_DELAY_MS = 260;
 
 const filters: Array<{ label: string; value: FilterValue }> = [
   { label: "Tout", value: "*" },
@@ -141,6 +154,7 @@ export default function IsotopeGallery() {
   const hoverTimeoutRef = useRef<number | null>(null);
   const closeTimeoutRef = useRef<number | null>(null);
   const detailRevealTimeoutRef = useRef<number | null>(null);
+  const spinStateRef = useRef<Record<string, SpinState>>({});
   const pullStateRef = useRef<
     Record<
       string,
@@ -228,6 +242,16 @@ export default function IsotopeGallery() {
       clearCloseTimer();
       clearDetailRevealTimer();
 
+      Object.values(spinStateRef.current).forEach((state) => {
+        if (state.timeoutId !== null) {
+          window.clearTimeout(state.timeoutId);
+        }
+
+        if (state.card && state.animationEndHandler) {
+          state.card.removeEventListener("animationend", state.animationEndHandler);
+        }
+      });
+
       Object.values(pullStateRef.current).forEach((state) => {
         if (state.rafId !== null) {
           window.cancelAnimationFrame(state.rafId);
@@ -271,6 +295,18 @@ export default function IsotopeGallery() {
   }, []);
 
   useEffect(() => {
+    projects.forEach((project) => {
+      scheduleCardSpin(project.title, true);
+    });
+
+    return () => {
+      projects.forEach((project) => {
+        clearSpinState(project.title);
+      });
+    };
+  }, []);
+
+  useEffect(() => {
     if (overlayProject) {
       closeOverlay(false);
     }
@@ -295,6 +331,101 @@ export default function IsotopeGallery() {
       window.clearTimeout(detailRevealTimeoutRef.current);
       detailRevealTimeoutRef.current = null;
     }
+  }
+
+  function getRandomSpinDelay() {
+    return ISOTOPE_SPIN_MIN_DELAY_MS + Math.random() * (ISOTOPE_SPIN_MAX_DELAY_MS - ISOTOPE_SPIN_MIN_DELAY_MS);
+  }
+
+  function getRandomSpinTurns() {
+    return Math.floor(Math.random() * (ISOTOPE_SPIN_MAX_TURNS - ISOTOPE_SPIN_MIN_TURNS + 1)) + ISOTOPE_SPIN_MIN_TURNS;
+  }
+
+  function getSpinState(projectTitle: string): SpinState {
+    if (!spinStateRef.current[projectTitle]) {
+      spinStateRef.current[projectTitle] = {
+        timeoutId: null,
+        animationEndHandler: null,
+        card: null,
+      };
+    }
+
+    return spinStateRef.current[projectTitle];
+  }
+
+  function clearSpinState(projectTitle: string) {
+    const state = spinStateRef.current[projectTitle];
+
+    if (!state) {
+      return;
+    }
+
+    if (state.timeoutId !== null) {
+      window.clearTimeout(state.timeoutId);
+      state.timeoutId = null;
+    }
+
+    if (state.card && state.animationEndHandler) {
+      state.card.removeEventListener("animationend", state.animationEndHandler);
+    }
+
+    state.animationEndHandler = null;
+    state.card = null;
+  }
+
+  function scheduleCardSpin(projectTitle: string, immediate = false) {
+    const wrapper = wrapperRefs.current[projectTitle];
+    const state = getSpinState(projectTitle);
+
+    clearSpinState(projectTitle);
+
+    if (!wrapper) {
+      state.timeoutId = window.setTimeout(() => {
+        scheduleCardSpin(projectTitle, true);
+      }, ISOTOPE_SPIN_RETRY_DELAY_MS);
+      return;
+    }
+
+    state.timeoutId = window.setTimeout(() => {
+      const liveWrapper = wrapperRefs.current[projectTitle];
+      const liveCard = liveWrapper?.querySelector(".project-card-shell[data-expanded='false']") as HTMLDivElement | null;
+
+      if (!liveCard || liveCard.offsetParent === null) {
+        scheduleCardSpin(projectTitle, true);
+        return;
+      }
+
+      clearSpinState(projectTitle);
+
+      liveCard.style.setProperty("--isotope-spin-turns", `${getRandomSpinTurns()}`);
+      liveCard.style.setProperty("--isotope-spin-duration", `${ISOTOPE_SPIN_DURATION_MS}ms`);
+      liveCard.style.setProperty("--isotope-spin-easing", ISOTOPE_SPIN_EASING);
+      liveCard.classList.remove("project-card-spin");
+      void liveCard.offsetWidth;
+
+      const handleSpinEnd = (event: Event) => {
+        if (event.target !== liveCard) {
+          return;
+        }
+
+        liveCard.classList.remove("project-card-spin");
+        liveCard.removeEventListener("animationend", handleSpinEnd);
+
+        const nextState = spinStateRef.current[projectTitle];
+
+        if (nextState) {
+          nextState.animationEndHandler = null;
+          nextState.card = null;
+        }
+
+        scheduleCardSpin(projectTitle);
+      };
+
+      liveCard.addEventListener("animationend", handleSpinEnd);
+      state.card = liveCard;
+      state.animationEndHandler = handleSpinEnd;
+      liveCard.classList.add("project-card-spin");
+    }, immediate ? 0 : getRandomSpinDelay());
   }
 
   function getPullState(projectTitle: string, card: HTMLDivElement) {

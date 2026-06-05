@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import CookieConsent from "@/components/cookie-consent";
+import SmoothScroll from "@/components/smoothscroll";
 import "./globals.scss";
 
 const geistSansColor = localFont({
@@ -51,6 +52,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         {children}
         <CookieConsent />
+        <SmoothScroll />
       </body>
     </html>
   );

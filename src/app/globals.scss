@@ -1616,6 +1616,16 @@ body {
     border-color 500ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+@keyframes project-card-spin {
+  from {
+    transform: rotateY(0deg);
+  }
+
+  to {
+    transform: rotateY(calc(var(--isotope-spin-turns, 1) * 360deg));
+  }
+}
+
 .project-card-interactive {
   --cursor-pull-x: 0px;
   --cursor-pull-y: 0px;
@@ -1628,6 +1638,13 @@ body {
     box-shadow 500ms cubic-bezier(0.22, 1, 0.36, 1),
     border-color 220ms ease;
   will-change: transform;
+}
+
+.project-card-spin {
+  transform-style: preserve-3d;
+  backface-visibility: visible;
+  will-change: transform;
+  animation: project-card-spin var(--isotope-spin-duration, 1250ms) var(--isotope-spin-easing, cubic-bezier(0.16, 1, 0.22, 1)) 1 both;
 }
 
 .project-card-interactive:hover {

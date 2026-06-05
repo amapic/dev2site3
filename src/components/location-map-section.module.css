@@ -33,9 +33,19 @@
 .title {
   margin: 0;
   font-size: clamp(2rem, 3.6vw, 3.5rem);
-  line-height: 0.98;
+  line-height: 1.05;
   font-weight: 900;
   letter-spacing: -0.02em;
+}
+
+.lineWrap {
+  display: block;
+  overflow: hidden;
+}
+
+.lineInner {
+  display: block;
+  will-change: transform;
 }
 
 .copy {
