@@ -2,6 +2,7 @@
 
 import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 type FilterValue = "*" | ".site-marchand" | ".portfolio" | ".corporate";
 
@@ -28,6 +29,7 @@ type Project = {
   year: number;
   tone: "sun" | "night" | "mint" | "sand" | "ice" | "ember";
   image: string;
+  url: string;
   description: string;
   overlayDescription: string;
   details: string[];
@@ -52,9 +54,9 @@ const CURSOR_PULL_LERP = 0.12;
 const CURSOR_PULL_EPSILON = 0.08;
 const ISOTOPE_SPIN_MIN_TURNS = 1;
 const ISOTOPE_SPIN_MAX_TURNS = 3;
-const ISOTOPE_SPIN_MIN_DELAY_MS = 700;
-const ISOTOPE_SPIN_MAX_DELAY_MS = 2400;
-const ISOTOPE_SPIN_DURATION_MS = 1250;
+const ISOTOPE_SPIN_MIN_DELAY_MS = 5000;
+const ISOTOPE_SPIN_MAX_DELAY_MS = 10000;
+const ISOTOPE_SPIN_DURATION_MS = 3000;
 const ISOTOPE_SPIN_EASING = "cubic-bezier(0.16, 1, 0.22, 1)";
 const ISOTOPE_SPIN_RETRY_DELAY_MS = 260;
 
@@ -74,6 +76,7 @@ const projects: Project[] = [
     year: 2025,
     tone: "sun",
     image: "/img_site/groupeleonie.webp",
+    url: "https://groupeleonie.vercel.app/",
     description: "Site corporate au ton doux, avec une direction visuelle claire et rassurante.",
     overlayDescription:
       "Un site corporate pense pour rassurer des interlocuteurs institutionnels et valoriser la dimension humaine de la marque. La lecture reste simple, avec un ton editorial sobre et des reperes visuels constants.",
@@ -87,6 +90,7 @@ const projects: Project[] = [
     year: 2026,
     tone: "night",
     image: "/img_site/uconsulting.webp",
+    url: "https://u-consulting.vercel.app/",
     description: "Experience web avec animation de particules reactive au parcours utilisateur.",
     overlayDescription:
       "Une presence digitale orientee performance, avec une animation de fond qui accompagne le parcours sans nuire a la lisibilite. L'ensemble privilegie un rendu premium, direct et credible.",
@@ -100,6 +104,7 @@ const projects: Project[] = [
     year: 2025,
     tone: "mint",
     image: "/img_site/giulia.webp",
+    url: "https://crea-delta.vercel.app/",
     description: "Portfolio orienté produit et interface, avec une lecture claire des cas d'usage.",
     overlayDescription:
       "Un portfolio structure autour de cas concrets, du cadrage UX jusqu'aux interfaces finales. Chaque projet met en avant la methode, les decisions de design et l'impact produit.",
@@ -113,6 +118,7 @@ const projects: Project[] = [
     year: 2026,
     tone: "sand",
     image: "/img_site/stanleygrant.webp",
+    url: "https://stanleygrant.fr/",
     description: "Direction graphique tech avec contraste marque et parti-pris contemporain.",
     overlayDescription:
       "Une boutique Shopify concue pour vendre rapidement, avec une identite marque nette et des parcours courts. L'objectif est de combiner desir produit, clarte des fiches et efficacite commerciale.",
@@ -126,6 +132,7 @@ const projects: Project[] = [
     year: 2024,
     tone: "ice",
     image: "/img_site/pierrebazin.jpg",
+    url: "https://pierrebazin.fr",
     description: "Portfolio de photographe minimaliste, centre sur l'essentiel avec une grille Isotope fluide.",
     overlayDescription:
       "Le site met l'image au premier plan: navigation epuree, rythme visuel stable et filtrage Isotope pour explorer les series sans distraction. L'interface reste volontairement sobre pour laisser respirer les photos.",
@@ -139,6 +146,7 @@ const projects: Project[] = [
     year: 2025,
     tone: "ember",
     image: "/img_site/mariedurand.jpg",
+    url: "https://marie-durand.fr/",
     description: "Conception d'un site vitrine clair, rapide et lisible pour presenter l'activite.",
     overlayDescription:
       "Un site vitrine corporate concu pour presenter une activite avec clarte, credibilite et rapidite d'acces a l'information. Le design privilegie la lisibilite sur desktop comme sur mobile.",
@@ -606,7 +614,7 @@ export default function IsotopeGallery() {
             type="button"
             aria-label="Fermer la carte"
             onClick={options.onClose}
-            className={`absolute right-4 top-4 z-10 grid h-11 w-11 place-items-center rounded-full border border-black/12 bg-white/88 text-2xl leading-none text-[rgba(15,34,70,0.80)] shadow-[0_10px_24px_rgba(0,0,0,0.12)] transition-all duration-300 hover:scale-105 hover:bg-white ${
+            className={`absolute right-4 top-4 z-10 grid h-11 w-11 place-items-center rounded-full border border-black/12 ${overlay ? "bg-white" : "bg-white/88"} text-2xl leading-none text-[rgba(15,34,70,0.80)] shadow-[0_10px_24px_rgba(0,0,0,0.12)] transition-all duration-300 hover:scale-105 hover:bg-white ${
               expanded ? "opacity-100" : "pointer-events-none opacity-0"
             }`}
           >
@@ -615,13 +623,30 @@ export default function IsotopeGallery() {
         ) : null}
 
         <div className="project-card-core flex h-full flex-col">
-          <div className={`project-card-media mb-5 overflow-hidden rounded-2xl border border-black/10 bg-white/70 ${expanded ? "h-[38vh] min-h-[18rem] project-card-media-expanded" : "h-40"}`}>
-            <img
-              src={project.image}
-              alt={project.title}
-              className="h-full w-full object-cover"
-              loading="lazy"
-            />
+          <div className={`project-card-media mb-5 overflow-hidden rounded-2xl border border-black/10 ${overlay ? "bg-white" : "bg-white/70"} ${expanded ? "h-[38vh] min-h-[18rem] project-card-media-expanded" : "h-40"}`}>
+            {project.url ? (
+              <a
+                href={project.url}
+                onClick={(e) => e.stopPropagation()}
+                className="block h-full w-full"
+                {...(project.url.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                aria-label={`Ouvrir ${project.title}`}
+              >
+                <img
+                  src={project.image}
+                  alt={project.title}
+                  className="h-full w-full object-cover"
+                  loading="lazy"
+                />
+              </a>
+            ) : (
+              <img
+                src={project.image}
+                alt={project.title}
+                className="h-full w-full object-cover"
+                loading="lazy"
+              />
+            )}
           </div>
 
           <div className={`project-card-meta-row flex items-start justify-between gap-4 ${expanded ? "mb-4" : "mb-6"}`}>
@@ -651,7 +676,7 @@ export default function IsotopeGallery() {
                   </p>
                 </div>
 
-                <div className="rounded-[1.4rem] border border-black/10 bg-white/62 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.6)]">
+                <div className={`rounded-[1.4rem] border border-black/10 ${overlay ? "bg-white" : "bg-white/62"} p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.6)]`}>
                   <p className="mb-3 text-xs font-black uppercase tracking-[0.2em] text-[rgba(15,34,70,0.50)]">
                     Plus d'info
                   </p>
@@ -800,36 +825,41 @@ export default function IsotopeGallery() {
         </div>
       </div>
 
-      {overlayProject && overlayRect ? (
-        <>
-          <div
-            onClick={() => closeOverlay()}
-            className={`fixed inset-0 z-40 bg-[rgba(250,251,252,0.2)] backdrop-blur-[1px] transition-opacity duration-500 ${
-              overlayExpanded ? "pointer-events-auto cursor-pointer opacity-100" : "pointer-events-none opacity-0"
-            }`}
-          />
+      {overlayProject && overlayRect
+        ? createPortal(
+            <>
+              <div
+                onClick={() => closeOverlay()}
+                className={`fixed inset-0 bg-[rgba(250,251,252,0.2)] backdrop-blur-[1px] transition-opacity duration-500 ${
+                  overlayExpanded ? "pointer-events-auto cursor-pointer opacity-100" : "pointer-events-none opacity-0"
+                }`}
+                style={{ zIndex: 99990, opacity: 1 }}
+              />
 
-          <div className="pointer-events-none fixed inset-0 z-50">
-            <article
-              className="pointer-events-auto absolute"
-              style={{
-                top: overlayRect.top,
-                left: overlayRect.left,
-                width: overlayRect.width,
-                height: overlayRect.height,
-                transition: `top ${OVERLAY_TRANSITION_MS}ms cubic-bezier(0.22, 1, 0.36, 1), left ${OVERLAY_TRANSITION_MS}ms cubic-bezier(0.22, 1, 0.36, 1), width ${OVERLAY_TRANSITION_MS}ms cubic-bezier(0.22, 1, 0.36, 1), height ${OVERLAY_TRANSITION_MS}ms cubic-bezier(0.22, 1, 0.36, 1)`,
-              }}
-            >
-              {renderProjectCard(overlayProject, {
-                expanded: overlayExpanded,
-                overlay: true,
-                revealExtra: overlayDetailsVisible,
-                onClose: () => closeOverlay(),
-              })}
-            </article>
-          </div>
-        </>
-      ) : null}
+              <div className="pointer-events-none fixed inset-0" style={{ zIndex: 99999 }}>
+                <article
+                  className="pointer-events-auto absolute"
+                  style={{
+                    top: overlayRect.top,
+                    left: overlayRect.left,
+                    width: overlayRect.width,
+                    height: overlayRect.height,
+                    transition: `top ${OVERLAY_TRANSITION_MS}ms cubic-bezier(0.22, 1, 0.36, 1), left ${OVERLAY_TRANSITION_MS}ms cubic-bezier(0.22, 1, 0.36, 1), width ${OVERLAY_TRANSITION_MS}ms cubic-bezier(0.22, 1, 0.36, 1), height ${OVERLAY_TRANSITION_MS}ms cubic-bezier(0.22, 1, 0.36, 1)`,
+                    zIndex: 100000,
+                  }}
+                >
+                  {renderProjectCard(overlayProject, {
+                    expanded: overlayExpanded,
+                    overlay: true,
+                    revealExtra: overlayDetailsVisible,
+                    onClose: () => closeOverlay(),
+                  })}
+                </article>
+              </div>
+            </>,
+            document.body
+          )
+        : null}
     </>
   );
 }

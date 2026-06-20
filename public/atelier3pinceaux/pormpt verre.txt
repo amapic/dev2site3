@@ -1,0 +1,1 @@
+stp fais moi un pinceau plongé la tete en bas dans un récipient aussi haut que large vu de côté (aucune 3d, on voit le tout sans aucun angle), le tout de façon simplifié avec juste les contours en noir et blanc pour que je puisse ensuite vectorizer le dessin. Le pinceau n'est pas à la verticale et s'appuie sur l'un des bords du récipient

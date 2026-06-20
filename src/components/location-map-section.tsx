@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import styles from "./location-map-section.module.css";
@@ -10,6 +10,7 @@ gsap.registerPlugin(ScrollTrigger);
 export default function LocationMapSection() {
   const titleRef = useRef<HTMLHeadingElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
+  const [mapActive, setMapActive] = useState(false);
 
   useEffect(() => {
     const el = titleRef.current;
@@ -73,7 +74,22 @@ export default function LocationMapSection() {
           <p className={styles.hours}>Lundi - Vendredi : 9h - 18h</p>
         </div>
 
-        <div className={styles.mapCard}>
+        <div className={`${styles.mapCard} ${mapActive ? styles.interactive : ""}`}>
+          {!mapActive && (
+            <div
+              className={styles.mapOverlay}
+              role="button"
+              tabIndex={0}
+              aria-label="Activer la carte"
+              onClick={() => setMapActive(true)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") setMapActive(true);
+              }}
+            >
+              <span className={styles.mapOverlayHint}>Cliquer pour activer la carte</span>
+            </div>
+          )}
+
           <iframe
             title="Carte vers 8 rue Sully, 69006 Lyon"
             src="https://maps.google.com/maps?q=8%20rue%20Sully%2069006%20Lyon&z=15&output=embed"

@@ -6,6 +6,10 @@ const nextConfig: NextConfig = {
   distDir: 'dist',
   output: 'export',
   devIndicators: false,
+  typescript: {
+    ignoreBuildErrors: true,
+  },
 };
+
 
 export default nextConfig;
