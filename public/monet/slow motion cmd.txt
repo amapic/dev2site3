@@ -1,0 +1,1 @@
+ffmpeg -i input.mp4 -filter:v "setpts=2.0*PTS" output.mp4

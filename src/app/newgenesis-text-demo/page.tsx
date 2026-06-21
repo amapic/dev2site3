@@ -1,23 +1,10 @@
 "use client";
-// 265222461
-import React from "react";
-import styles from "./page.module.css";
 
-import { gsap } from "gsap";
-import * as THREE from "three";
+import React, { useEffect, useState } from "react";
+import styles from "./page.module.css";
 
 export default function NewGenesisTextDemoPage() {
   const containerRef = React.useRef<HTMLDivElement | null>(null);
-  const videoRef = React.useRef<HTMLVideoElement | null>(null);
-  const revealRef = React.useRef<HTMLDivElement | null>(null);
-  const [seed, setSeed] = React.useState<string>(() => String(Math.floor(Math.random() * 1e9)));
-  const seedRef = React.useRef<string>(seed);
-  const [locked, setLocked] = React.useState(false);
-  const [regen, setRegen] = React.useState(0);
-
-  React.useEffect(() => {
-    seedRef.current = seed;
-  }, [seed]);
   const bgPath = "/monet/arbre.jpg";
   const maskPath = "/monet/image%20(1).png";
 
@@ -31,6 +18,7 @@ export default function NewGenesisTextDemoPage() {
       WebkitMaskSize: "contain",
       WebkitMaskPosition: "center",
       WebkitMaskRepeat: "no-repeat",
+      WebkitMaskMode: "luminance",
       maskImage: `url('${maskPath}')`,
       maskSize: "contain",
       maskPosition: "center",
@@ -44,391 +32,420 @@ export default function NewGenesisTextDemoPage() {
       width: "100%",
       height: "100%",
       pointerEvents: "none",
+      zIndex: 2,
     },
   );
 
-  React.useEffect(() => {
-    let mounted = true;
+  const [sideLeftStyle, setSideLeftStyle] =
+    React.useState<React.CSSProperties | null>(null);
+  const [sideRightStyle, setSideRightStyle] =
+    React.useState<React.CSSProperties | null>(null);
 
-    const bgImg = new Image();
-    bgImg.src = bgPath;
+  // refs + state for video mask
+  const videoRef = React.useRef<HTMLVideoElement | null>(null);
+  const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
+  const [videoMaskStyles, setVideoMaskStyles] =
+    React.useState<React.CSSProperties | null>(null);
+  const [videoOutlineStyle, setVideoOutlineStyle] =
+    React.useState<React.CSSProperties | null>(null);
 
-    function compute() {
-      const container = containerRef.current;
-      const cw = container?.clientWidth ?? window.innerWidth;
-      const ch = container?.clientHeight ?? window.innerHeight;
+  // React.useEffect(() => {
+  //   let mounted = true;
 
-      const bgW = bgImg.naturalWidth || 0;
-      const bgH = bgImg.naturalHeight || 0;
+  //   const bgImg = new Image();
+  //   bgImg.src = bgPath;
 
-      if (!bgW || !bgH) {
-        // fallback: keep center/contain
-        if (mounted) setOverlayStyles((s) => ({ ...s }));
-        return;
-      }
+  //   function compute() {
+  //     const container = containerRef.current;
+  //     const cw = container?.clientWidth ?? window.innerWidth;
+  //     const ch = container?.clientHeight ?? window.innerHeight;
 
-      const scale = Math.min(cw / bgW, ch / bgH);
-      const renderedBgW = bgW * scale;
-      const renderedBgH = bgH * scale;
+  //     const bgW = bgImg.naturalWidth || 0;
+  //     const bgH = bgImg.naturalHeight || 0;
 
-      const maskW = renderedBgW * ratioX;
-      const maskH = renderedBgH * ratioY;
+  //     if (!bgW || !bgH) {
+  //       // fallback: keep center/contain
+  //       if (mounted) setOverlayStyles((s) => ({ ...s }));
+  //       return;
+  //     }
 
-      const posX = (cw - maskW) / 2;
-      const posY = (ch - maskH) / 2;
+  //     const scale = Math.min(cw / bgW, ch / bgH);
+  //     const renderedBgW = bgW * scale;
+  //     const renderedBgH = bgH * scale;
 
-      if (mounted) {
-        setOverlayStyles({
-          WebkitMaskImage: `url('${maskPath}')`,
-          WebkitMaskSize: `${Math.round(maskW)}px ${Math.round(maskH)}px`,
-          WebkitMaskPosition: `${Math.round(posX)}px ${Math.round(posY)}px`,
-          WebkitMaskRepeat: "no-repeat",
-          maskImage: `url('${maskPath}')`,
-          maskSize: `${Math.round(maskW)}px ${Math.round(maskH)}px`,
-          maskPosition: `${Math.round(posX)}px ${Math.round(posY)}px`,
-          maskRepeat: "no-repeat",
-          maskMode: "luminance",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          position: "absolute",
-          inset: 0,
-          width: "100%",
-          height: "100%",
-          pointerEvents: "none",
-        });
-      }
-    }
+  //     const maskW = renderedBgW * ratioX;
+  //     const maskH = renderedBgH * ratioY;
 
-    const onResize = () => compute();
+  //     const posX = (cw - maskW) / 2;
+  //     const posY = (ch - maskH) / 2;
 
-    bgImg.onload = () => compute();
-    window.addEventListener("resize", onResize);
+  //     if (mounted) {
+  //       setOverlayStyles((s) => ({
+  //         ...s,
+  //         WebkitMaskImage: `url('${maskPath}')`,
+  //         WebkitMaskSize: `${Math.round(maskW)}px ${Math.round(maskH)}px`,
+  //         WebkitMaskPosition: `${Math.round(posX)}px ${Math.round(posY)}px`,
+  //         WebkitMaskRepeat: "no-repeat",
+  //         WebkitMaskMode: "luminance",
+  //         maskImage: `url('${maskPath}')`,
+  //         maskSize: `${Math.round(maskW)}px ${Math.round(maskH)}px`,
+  //         maskPosition: `${Math.round(posX)}px ${Math.round(posY)}px`,
+  //         maskRepeat: "no-repeat",
+  //         maskMode: "luminance",
+  //       }));
 
-    // also run immediately in case image cached
-    if (bgImg.complete) compute();
+  //       // compute side bands that fill left/right gaps (matching bg 'contain' rendering)
+  //       const gapX = Math.max(0, Math.round((cw - renderedBgW) / 2));
+  //       const gapYTop = Math.max(0, Math.round(posY));
 
-    return () => {
-      mounted = false;
-      window.removeEventListener("resize", onResize);
-    };
-  }, [bgPath, maskPath]);
+  //       // sample image colors on a small canvas for pleasing pastels
+  //       try {
+  //         const sampleW = Math.min(240, bgW);
+  //         const sampleH = Math.max(1, Math.round((sampleW * bgH) / bgW));
+  //         const canvas = document.createElement("canvas");
+  //         canvas.width = sampleW;
+  //         canvas.height = sampleH;
+  //         const ctx = canvas.getContext("2d");
+  //         if (ctx) {
+  //           ctx.drawImage(bgImg, 0, 0, sampleW, sampleH);
+  //           const imgData = ctx.getImageData(0, 0, sampleW, sampleH).data;
 
-  React.useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
+  //           const sampleFraction = 0.12; // sample 12% from each side
+  //           const sx = Math.max(1, Math.floor(sampleW * sampleFraction));
 
-    gsap.set(video, { x: 0, willChange: "transform" });
+  //           let lR = 0,
+  //             lG = 0,
+  //             lB = 0,
+  //             lCount = 0;
+  //           let rR = 0,
+  //             rG = 0,
+  //             rB = 0,
+  //             rCount = 0;
 
-    // run the animation once; after completion swap the video source to dos.mp4
-    const tl = gsap.timeline({ repeat: 0, defaults: { ease: "power2.inOut" } });
+  //           for (let y = 0; y < sampleH; y++) {
+  //             for (let x = 0; x < sx; x++) {
+  //               const i = (y * sampleW + x) * 4;
+  //               lR += imgData[i];
+  //               lG += imgData[i + 1];
+  //               lB += imgData[i + 2];
+  //               lCount++;
+  //             }
+  //             for (let x = sampleW - sx; x < sampleW; x++) {
+  //               const i = (y * sampleW + x) * 4;
+  //               rR += imgData[i];
+  //               rG += imgData[i + 1];
+  //               rB += imgData[i + 2];
+  //               rCount++;
+  //             }
+  //           }
 
-    // animation : vers la droite, puis vers la gauche
-    tl.to(video, { x: 600, duration: 3 }).to(video, { x: -200, duration: 3, delay: 0.6 });
+  //           const avg = (v: number, c: number) => (c ? Math.round(v / c) : 200);
+  //           const lAvgR = avg(lR, lCount),
+  //             lAvgG = avg(lG, lCount),
+  //             lAvgB = avg(lB, lCount);
+  //           const rAvgR = avg(rR, rCount),
+  //             rAvgG = avg(rG, rCount),
+  //             rAvgB = avg(rB, rCount);
 
-    tl.eventCallback("onComplete", () => {
-      const v = videoRef.current;
-      if (!v) return;
-      try {
-        v.src = "/monet/dos.mp4";
-        v.load();
-        const p = v.play();
-        if (p && p.catch) p.catch(() => {});
-      } catch (e) {
-        // ignore
-      }
-    });
+  //           const toPastel = (c: number, mix = 0.78) =>
+  //             Math.round(c + (255 - c) * mix);
+  //           const toPastel2 = (c: number, mix = 0.92) =>
+  //             Math.round(c + (255 - c) * mix);
 
-    return () => {
-      tl.kill();
-      gsap.set(video, { x: 0 });
-    };
-  }, [regen]);
+  //           const lP1 = toPastel(lAvgR),
+  //             lP2 = toPastel(lAvgG),
+  //             lP3 = toPastel(lAvgB);
+  //           const lQ1 = toPastel2(lAvgR),
+  //             lQ2 = toPastel2(lAvgG),
+  //             lQ3 = toPastel2(lAvgB);
 
-  React.useEffect(() => {
-    const host = revealRef.current;
-    if (!host) return;
+  //           const rP1 = toPastel(rAvgR),
+  //             rP2 = toPastel(rAvgG),
+  //             rP3 = toPastel(rAvgB);
+  //           const rQ1 = toPastel2(rAvgR),
+  //             rQ2 = toPastel2(rAvgG),
+  //             rQ3 = toPastel2(rAvgB);
 
-    // deterministic RNG from seedRef.current
-    function strToSeed(s: string) {
-      let h = 2166136261 >>> 0;
-      for (let i = 0; i < s.length; i++) {
-        h = Math.imul(h ^ s.charCodeAt(i), 16777619) >>> 0;
-      }
-      return h >>> 0;
-    }
+  //           const leftGrad = `linear-gradient(180deg, rgba(${lP1},${lP2},${lP3},0.98) 0%, rgba(${lQ1},${lQ2},${lQ3},0.98) 100%)`;
+  //           const rightGrad = `linear-gradient(180deg, rgba(${rP1},${rP2},${rP3},0.98) 0%, rgba(${rQ1},${rQ2},${rQ3},0.98) 100%)`;
 
-    function mulberry32(a: number) {
-      return function () {
-        a |= 0;
-        a = (a + 0x6D2B79F5) | 0;
-        let t = Math.imul(a ^ (a >>> 15), 1 | a);
-        t = (t + Math.imul(t ^ (t >>> 7), t | 61)) ^ t;
-        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-      };
-    }
+  //           setSideLeftStyle({
+  //             position: "absolute",
+  //             top: 0,
+  //             left: 0,
+  //             width: `${gapX}px`,
+  //             height: "100%",
+  //             backgroundImage: leftGrad,
+  //             filter: "blur(28px)",
+  //             transform: "scaleX(1.06)",
+  //             zIndex: 1,
+  //             pointerEvents: "none",
+  //           });
 
-    const seedValue = seedRef.current ?? "0";
-    const seedNum = typeof seedValue === "string" ? strToSeed(seedValue) : Number(seedValue);
-    const rng = mulberry32(seedNum);
+  //           setSideRightStyle({
+  //             position: "absolute",
+  //             top: 0,
+  //             right: 0,
+  //             width: `${gapX}px`,
+  //             height: "100%",
+  //             backgroundImage: rightGrad,
+  //             filter: "blur(28px)",
+  //             transform: "scaleX(1.06)",
+  //             zIndex: 1,
+  //             pointerEvents: "none",
+  //           });
+  //         }
+  //       } catch (e) {
+  //         // ignore canvas errors, keep no side styles
+  //       }
+  //       // draw outline for the video mask area (for visual debug)
+  //       // setVideoOutlineStyle({
+  //       //   position: "absolute",
+  //       //   left: `${Math.round(posX)}px`,
+  //       //   top: `${Math.round(posY)}px`,
+  //       //   width: `${Math.round(maskW)}px`,
+  //       //   height: `${Math.round(maskH)}px`,
+  //       //   border: "3px solid rgba(255,255,255,0.9)",
+  //       //   boxSizing: "border-box",
+  //       //   zIndex: 4,
+  //       //   pointerEvents: "none",
+  //       // });
+  //     }
+  //   }
 
-    const width = host.clientWidth || window.innerWidth;
-    const height = host.clientHeight || window.innerHeight;
+  //   const onResize = () => compute();
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setClearColor(0x000000, 0);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setSize(width, height, false);
-    renderer.domElement.style.position = "absolute";
-    renderer.domElement.style.inset = "0";
-    renderer.domElement.style.width = "100%";
-    renderer.domElement.style.height = "100%";
-    renderer.domElement.style.pointerEvents = "none";
-    host.appendChild(renderer.domElement);
+  //   bgImg.onload = () => compute();
+  //   window.addEventListener("resize", onResize);
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.OrthographicCamera(0, width, height, 0, -1000, 1000);
-    camera.position.z = 1;
+  //   // also run immediately in case image cached
+  //   if (bgImg.complete) compute();
 
-    // helper: create a rounded polygon texture (hex/hept) on a small canvas
-    function makeShapeTexture(sides = 6, radius = 60, blur = 8) {
-      const size = Math.ceil(radius * 2 + blur * 2);
-      const c = document.createElement("canvas");
-      c.width = c.height = size;
-      const ctx = c.getContext("2d");
-      if (!ctx) return null;
+  //   return () => {
+  //     mounted = false;
+  //     window.removeEventListener("resize", onResize);
+  //   };
+  // }, [bgPath, maskPath]);
 
-      ctx.clearRect(0, 0, size, size);
-      ctx.fillStyle = "#ffffff";
-      ctx.translate(size / 2, size / 2);
-      ctx.beginPath();
-      for (let i = 0; i < sides; i++) {
-        const a = (i / sides) * Math.PI * 2 - Math.PI / 2;
-        const x = Math.cos(a) * radius;
-        const y = Math.sin(a) * radius;
-        if (i === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      }
-      ctx.closePath();
-      // add slight rounding using shadow blur to soften edges
-      ctx.fill();
-      // create soft alpha by drawing on secondary canvas with blur
-      const temp = document.createElement("canvas");
-      temp.width = temp.height = size;
-      const tctx = temp.getContext("2d");
-      if (!tctx) return null;
-      tctx.clearRect(0, 0, size, size);
-      tctx.filter = `blur(${blur}px)`;
-      tctx.drawImage(c, 0, 0);
+  // draw video frames into a canvas and use its dataURL as mask-image
+  // Improved: compute canvas size from the computed mask size (overlayStyles.maskSize),
+  // enable image smoothing high quality and throttle updates to ~24fps to reduce pixelation.
+  // React.useEffect(() => {
+  //   const v = videoRef.current;
+  //   const c = canvasRef.current;
+  //   if (!v || !c) return;
 
-      const tex = new THREE.CanvasTexture(temp);
-      tex.minFilter = THREE.LinearFilter;
-      tex.magFilter = THREE.LinearFilter;
-      tex.needsUpdate = true;
-      return tex;
-    }
+  //   let intervalId: number | null = null;
+  //   const ctx = c.getContext("2d");
+  //   let lastObjectUrl: string | null = null;
 
-    // Pre-generate a few textures for variety
-    const textures: THREE.Texture[] = [];
-    for (let i = 0; i < 6; i++) {
-      const sides = i % 2 === 0 ? 6 : 7;
-      const radius = 36 + (i % 3) * 8 + Math.floor(i / 3) * 6;
-      const blur = 6 + (i % 2) * 3;
-      const t = makeShapeTexture(sides, radius, blur);
-      if (t) textures.push(t);
-    }
+  //   function parseMaskSize(maskSize: any) {
+  //     if (!maskSize || typeof maskSize !== "string") return null;
+  //     const parts = maskSize.split(/\s+/);
+  //     if (!parts.length) return null;
+  //     const w = parts[0].replace("px", "");
+  //     const h = parts[1] ? parts[1].replace("px", "") : null;
+  //     return { w: parseInt(w, 10) || null, h: h ? parseInt(h, 10) : null };
+  //   }
 
-    const sprites: { sprite: THREE.Sprite; radius: number }[] = [];
-    const count = 56; // increased count to cover canvas more densely
-    for (let i = 0; i < count; i++) {
-      const tex = textures[Math.floor(rng() * textures.length)];
-      const mat = new THREE.SpriteMaterial({ map: tex, color: new THREE.Color(0.88, 0.80, 0.68), transparent: true });
-      const sp = new THREE.Sprite(mat);
+  //   function updateCanvasSize() {
+  //     const dpr = window.devicePixelRatio || 1;
+  //     // try to use overlayStyles.maskSize (set by the compute() effect) when available
+  //     const parsed = parseMaskSize((overlayStyles as any)?.maskSize);
+  //     let targetW = 320;
+  //     if (parsed && parsed.w) {
+  //       // scale by devicePixelRatio for crispness on high-DPI screens
+  //       targetW = Math.min(Math.max(Math.round(parsed.w * dpr), 160), 1280);
+  //     } else if (v.videoWidth) {
+  //       targetW = Math.min(Math.max(Math.round(v.videoWidth * dpr), 160), 1280);
+  //     }
+  //     const aspect =
+  //       v.videoHeight && v.videoWidth ? v.videoHeight / v.videoWidth : 1;
+  //     c.width = Math.max(2, Math.round(targetW));
+  //     c.height = Math.max(2, Math.round(targetW * aspect));
+  //     if (ctx) {
+  //       ctx.imageSmoothingEnabled = true;
+  //       try {
+  //         ctx.imageSmoothingQuality = "high";
+  //       } catch (e) {}
+  //     }
+  //   }
 
-      // random position across canvas, allow exceeding bounds
-      const x = (rng() - 0.1) * width * 1.2;
-      const y = (rng() - 0.1) * height * 1.2;
-      sp.position.set(x, y, 0);
+  //   function tick() {
+  //     try {
+  //       if (ctx && v.readyState >= 2) {
+  //         updateCanvasSize();
+  //         ctx.clearRect(0, 0, c.width, c.height);
+  //         ctx.drawImage(v, 0, 0, c.width, c.height);
+  //         // Prefer toBlob + object URL with JPEG to reduce per-frame payload size
+  //         if (typeof c.toBlob === "function") {
+  //           try {
+  //             c.toBlob(
+  //               (blob) => {
+  //                 if (!blob) return;
+  //                 const url = URL.createObjectURL(blob);
+  //                 // set styles and revoke previous URL to avoid leaks
+  //                 setVideoMaskStyles(() => {
+  //                   try {
+  //                     if (lastObjectUrl && lastObjectUrl !== url)
+  //                       URL.revokeObjectURL(lastObjectUrl);
+  //                   } catch (e) {}
+  //                   lastObjectUrl = url;
+  //                   return {
+  //                     WebkitMaskImage: `url('${url}')`,
+  //                     maskImage: `url('${url}')`,
+  //                     WebkitMaskRepeat: "no-repeat",
+  //                     maskRepeat: "no-repeat",
+  //                     WebkitMaskMode: "luminance",
+  //                     maskMode: "luminance",
+  //                   };
+  //                 });
+  //               },
+  //               "image/jpeg",
+  //               0.7,
+  //             );
+  //           } catch (e) {
+  //             // fallback to dataURL if toBlob fails
+  //             const dataUrl = c.toDataURL("image/png");
+  //             setVideoMaskStyles(() => ({
+  //               WebkitMaskImage: `url('${dataUrl}')`,
+  //               maskImage: `url('${dataUrl}')`,
+  //               WebkitMaskRepeat: "no-repeat",
+  //               maskRepeat: "no-repeat",
+  //               WebkitMaskMode: "luminance",
+  //               maskMode: "luminance",
+  //             }));
+  //           }
+  //         } else {
+  //           const dataUrl = c.toDataURL("image/png");
+  //           setVideoMaskStyles(() => ({
+  //             WebkitMaskImage: `url('${dataUrl}')`,
+  //             maskImage: `url('${dataUrl}')`,
+  //             WebkitMaskRepeat: "no-repeat",
+  //             maskRepeat: "no-repeat",
+  //             WebkitMaskMode: "luminance",
+  //             maskMode: "luminance",
+  //           }));
+  //         }
+  //       }
+  //     } catch (e) {
+  //       // drawing may fail if video is cross-origin without CORS headers
+  //     }
+  //   }
 
-      // much larger scales so shapes cover canvas
-      const scale = 160 + rng() * 520;
-      sp.scale.set(scale, scale, 1);
+  //   const onLoaded = () => {
+  //     updateCanvasSize();
+  //   };
 
-      sp.material.opacity = 1.0; // initially opaque (beige)
-      sp.material.depthWrite = false;
-      sp.material.depthTest = false;
+  //   v.addEventListener("loadedmetadata", onLoaded);
+  //   v.play().catch(() => {});
 
-      sprites.push({ sprite: sp, radius: Math.max(scale * 0.5, 40) });
-      scene.add(sp);
-    }
+  //   // throttle to ~24fps
+  //   const fps = 16;
+  //   intervalId = window.setInterval(tick, Math.round(1000 / fps));
+  //   // run one immediately
+  //   tick();
 
-    // Build adjacency graph (contact if circles overlap)
-    const adj: number[][] = new Array(sprites.length).fill(0).map(() => []);
-    for (let i = 0; i < sprites.length; i++) {
-      for (let j = i + 1; j < sprites.length; j++) {
-        const a = sprites[i].sprite.position;
-        const b = sprites[j].sprite.position;
-        const dx = a.x - b.x;
-        const dy = a.y - b.y;
-        const dist = Math.hypot(dx, dy);
-        const rsum = sprites[i].radius * 0.9 + sprites[j].radius * 0.9; // allow slight overlap
-        if (dist <= rsum) {
-          adj[i].push(j);
-          adj[j].push(i);
-        }
-      }
-    }
-
-    // find seed nodes touching bottom-left (0, height)
-    const seeds: number[] = [];
-    const cornerX = 0;
-    const cornerY = height;
-    for (let i = 0; i < sprites.length; i++) {
-      const p = sprites[i].sprite.position;
-      const d = Math.hypot(p.x - cornerX, p.y - cornerY);
-      if (d <= sprites[i].radius * 1.05) seeds.push(i);
-    }
-
-    // BFS to compute layers
-    const layers: number[][] = [];
-    const seen = new Array(sprites.length).fill(false);
-    let frontier = seeds.slice();
-    for (const s of frontier) seen[s] = true;
-    if (frontier.length === 0) {
-      // if none touch corner, pick nearest few
-      const distances = sprites.map((s, idx) => ({ idx, d: Math.hypot(s.sprite.position.x - cornerX, s.sprite.position.y - cornerY) }));
-      distances.sort((a, b) => a.d - b.d);
-      frontier = distances.slice(0, 2).map((x) => x.idx);
-      for (const f of frontier) seen[f] = true;
-    }
-    while (frontier.length) {
-      layers.push(frontier.slice());
-      const next: number[] = [];
-      for (const u of frontier) {
-        for (const v of adj[u]) {
-          if (!seen[v]) {
-            seen[v] = true;
-            next.push(v);
-          }
-        }
-      }
-      frontier = next;
-    }
-
-    // Animate layers sequentially, making sprites transparent (opacity -> 0)
-    const tl = gsap.timeline({ delay: 0.15, repeat: -1, yoyo: true, repeatDelay: 1.2 });
-    for (let li = 0; li < layers.length; li++) {
-      const group = layers[li];
-      const duration = 0.28 + rng() * 0.18;
-      const stagger = 0.02 + rng() * 0.03;
-      tl.to(group.map((i) => sprites[i].sprite.material), { opacity: 0, duration, stagger }, li * 0.12 + 0);
-    }
-
-    const render = () => {
-      renderer.render(scene, camera);
-      requestAnimationFrame(render);
-    };
-
-    const onResize = () => {
-      const w = host.clientWidth || window.innerWidth;
-      const h = host.clientHeight || window.innerHeight;
-      renderer.setSize(w, h, false);
-      camera.right = w;
-      camera.top = h;
-      camera.updateProjectionMatrix();
-    };
-
-    window.addEventListener("resize", onResize);
-    let raf = 0;
-    raf = requestAnimationFrame(render);
-
-    return () => {
-      tl.kill();
-      cancelAnimationFrame(raf);
-      window.removeEventListener("resize", onResize);
-      for (const it of sprites) {
-        scene.remove(it.sprite);
-        const m = it.sprite.material as THREE.SpriteMaterial;
-        if (m.map) m.map.dispose();
-        m.dispose();
-      }
-      for (const t of textures) t.dispose();
-      renderer.dispose();
-      if (renderer.domElement.parentNode === host) host.removeChild(renderer.domElement);
-    };
-  }, []);
+  //   return () => {
+  //     if (intervalId) window.clearInterval(intervalId);
+  //     v.removeEventListener("loadedmetadata", onLoaded);
+  //     try {
+  //       if (lastObjectUrl) {
+  //         URL.revokeObjectURL(lastObjectUrl);
+  //         lastObjectUrl = null;
+  //       }
+  //     } catch (e) {}
+  //   };
+  // }, [videoRef, canvasRef, overlayStyles]);
 
   return (
     <>
-    <div className="w-screen h-screen bg-[url('/monet/superbemonet.jpg')]  bg-contain bg-center bg-no-repeat relative" >
-    <video
-     ref={videoRef}
-          src="/monet/caca.webm"
-          autoPlay
-          loop
-          muted
-          className=" absolute bottom-0 left-[100px] w-[300px] h-[300px] object-cover"
-        ></video>
-    </div>
-      <div
-        id="aaa"
-        className="relative w-full h-screen flex items-center justify-center bg-[url('/monet/superbemonet.jpg')]  bg-contain bg-center bg-no-repeat"
-      >
-        {/* Overlay: same sizing/positioning as background (mask uses contain/center) */}
-        <div style={overlayStyles} className="overlay">
-          <div
-            className={`${styles.slidingText} text-[36vw] md:text-[16rem] leading-none font-extrabold uppercase text-white text-center`}
-          >
-            HELLO
-          </div>
-          <video
-            src="/monet/b.mp4"
-            autoPlay
-            loop
-            muted
-            className="absolute inset-0 w-full h-full object-cover"
-          ></video>
-        </div>
-      </div>
-      <div className=" h-screen w-full inset-0 bg-red-400 ">
-        <video
-          src="/monet/sgsgss.webm"
-          autoPlay
-          loop
-          muted
-          className=" inset-0 w-[100px] h-[100px] object-cover"
-        ></video>
-      </div>
-      <div className="h-screen w-full inset-0 bg-blue-400 bg-[url('/monet/output.png')] bg-contain bg-center bg-no-repeat"></div>
-      <div
-          ref={revealRef}
-          className="relative h-screen w-full overflow-hidden bg-[url('/monet/superbemonet.jpg')] bg-contain bg-center bg-no-repeat"
-        ></div>
+      {/* <div className="w-full h-screen overflow-hidden bg-[url('/monet/fond_monet.webp')] bg-cover bg-center bg-no-repeat"> */}
+        {/* <div
+          id="aaa"
+          className="relative w-full h-screen flex items-center justify-center bg-[url('/monet/monet_yellowfield.jpg')] bg-contain bg-center bg-no-repeat"
+        > */}
+          {/* left/right pastel side fills */}
+          {/* {sideLeftStyle && <div style={sideLeftStyle} />} */}
+          {/* {sideRightStyle && <div style={sideRightStyle} />} */}
 
-        <div className="fixed right-4 top-4 z-50 bg-white/80 dark:bg-black/60 p-3 rounded-md text-sm shadow-md">
-          <label className="block text-xs text-gray-700 dark:text-gray-200">Seed</label>
-          <input
-            value={seed}
-            onChange={(e) => setSeed(e.target.value)}
-            className="w-44 mt-1 p-1 text-sm rounded border"
-          />
-          <div className="mt-2 flex gap-2">
-            <button
-              onClick={() => { if (!locked) setRegen((r) => r + 1); }}
-              disabled={locked}
-              className="px-2 py-1 bg-blue-600 text-white rounded disabled:opacity-40"
-            >
-              Regenerate
-            </button>
-            <button
-              onClick={() => setLocked((l) => !l)}
-              className="px-2 py-1 bg-gray-700 text-white rounded"
-            >
-              {locked ? "Unlock" : "Lock"}
-            </button>
+          {/* Overlay: same sizing/positioning as background (mask uses contain/center) */}
+          {/* <div style={overlayStyles} className="overlay">
+            <div className="slidingText text-[36vw] md:text-[16rem] leading-none font-extrabold uppercase text-white text-center">
+              Avec 3 pinceaux, apprennez à peindre à votre rythme, et laissez
+              libre cours à votre imagination.
+            </div>
           </div>
-          <div className="mt-2 text-xs text-gray-600 dark:text-gray-300">Current: {seed}</div>
         </div>
+      </div> */}
+      {/* <div
+        id="aaa"
+        className="relative w-full h-screen flex items-center justify-center bg-[url('/monet/monet_yellowfield.jpg')] bg-contain bg-center bg-no-repeat"
+      > */}
+        {/* left/right pastel side fills */}
+        {/* {sideLeftStyle && <div style={sideLeftStyle} />} */}
+        {/* {sideRightStyle && <div style={sideRightStyle} />} */}
+
+        {/* Overlay: same sizing/positioning as background (mask uses contain/center) */}
+        {/* <div style={overlayStyles} className="overlay">
+          <div className="slidingText text-[36vw] md:text-[16rem] leading-none font-extrabold uppercase text-white text-center">
+            Avec 3 pinceaux, apprennez à peindre à votre rythme, et laissez
+            libre cours à votre imagination.
+          </div>
+        </div>
+      </div> */}
+      <div className="w-full h-screen overflow-hidden bg-[url('/monet/fond_monet.webp')] bg-cover bg-center bg-no-repeat">
+        <div
+          id="testvideo"
+          className="relative w-full h-screen flex items-center justify-center bg-[url('/monet/nympheas.jpg')] bg-cover bg-center bg-no-repeat"
+        >
+          {/* hidden video and canvas used to generate mask frames */}
+          <video
+            ref={videoRef}
+            src="/monet/output561_cut.webm"
+            muted
+            // loop
+            playsInline
+            autoPlay
+            style={{ display: "none" }}
+          />
+          <canvas ref={canvasRef} style={{ display: "none" }} />
+
+          {/* left/right pastel side fills (optional) */}
+          {/* {sideLeftStyle && <div style={sideLeftStyle} />} */}
+          {/* {sideRightStyle && <div style={sideRightStyle} />} */}
+
+          {/* Overlay: merge static overlayStyles with videoMaskStyles (if present) */}
+          <div
+            style={{ ...(overlayStyles as any), ...(videoMaskStyles || {}) }}
+            className="overlay w-full"
+          >
+            <div className="slidingText text-[36vw] md:text-[16rem] leading-none font-extrabold uppercase text-white text-center">
+              Test vidéogedgjhdggggggggdghdghdhd
+              <br /> fgdfhdh
+            </div>
+          </div>
+          {/* {videoOutlineStyle && <div style={videoOutlineStyle} />} */}
+        </div>
+      </div>
+      {/* <div className="w-full h-screen overflow-hidden relative bg-[url('/monet/nympheas.jpg')] bg-cover bg-center bg-no-repeat">
+        
+
+        <div className="slidingText text-blue-600/100 text-[36vw] md:text-[16rem] leading-none font-extrabold uppercase text-center">
+          Test vidéo
+          <br /> fgdfhdh
+          <video
+            className="absolute top-0 left-0 w-full h-full object-cover"
+            ref={videoRef}
+            src="/monet/output561.webm"
+            muted
+            loop
+            playsInline
+            autoPlay
+          />
+        </div>
+
+      </div> */}
     </>
   );
 }

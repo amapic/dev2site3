@@ -1,0 +1,1 @@
+ffmpeg -i video.mp4 -vf "format=gray,lut=y='if(gte(val,128),255,0)'" sortie.mp4
