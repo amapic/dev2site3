@@ -1,0 +1,1 @@
+ffmpeg -i image.png -vf "gblur=sigma=1,lut=y='if(gte(val,128),255,0)'" sortie.png

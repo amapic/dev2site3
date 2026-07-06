@@ -37,7 +37,7 @@ export default function NympheasPage() {
           cocuocuc
           <video
             //   ref={videoRef}
-            src="/monet/osortiesf.webm"
+            src="/monet/outputcutfondu_cut_vers_white.webm"
             muted
             loop
             playsInline

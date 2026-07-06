@@ -1,5 +1,7 @@
 "use client";
 
+import { createPortal } from "react-dom";
+import type { FormEvent } from "react";
 import { useEffect, useState, useCallback } from "react";
 import { Archivo_Black } from "next/font/google";
 import PrismaticRibbonCanvas from "@/components/prismatic-ribbon-canvas";
@@ -15,15 +17,16 @@ const DELIVERY_STEPS = [
 ];
 
 const BAR_METRICS = [
-  { label: "SEO", value: 92 },
-  { label: "Lighthouse", value: 97 },
-  { label: "Instagram", value: 78 },
-  { label: "Chatbot", value: 84 },
+  { label: "SEO interne", value: 92, detail: "structure, maillage, balises" },
+  { label: "SEO externe", value: 81, detail: "backlinks, mentions, autorité" },
+  { label: "Instagram", value: 76, detail: "contenu, rétention, portée" },
+  { label: "Tracking", value: 89, detail: "mesure, conversions, pilotage" },
 ];
 
-const PIE_METRICS = [
-  { label: "Acquisition", value: 64, suffix: "%", detail: "SEO + social + ads", accent: "rgba(17, 17, 17, 0.84)" },
-  { label: "Automation", value: 88, suffix: "%", detail: "chatbot, CRM, relances", accent: "rgba(0, 61, 130, 0.85)" },
+const BOT_METRICS = [
+  { label: "Chatbot IA", value: 96, detail: "réponses instantanées et qualification" },
+  { label: "Automatisation", value: 88, detail: "relances, formulaires, CRM" },
+  { label: "Support client", value: 84, detail: "FAQ, prise de contact, tri des demandes" },
 ];
 
 const KPI_STRIP = [
@@ -42,6 +45,8 @@ export default function HeroSection() {
   const [isReady, setIsReady] = useState(false);
   const [cameraZoom, setCameraZoom] = useState(1);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+  const [contactMessage, setContactMessage] = useState("");
 
   const handleReady = useCallback(() => {
     setIsReady(true);
@@ -49,6 +54,22 @@ export default function HeroSection() {
 
   const handleZoomChange = useCallback((zoomFactor: number) => {
     setCameraZoom((prev) => (Math.abs(prev - zoomFactor) < 0.01 ? prev : zoomFactor));
+  }, []);
+
+  const handleContactSubmit = useCallback(
+    (event: FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+
+      const subject = encodeURIComponent("Contact Dev2Site");
+      const body = encodeURIComponent(contactMessage.trim() || "Bonjour, je souhaite échanger sur mon projet.");
+
+      window.location.href = `mailto:amo@dev2site.net?subject=${subject}&body=${body}`;
+    },
+    [contactMessage],
+  );
+
+  useEffect(() => {
+    setIsMounted(true);
   }, []);
 
   useEffect(() => {
@@ -64,8 +85,12 @@ export default function HeroSection() {
 
     window.addEventListener("keydown", handleKeyDown);
 
+    const previousBodyOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = previousBodyOverflow;
     };
   }, [isContactModalOpen]);
 
@@ -122,13 +147,13 @@ export default function HeroSection() {
               pensés pour mettre en valeur votre activité.
             </p>
 
-            <div className="hero-tech-tags" aria-label="Expertises mises en avant">
+            {/* <div className="hero-tech-tags" aria-label="Expertises mises en avant">
               {HUD_TAGS.map((tag) => (
                 <span key={tag} className="hero-tech-tag">
                   {tag}
                 </span>
               ))}
-            </div>
+            </div> */}
           </div>
 
           <div className="hero-contact-zone" aria-label="Contact rapide">
@@ -175,9 +200,13 @@ export default function HeroSection() {
 
         <div className="hero-tech-hud" aria-label="Tableau de bord des prestations du studio">
           <article className="hero-hud-card hero-hud-card--timeline">
-            <div className="hero-hud-card__header">
-              <p className="hero-hud-kicker">Temps de realisation</p>
-              <span className="hero-hud-chip">Sprint court</span>
+            <div className="hero-hud-card__header hero-hud-card__header--full">
+              <div className="hero-hud-card__titlezone">
+                <p className="hero-hud-card__eyebrow">Prestation 1</p>
+                <strong>2 semaines</strong>
+                <span className="hero-hud-card__subtitle">temps moyen de mise en ligne</span>
+              </div>
+              <p className="hero-hud-card__title">Temps de réalisation</p>
             </div>
 
             <div className="hero-hud-timeline">
@@ -194,12 +223,16 @@ export default function HeroSection() {
           </article>
 
           <article className="hero-hud-card hero-hud-card--bars">
-            <div className="hero-hud-card__header">
-              <p className="hero-hud-kicker">Leviers actives</p>
-              <span className="hero-hud-chip">Score ops</span>
+            <div className="hero-hud-card__header hero-hud-card__header--stacked">
+              <div className="hero-hud-card__titlezone">
+                <p className="hero-hud-card__eyebrow">Prestation 2</p>
+                <strong>SEO</strong>
+                <span className="hero-hud-card__subtitle">interne, externe, Instagram, contenu, tracking</span>
+              </div>
+              <p className="hero-hud-card__title">SEO & visibilité</p>
             </div>
 
-            <div className="hero-hud-bars" role="img" aria-label="Graphique des leviers SEO, Lighthouse, Instagram et Chatbot">
+            <div className="hero-hud-bars" role="img" aria-label="Graphique des leviers SEO interne, SEO externe, Instagram et tracking">
               {BAR_METRICS.map((metric) => (
                 <div key={metric.label} className="hero-hud-bar">
                   <div className="hero-hud-bar__meta">
@@ -209,44 +242,38 @@ export default function HeroSection() {
                   <div className="hero-hud-bar__track">
                     <span className="hero-hud-bar__fill" style={{ width: `${metric.value}%` }} />
                   </div>
+                  <p className="hero-hud-bar__detail">{metric.detail}</p>
                 </div>
               ))}
             </div>
 
             <div className="hero-hud-signal">
               <span className="hero-hud-signal__dot" />
-              <span>Canvas sync {cameraZoom.toFixed(2)}x</span>
+              <span>SEO multi-canaux en pilotage continu</span>
             </div>
           </article>
 
           <article className="hero-hud-card hero-hud-card--pies">
-            <div className="hero-hud-card__header">
-              <p className="hero-hud-kicker">Impact visible</p>
-              <span className="hero-hud-chip">Camemberts</span>
+            <div className="hero-hud-card__header hero-hud-card__header--stacked">
+              <div className="hero-hud-card__titlezone">
+                <p className="hero-hud-card__eyebrow">Prestation 3</p>
+                <strong>Bots</strong>
+                <span className="hero-hud-card__subtitle">création, qualification, automatisation et support</span>
+              </div>
+              <p className="hero-hud-card__title">Création de bots</p>
             </div>
 
-            
-
-            <div className="hero-hud-pies">
-              {PIE_METRICS.map((metric) => (
-                <div key={metric.label} className="hero-hud-pie-card">
-                  <div
-                    className="hero-hud-pie"
-                    style={{
-                      background: `conic-gradient(${metric.accent} 0 ${metric.value}%, rgba(17, 17, 17, 0.1) ${metric.value}% 100%)`,
-                    }}
-                    role="img"
-                    aria-label={`${metric.label} ${metric.value}${metric.suffix}`}
-                  >
-                    <div className="hero-hud-pie__core">
-                      <strong>{metric.value}</strong>
-                      <span>{metric.suffix}</span>
-                    </div>
+            <div className="hero-hud-bot-list">
+              {BOT_METRICS.map((metric) => (
+                <div key={metric.label} className="hero-hud-bot-item">
+                  <div className="hero-hud-bot-item__meta">
+                    <span>{metric.label}</span>
+                    <strong>{metric.value}%</strong>
                   </div>
-                  <div>
-                    <p className="hero-hud-pie__label">{metric.label}</p>
-                    <p className="hero-hud-pie__detail">{metric.detail}</p>
+                  <div className="hero-hud-bot-item__track">
+                    <span className="hero-hud-bot-item__fill" style={{ width: `${metric.value}%` }} />
                   </div>
+                  <p className="hero-hud-bot-item__detail">{metric.detail}</p>
                 </div>
               ))}
             </div>
@@ -263,44 +290,65 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {isContactModalOpen ? (
-        <div className="hero-contact-modal" role="dialog" aria-modal="true" aria-labelledby="heroContactModalTitle">
-          <button
-            type="button"
-            className="hero-contact-modal__backdrop"
-            aria-label="Fermer le contact"
-            onClick={() => setIsContactModalOpen(false)}
-          />
+      {isMounted && isContactModalOpen
+        ? createPortal(
+            <div className="hero-contact-modal" role="dialog" aria-modal="true" aria-labelledby="heroContactModalTitle">
+              <button
+                type="button"
+                className="hero-contact-modal__backdrop"
+                aria-label="Fermer le contact"
+                onClick={() => setIsContactModalOpen(false)}
+              />
 
-          <div className="hero-contact-modal__panel">
-            <div className="hero-contact-modal__header">
-              <p className="hero-contact-modal__kicker">Contact rapide</p>
-              <button type="button" className="hero-contact-modal__close" onClick={() => setIsContactModalOpen(false)}>
-                Fermer
-              </button>
-            </div>
+              <div className="hero-contact-modal__panel">
+                <div className="hero-contact-modal__header">
+                  <p className="hero-contact-modal__kicker">Contact rapide</p>
+                  <button type="button" className="hero-contact-modal__close" onClick={() => setIsContactModalOpen(false)}>
+                    Fermer
+                  </button>
+                </div>
 
-            <h2 id="heroContactModalTitle" className="hero-contact-modal__title">
-              Parlons de votre prochain site
-            </h2>
+                <h2 id="heroContactModalTitle" className="hero-contact-modal__title">
+                  Parlons de votre prochain site
+                </h2>
 
-            <p className="hero-contact-modal__copy">
-              Réponse directe par mail ou téléphone pour cadrer le projet, le délai et le niveau de finition attendu.
-            </p>
+                <p className="hero-contact-modal__copy">
+                  Réponse directe par mail ou téléphone pour cadrer le projet, le délai et le niveau de finition attendu.
+                </p>
 
-            <div className="hero-contact-modal__grid">
-              <a className="hero-contact-modal__link" href="mailto:amo@dev2site.net">
-                <span>Mail</span>
-                <strong>amo@dev2site.net</strong>
-              </a>
-              <a className="hero-contact-modal__link" href="tel:+33688918019">
-                <span>Téléphone</span>
-                <strong>06 88 91 80 19</strong>
-              </a>
-            </div>
-          </div>
-        </div>
-      ) : null}
+                <form className="hero-contact-modal__form" onSubmit={handleContactSubmit}>
+                  <label className="hero-contact-modal__label" htmlFor="heroContactMessage">
+                    Votre message
+                  </label>
+                  <textarea
+                    id="heroContactMessage"
+                    className="hero-contact-modal__textarea"
+                    value={contactMessage}
+                    onChange={(event) => setContactMessage(event.target.value)}
+                    placeholder="Expliquez votre besoin, votre délai ou le type de site souhaité..."
+                    rows={5}
+                  />
+
+                  <div className="hero-contact-modal__actions">
+                    <button type="submit" className="hero-contact-modal__submit">
+                      Envoyer
+                    </button>
+                    <a className="hero-contact-modal__link" href="tel:+33688918019">
+                      <span>Téléphone</span>
+                      <strong>06 88 91 80 19</strong>
+                    </a>
+                  </div>
+
+                  <a className="hero-contact-modal__mail-link" href="mailto:amo@dev2site.net">
+                    <span>Mail direct</span>
+                    <strong>amo@dev2site.net</strong>
+                  </a>
+                </form>
+              </div>
+            </div>,
+            document.body,
+          )
+        : null}
       
       <HeroMarqueeScroll />
     </section>

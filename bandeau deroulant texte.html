@@ -1,0 +1,38 @@
+<svg viewBox="0 0 800 220" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    text {
+      font-family: 'Iowan Old Style', Georgia, serif;
+      font-size: 26px;
+      fill: #1c1a17;
+      letter-spacing: 1px;
+    }
+    .guide {
+      fill: none;
+      stroke: #c9c2b3;
+      stroke-width: 1;
+      stroke-dasharray: 2 4;
+    }
+    .band {
+      fill: none;
+      stroke: #ece5d6;
+      stroke-width: 46;
+      stroke-linecap: round;
+    }
+  </style>
+
+  <path class="band" d="M 40,180 C 200,20 400,220 760,60" />
+
+  <path id="curve" class="guide" d="M 40,180 C 200,20 400,220 760,60" />
+
+  <text>
+    <textPath href="#curve" startOffset="0%">
+      Ce texte glisse le long de la courbe, encore et encore.
+      <animate
+        attributeName="startOffset"
+        from="0%"
+        to="100%"
+        dur="6s"
+        repeatCount="indefinite" />
+    </textPath>
+  </text>
+</svg>
