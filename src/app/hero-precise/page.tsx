@@ -5,7 +5,7 @@ import CrystalBurstCanvas from '@/components/crystal-burst-canvas';
 import localFont from 'next/font/local';
 
 const playfair = localFont({
-  src: '../../../public/font/PlayfairDisplay-Bogfgf.ttf',
+  src: '../../../public/font/PlayfairDisplay-Boldfgfjf.ttf',
   variable: '--font-playfair-regular',
   display: 'swap',
 });

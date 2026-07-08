@@ -39,6 +39,7 @@ export default function HeroHtmlClonePage() {
           height={700}
           className={styles.heroShape}
           priority
+          unoptimized
         />
       </section>
     </main>
