@@ -1,11 +1,14 @@
+"use client";
+
 import { Playfair_Display } from 'next/font/google';
 import styles from './page.module.css';
 import CrystalBurstCanvas from '@/components/crystal-burst-canvas';
+import { useState, useEffect } from 'react';
 
 import localFont from 'next/font/local';
 
 const playfair = localFont({
-  src: '../../../public/font/PlayfairDisplay-Boldfgfjf.ttf',
+  src: '../../../public/font/PlayfairDisplay-Bold avec deco.ttf',
   variable: '--font-playfair-regular',
   display: 'swap',
 });
@@ -73,13 +76,81 @@ type HeroPreciseSectionProps = {
   asSection?: boolean;
 };
 
+const INITIAL_CAMERA_INFO = {
+  position: [-0.51, 0.24, 0.75],
+  polar: 1.5,
+  azimuthal: 2.72,
+};
+
 export function HeroPreciseSection({ asSection = false }: HeroPreciseSectionProps) {
   const Wrapper = asSection ? 'section' : 'main';
+  const [model, setModel] = useState<'crystal' | 'plant'>('crystal');
+  const [framesUnlocked, setFramesUnlocked] = useState(false);
+  const [isLoadingPlant, setIsLoadingPlant] = useState(false);
+
+  // Preload plant model on mount so it's ready when user switches
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { GLTFLoader } = require('three/examples/jsm/loaders/GLTFLoader');
+    const loader = new GLTFLoader();
+    loader.preload?.('/PlantOrchid001_Blender_Cycles.glb') ?? loader.load('/PlantOrchid001_Blender_Cycles.glb', () => {});
+  }, []);
+
+  // Disable page scroll when camera is unlocked
+  useEffect(() => {
+    if (framesUnlocked) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [framesUnlocked]);
 
   return (
     <Wrapper className={styles.page}>
       <section className={styles.hero}>
-          <CrystalBurstCanvas className={styles.crystalBg} />
+          <CrystalBurstCanvas
+            className={styles.crystalBg}
+            modelMode={model}
+            animate={framesUnlocked}
+            initialCameraPosition={[INITIAL_CAMERA_INFO.position[0], INITIAL_CAMERA_INFO.position[1], INITIAL_CAMERA_INFO.position[2]]}
+            initialPolarAngle={INITIAL_CAMERA_INFO.polar}
+            initialAzimuthalAngle={INITIAL_CAMERA_INFO.azimuthal}
+            onLoadingChange={setIsLoadingPlant}
+          />
+          {isLoadingPlant ? (
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                zIndex: 30,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                pointerEvents: 'none',
+                paddingTop: '15vh',
+              }}
+            >
+              <div
+                style={{
+                  width: 48,
+                  height: 48,
+                  borderRadius: '50%',
+                  border: '5px solid rgba(0, 169, 198, 0.25)',
+                  borderTopColor: '#00a9c6',
+                  animation: 'spin 0.8s linear infinite',
+                }}
+              />
+              <style>{`
+                @keyframes spin {
+                  to { transform: rotate(360deg); }
+                }
+              `}</style>
+            </div>
+          ) : null}
           <div className={styles.left}>
           <span className={styles.sideLabel}>Design - Developpence - Performance</span>
 
@@ -93,24 +164,52 @@ export function HeroPreciseSection({ asSection = false }: HeroPreciseSectionProp
           </header>
 
           <h1 className={`${styles.title} ${playfair.className} `}>
-            <span className={`${playfair.className}`}>Un </span> 
-            <span className={styles.titleGradient}>site</span>
-            <br />
-            <span className={styles.titleGradient}>efficace</span>
+            {model === 'plant' ? (
+              <>
+                <span className={`${playfair.className}`}>Un </span>
+                <span className={styles.titleGradient}>site</span>
+                <br />
+                <span className={styles.titleGradient}>responsable</span>
+              </>
+            ) : (
+              <>
+                <span className={`${playfair.className}`}>Un </span>
+                <span className={styles.titleGradient}>site</span>
+                <br />
+                <span className={styles.titleGradient}>efficace...</span>
+              </>
+            )}
           </h1>
 
           <div className={styles.baselineRow}>
-            <p className={styles.baseline}>n'est jamais le fruit du</p>
-            <p className={styles.baselineStrong}>hasard.</p>
+            {model === 'plant' ? (
+              <>
+                <p className={styles.baseline}>ne pollue pas, il</p>
+                <p className={styles.baselineStrong}>perdure.</p>
+              </>
+            ) : (
+              <>
+                <p className={styles.baseline}>n'est jamais le fruit du</p>
+                <p className={styles.baselineStrong}>hasard.</p>
+              </>
+            )}
           </div>
 
           <div className={styles.separator} />
 
-          <p className={styles.description}>
-            Depuis <span className={styles.highlightBlue}>5 ans</span>, je concois des sites sur mesure,
-            penses pour <strong>attirer, convaincre et generer</strong> des
-            <span className={styles.highlightYellow}> resultats concrets</span>.
-          </p>
+          {model === 'plant' ? (
+            <p className={styles.description}>
+              Depuis <span className={styles.highlightBlue}>5 ans</span>, je concois des sites sur mesure,
+              pensés pour être <strong>légers, durables et respectueux</strong> de
+              <span className={styles.highlightYellow}> l'environnement</span>.
+            </p>
+          ) : (
+            <p className={styles.description}>
+              Depuis <span className={styles.highlightBlue}>5 ans</span>, je concois des sites sur mesure,
+              penses pour <strong>attirer, convaincre et generer</strong> des
+              <span className={styles.highlightYellow}> resultats concrets</span>.
+            </p>
+          )}
 
     
         </div>
@@ -119,7 +218,38 @@ export function HeroPreciseSection({ asSection = false }: HeroPreciseSectionProp
           <div className={styles.rightTag}>
             Des sites qui font
             <strong>la difference.</strong>
+
+            <div style={{ marginTop: 12 }}>
+              <button
+                aria-label={model === 'plant' ? 'Afficher la forme' : 'Afficher la plante'}
+                onClick={() => {
+                  setFramesUnlocked(true);
+                  setModel((m) => (m === 'plant' ? 'crystal' : 'plant'));
+                }}
+                style={{
+                  background: '#16a34a',
+                  color: '#fff',
+                  border: 'none',
+                  padding: '2px 8px 2px 4px',
+                  borderRadius: 8,
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  pointerEvents: 'auto',
+                }}
+              >
+                <img
+                  src="/image%20(2).png"
+                  alt="orchidée"
+                  style={{ width: 70, height: 70, objectFit: 'cover', borderRadius: 4 }}
+                />
+                <span style={{ fontSize: 24 }}>{model === 'plant' ? 'Des sites efficaces' : 'Des sites verts'}</span>
+              </button>
+
+            </div>
           </div>
+
           <div className={styles.rightBackdrop} />
           <div className={styles.rightLines} />
         </aside>

@@ -59,6 +59,7 @@
   flex-direction: column;
   gap: 12px;
   padding-left: clamp(24px, 5vw, 72px);
+  pointer-events: none;
 }
 
 .sideLabel {
@@ -117,6 +118,7 @@
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
+  padding-bottom: 0.12em;
   /* -webkit-mask-image: url('/image.webp'); */
   /* mask-image: url('/image.webp'); */
   -webkit-mask-size: cover;
@@ -209,6 +211,7 @@
   justify-content: flex-end;
   overflow: hidden;
   z-index: 2;
+  pointer-events: none;
 }
 
 .rightTag {
@@ -221,6 +224,7 @@
   font-size: 0.8rem;
   color: rgba(14, 26, 58, 0.7);
   z-index: 3;
+  pointer-events: auto;
 }
 
 .rightTag strong {
@@ -233,12 +237,14 @@
   inset: 0;
   background: transparent;
   z-index: 0;
+  pointer-events: none;
 }
 
 /* Right lines overlay */
 .rightLines {
   position: absolute;
   inset: 0;
+  pointer-events: none;
 }
 
 /* Bottom strip – full‑width horizontal banner fixed at the bottom of the hero */

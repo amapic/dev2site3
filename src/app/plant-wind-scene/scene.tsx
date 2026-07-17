@@ -345,7 +345,11 @@ function PlantDebug({ nodes }: { nodes: Record<string, THREE.Object3D> }) {
   return null;
 }
 
-function PlantWindScene() {
+function PlantWindScene({
+  onCameraInfo,
+}: {
+  onCameraInfo?: (info: { position: number[]; rotation: number[] }) => void;
+}) {
   const { scene, nodes } = useGLTF(MODEL_PATH) as unknown as GltfScene;
   const controlsRef = useRef<OrbitControlsImpl>(null);
 
@@ -356,7 +360,22 @@ function PlantWindScene() {
     <>
       <PlantDebug nodes={nodes} />
 
-      <OrbitControls ref={controlsRef} enableDamping dampingFactor={0.05} />
+      <OrbitControls
+        ref={controlsRef}
+        enableDamping
+        dampingFactor={0.05}
+        onChange={() => {
+          const camera = controlsRef.current?.object;
+          if (!camera) {
+            return;
+          }
+
+          onCameraInfo?.({
+            position: camera.position.toArray(),
+            rotation: [camera.rotation.x, camera.rotation.y, camera.rotation.z],
+          });
+        }}
+      />
 
       <ambientLight intensity={0.5} />
       <directionalLight
@@ -380,12 +399,21 @@ function PlantWindScene() {
   );
 }
 
-function CameraController() {
+function CameraController({
+  onCameraInfo,
+}: {
+  onCameraInfo?: (info: { position: number[]; rotation: number[] }) => void;
+}) {
   const { camera } = useThree();
 
   useEffect(() => {
     camera.position.set(3, 2.5, 4);
     camera.lookAt(0, 1.5, 0);
+
+    onCameraInfo?.({
+      position: camera.position.toArray(),
+      rotation: [camera.rotation.x, camera.rotation.y, camera.rotation.z],
+    });
   }, [camera]);
 
   return null;
@@ -421,7 +449,11 @@ function InfoPanel() {
   );
 }
 
-export default function PlantWindSceneWrapper() {
+export default function PlantWindSceneWrapper({
+  onCameraInfo,
+}: {
+  onCameraInfo?: (info: { position: number[]; rotation: number[] }) => void;
+}) {
   return (
     <div style={{ position: "relative", width: "100%", height: "100%" }}>
       <Canvas
@@ -432,8 +464,8 @@ export default function PlantWindSceneWrapper() {
         shadows
       >
         <color attach="background" args={["#e8f0e8"]} />
-        <PlantWindScene />
-        <CameraController />
+        <PlantWindScene onCameraInfo={onCameraInfo} />
+        {/* <CameraController onCameraInfo={onCameraInfo} /> */}
       </Canvas>
       <InfoPanel />
     </div>

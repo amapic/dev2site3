@@ -30,7 +30,7 @@ const BOT_METRICS = [
 ];
 
 const KPI_STRIP = [
-  { value: "2 semaines", label: "temps moyen de mise en ligne" },
+  { value: "3 semaines", label: "temps moyen de mise en ligne" },
   { value: "+31%", label: "trafic SEO cible sur 90 jours" },
   { value: "98%", label: "score lighthouse" },
   { value: "4.9/5", label: "clarté perçue des interfaces" },
@@ -203,7 +203,7 @@ export default function HeroSection() {
             <div className="hero-hud-card__header hero-hud-card__header--full">
               <div className="hero-hud-card__titlezone">
                 <p className="hero-hud-card__eyebrow">Prestation 1</p>
-                <strong>2 semaines</strong>
+                <strong>3 semaines</strong>
                 <span className="hero-hud-card__subtitle">temps moyen de mise en ligne</span>
               </div>
               <p className="hero-hud-card__title">Temps de réalisation</p>
