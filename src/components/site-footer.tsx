@@ -49,7 +49,11 @@ export default function SiteFooter() {
               </a>
               <a href="https://www.instagram.com/dev2site" target="_blank" rel="noreferrer">
                 <img
-                  src="/logo/insta.png"
+                  src="/logo/insta-34.webp"
+                  srcSet="/logo/insta-34.avif 1x, /logo/insta-68.avif 2x, /logo/insta-34.webp 1x, /logo/insta-68.webp 2x"
+                  sizes="34px"
+                  width={34}
+                  height={34}
                   alt="Instagram"
                   className="site-footer__social-logo site-footer__social-logo--instagram"
                 />

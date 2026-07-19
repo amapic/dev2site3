@@ -191,7 +191,6 @@ $section2-fringe-wave: "triangle";
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -2546,7 +2545,14 @@ body {
   min-height: 2.95rem;
   padding: 0.28rem;
   border-radius: 0;
-  background-image: url("/fond.png");
+  background-image: url("/fond-200.avif");
+  background-image: image-set(
+    url("/fond-200.avif") type("image/avif") 1x,
+    url("/fond-400.avif") type("image/avif") 2x,
+    url("/fond-200.webp") type("image/webp") 1x,
+    url("/fond-400.webp") type("image/webp") 2x,
+    url("/fond.png") type("image/png")
+  );
   background-position: center;
   background-repeat: no-repeat;
   background-size: 128% 128%;
@@ -2627,6 +2633,33 @@ body {
   --chip-bg-a: rgba(0, 61, 130, 0.82);
   --chip-bg-b: rgba(255, 200, 55, 0.64);
   --chip-bg-c: rgba(244, 120, 78, 0.24);
+}
+
+.bg-fond-jaune-2 {
+  background-image: url("/fond-jaune-2-400.avif");
+  background-image: image-set(
+    url("/fond-jaune-2-400.avif") type("image/avif") 1x,
+    url("/fond-jaune-2-800.avif") type("image/avif") 2x,
+    url("/fond-jaune-2-400.webp") type("image/webp") 1x,
+    url("/fond-jaune-2-800.webp") type("image/webp") 2x,
+    url("/fond%20jaune%202.png") type("image/png")
+  );
+  background-size: auto 100%;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+@media (min-width: 1024px) {
+  .bg-fond-jaune-2 {
+    background-image: url("/fond-jaune-2-1200.avif");
+    background-image: image-set(
+      url("/fond-jaune-2-1200.avif") type("image/avif") 1x,
+      url("/fond-jaune-2.avif") type("image/avif") 2x,
+      url("/fond-jaune-2-1200.webp") type("image/webp") 1x,
+      url("/fond-jaune-2.webp") type("image/webp") 2x,
+      url("/fond%20jaune%202.png") type("image/png")
+    );
+  }
 }
 
 .project-card-shell {

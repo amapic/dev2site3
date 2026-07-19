@@ -131,7 +131,12 @@ export default function AccompagnementPosterSection() {
         <article className={styles.poster}>
           <div
             className={`imagenb ${styles.imageLayer} ${imageMotionClass}`}
-            style={{ backgroundImage: `url("${step.image}")` }}
+            style={{
+              backgroundImage:
+                activeIndex === 0
+                  ? `image-set(url("/carroussel/image-1-400.avif") type("image/avif") 1x, url("/carroussel/image-1.avif") type("image/avif") 2x, url("/carroussel/image-1-400.webp") type("image/webp") 1x, url("/carroussel/image-1.webp") type("image/webp") 2x, url("/carroussel/image%20(1).png") type("image/png"))`
+                  : `url("${step.image}")`,
+            }}
             aria-hidden="true"
           />
 

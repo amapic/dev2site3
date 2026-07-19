@@ -1,6 +1,5 @@
 "use client";
 
-import { Playfair_Display } from 'next/font/google';
 import styles from './page.module.css';
 import CrystalBurstCanvas from '@/components/crystal-burst-canvas';
 import { useState, useEffect } from 'react';
@@ -8,14 +7,12 @@ import { useState, useEffect } from 'react';
 import localFont from 'next/font/local';
 
 const playfair = localFont({
-  src: '../../../public/font/PlayfairDisplay-Bold avec deco.ttf',
+  src: '../../../public/font/PlayfairDisplay-Bold avec deco.woff2',
   variable: '--font-playfair-regular',
   display: 'swap',
 });
 
 type FeatureKind = 'design' | 'tech' | 'performance' | 'support';
-
-const playfairOld = Playfair_Display({ subsets: ['latin'], weight: ['600', '700'] });
 
 function FeatureIcon({ kind }: { kind: FeatureKind }) {
   if (kind === 'design') {

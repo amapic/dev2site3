@@ -42,13 +42,7 @@ export default function HeroPosterSection() {
       <section className={styles.stage} aria-label="Section hero en poster editorial">
         <div className="isotope-gallery-shell mx-auto flex w-full max-w-7xl flex-col gap-10 px-6 py-8 sm:px-10 lg:px-14">
           <div
-            className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between"
-            style={{
-              backgroundImage: "url('/fond jaune 2.png')",
-              backgroundSize: "auto 100%",
-              backgroundPosition: "center center",
-              backgroundRepeat: "no-repeat",
-            }}
+            className="bg-fond-jaune-2 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between"
           >
             <div className="max-w-2xl space-y-4 rounded-2xl p-6">
               <p className="text-sm font-semibold uppercase tracking-[0.28em] text-black/60">
