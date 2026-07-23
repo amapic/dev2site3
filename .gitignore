@@ -40,3 +40,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Fichiers de données volumineux
+public/data_map/curis-lidar-1m-dem.bil
