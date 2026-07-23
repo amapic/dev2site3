@@ -5,7 +5,10 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:prod": "NEXT_BUILD_DIR=build next build",
+    "build:win": "set NEXT_BUILD_DIR=build && next build",
     "start": "next start",
+    "start:prod": "PORT=5003 next start",
     "lint": "eslint",
     "hf:space": "node scripts/hf-space-cli.mjs",
     "hf:agents": "node scripts/hf-space-cli.mjs --path /agents.md --text"
