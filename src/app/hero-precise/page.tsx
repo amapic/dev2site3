@@ -199,6 +199,8 @@ export function HeroPreciseSection({ asSection = false }: HeroPreciseSectionProp
               Depuis <span className={styles.highlightBlue}>5 ans</span>, je concois des sites sur mesure,
               pensés pour être <strong>légers, durables et respectueux</strong> de
               <span className={styles.highlightYellow}> l'environnement</span>.
+              <br />
+              Hébergement 100 % énergie renouvelable — Green Web Foundation : 94/100.
             </p>
           ) : (
             <p className={styles.description}>

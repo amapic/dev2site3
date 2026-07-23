@@ -11,6 +11,7 @@
     "hf:agents": "node scripts/hf-space-cli.mjs --path /agents.md --text"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.112.3",
     "@react-three/drei": "^10.7.6",
     "@react-three/fiber": "^9.4.0",
     "@react-three/postprocessing": "^3.0.4",

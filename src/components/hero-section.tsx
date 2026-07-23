@@ -249,7 +249,7 @@ export default function HeroSection() {
 
             <div className="hero-hud-signal">
               <span className="hero-hud-signal__dot" />
-              <span>SEO multi-canaux en pilotage continu</span>
+              <span>SEO multi-canaux, prêt pour la navigation agentique</span>
             </div>
           </article>
 

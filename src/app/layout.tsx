@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import CookieConsent from "@/components/cookie-consent";
 import SmoothScroll from "@/components/smoothscroll";
+import ChatWidget from "@/components/chat-widget";
 import "./globals.scss";
 
 const geistSans = localFont({
@@ -29,6 +30,7 @@ export default function RootLayout({
         {children}
         <CookieConsent />
         <SmoothScroll />
+        <ChatWidget />
       </body>
     </html>
   );
