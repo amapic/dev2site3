@@ -10,6 +10,8 @@ type Message = {
 
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isWindowVisible, setIsWindowVisible] = useState(false);
+  const [isWindowOpen, setIsWindowOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
@@ -21,6 +23,8 @@ export default function ChatWidget() {
   const [error, setError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const userInteractedRef = useRef(false);
+  const animationFrameRef = useRef<number | null>(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -31,6 +35,39 @@ export default function ChatWidget() {
       inputRef.current?.focus();
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    if (isOpen) {
+      setIsWindowVisible(true);
+      animationFrameRef.current = requestAnimationFrame(() => {
+        setIsWindowOpen(true);
+      });
+    } else {
+      setIsWindowOpen(false);
+    }
+
+    return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
+  }, [isOpen]);
+
+  const handleWindowAnimationEnd = () => {
+    if (!isWindowOpen) {
+      setIsWindowVisible(false);
+    }
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!userInteractedRef.current) {
+        setIsOpen(true);
+      }
+    }, 10000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -79,14 +116,22 @@ export default function ChatWidget() {
 
   return (
     <div className={styles.widget}>
-      {isOpen && (
-        <div className={styles.window} role="dialog" aria-label="Discuter avec l'assistant Dev2Site">
+      {isWindowVisible && (
+        <div
+          className={`${styles.window} ${isWindowOpen ? styles.windowOpen : styles.windowClose}`}
+          onAnimationEnd={handleWindowAnimationEnd}
+          role="dialog"
+          aria-label="Discuter avec l'assistant Dev2Site"
+        >
           <div className={styles.header}>
             <span className={styles.title}>Assistant Dev2Site</span>
             <button
               type="button"
               className={styles.close}
-              onClick={() => setIsOpen(false)}
+              onClick={() => {
+                userInteractedRef.current = true;
+                setIsOpen(false);
+              }}
               aria-label="Fermer le chat"
             >
               ×
@@ -142,7 +187,10 @@ export default function ChatWidget() {
       <button
         type="button"
         className={styles.toggle}
-        onClick={() => setIsOpen((prev) => !prev)}
+        onClick={() => {
+          userInteractedRef.current = true;
+          setIsOpen((prev) => !prev);
+        }}
         aria-label={isOpen ? "Fermer le chat" : "Ouvrir le chat"}
       >
         {isOpen ? "Fermer" : "Assistant"}

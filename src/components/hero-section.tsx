@@ -96,7 +96,7 @@ export default function HeroSection() {
 
   return (
     <section
-      className="h-[100vh] home-section home-hero px-6 py-10 sm:px-10 lg:px-14 relative overflow-hidden pb-16"
+      className="min-h-[100vh] home-section home-hero px-6 py-10 sm:px-10 lg:px-14 relative overflow-hidden pb-16"
       aria-label="Section hero avec elements graphiques"
     >
       {/* Loading overlay — visible until canvas first renders */}

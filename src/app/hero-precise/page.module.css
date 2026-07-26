@@ -441,6 +441,15 @@
   .crystalBg {
     display: none;
   }
+
+  /* Désactive l'apparition au hover des détails en dessous de 1024px */
+  .feature:hover .featureDetail,
+  .featureTitle:hover + .featureDetail,
+  .feature:focus-within .featureDetail {
+    opacity: 0;
+    transform: translateY(10px);
+    pointer-events: none;
+  }
 }
 
 @media (max-width: 640px) {
