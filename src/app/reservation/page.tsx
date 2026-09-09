@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 
 const CALENDLY_LINK = "https://calendly.com/amaury-pichat/30min";
 
@@ -68,39 +68,37 @@ const FAQS = [
 ];
 
 function CalendlyInlineEmbed() {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const initCalendly = () => {
-      const Calendly = (window as any).Calendly;
-      if (Calendly && containerRef.current) {
-        containerRef.current.innerHTML = "";
-        Calendly.initInlineWidget({
-          url: CALENDLY_LINK,
-          parentElement: containerRef.current,
-        });
-      }
-    };
-
-    const existingScript = document.getElementById("calendly-widget-script") as HTMLScriptElement | null;
-    if (!existingScript) {
-      const script = document.createElement("script");
-      script.id = "calendly-widget-script";
-      script.src = "https://assets.calendly.com/assets/external/widget.js";
-      script.async = true;
-      script.onload = initCalendly;
-      document.body.appendChild(script);
-    } else {
-      initCalendly();
-    }
+    setMounted(true);
   }, []);
 
+  if (!mounted) {
+    return (
+      <div
+        className="flex items-center justify-center rounded-2xl bg-black/[0.03]"
+        style={{ minWidth: "320px", height: "700px" }}
+      >
+        <p className="text-black/60">Chargement du calendrier…</p>
+      </div>
+    );
+  }
+
+  const embedUrl = `${CALENDLY_LINK}?embed_domain=${encodeURIComponent(
+    typeof window !== "undefined" ? window.location.hostname : "dev2site.net"
+  )}&embed_type=Inline`;
+
   return (
-    <div
-      ref={containerRef}
-      className="calendly-inline-widget"
-      style={{ minWidth: "320px", height: "700px" }}
-    />
+    <div style={{ minWidth: "320px", height: "700px" }}>
+      <iframe
+        src={embedUrl}
+        title="Réserver un rendez-vous avec Calendly"
+        className="h-full w-full rounded-2xl border-0"
+        style={{ minWidth: "320px", height: "700px" }}
+        loading="lazy"
+      />
+    </div>
   );
 }
 
@@ -216,18 +214,6 @@ export default function ReservationPage() {
             </div>
 
             <CalendlyInlineEmbed />
-
-            <div className="mt-6 flex flex-col items-center justify-between gap-4 rounded-2xl bg-black/[0.03] p-5 sm:flex-row">
-              <p className="text-sm text-black/60">Disponibilités en temps réel</p>
-              <a
-                href={CALENDLY_LINK}
-                target="_blank"
-                rel="noreferrer"
-                className="text-sm font-black text-[var(--em-blue)] hover:underline"
-              >
-                Voir tous les créneaux →
-              </a>
-            </div>
 
             <p className="mt-6 text-center text-sm text-black/55">
               Le calendrier ne se charge pas ?{" "}
