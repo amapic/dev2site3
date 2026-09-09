@@ -2,8 +2,10 @@
 
 import { createPortal } from "react-dom";
 import type { FormEvent } from "react";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { Archivo_Black } from "next/font/google";
+import Link from "next/link";
+import gsap from "gsap";
 import PrismaticRibbonCanvas from "@/components/prismatic-ribbon-canvas";
 import HeroMarqueeScroll from "@/components/hero-marquee-scroll";
 
@@ -47,6 +49,29 @@ export default function HeroSection() {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [contactMessage, setContactMessage] = useState("");
+  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
+  const [showCursorLabel, setShowCursorLabel] = useState(false);
+  const cursorLabelRef = useRef<HTMLSpanElement>(null);
+  const cursorTweenRef = useRef<gsap.core.Tween | null>(null);
+
+  useEffect(() => {
+    const letters = cursorLabelRef.current?.querySelectorAll(".hero-contact-cursor-letter");
+    if (!letters || letters.length === 0) return;
+
+    cursorTweenRef.current?.kill();
+
+    if (showCursorLabel) {
+      gsap.set(letters, { opacity: 0 });
+      cursorTweenRef.current = gsap.to(letters, {
+        opacity: 1,
+        duration: 0.3,
+        stagger: 0.02,
+        ease: "none",
+      });
+    } else {
+      gsap.set(letters, { opacity: 0 });
+    }
+  }, [showCursorLabel]);
 
   const handleReady = useCallback(() => {
     setIsReady(true);
@@ -147,6 +172,23 @@ export default function HeroSection() {
               pensés pour mettre en valeur votre activité.
             </p>
 
+            <div className="flex flex-wrap items-center gap-3 pt-2">
+              <Link
+                href="/reservation"
+                className="inline-flex items-center gap-2 rounded-full bg-[var(--em-ink)] px-6 py-3 text-sm font-black uppercase tracking-wider text-white shadow-lg transition-transform hover:-translate-y-0.5"
+              >
+                Réserver un appel
+                <span aria-hidden="true">→</span>
+              </Link>
+              <button
+                type="button"
+                onClick={() => setIsContactModalOpen(true)}
+                className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/70 px-6 py-3 text-sm font-black uppercase tracking-wider text-black/80 shadow-sm transition-transform hover:-translate-y-0.5 hover:bg-white"
+              >
+                Contact rapide
+              </button>
+            </div>
+
             {/* <div className="hero-tech-tags" aria-label="Expertises mises en avant">
               {HUD_TAGS.map((tag) => (
                 <span key={tag} className="hero-tech-tag">
@@ -156,7 +198,16 @@ export default function HeroSection() {
             </div> */}
           </div>
 
-          <div className="hero-contact-zone" aria-label="Contact rapide">
+          <div
+            className="hero-contact-zone"
+            aria-label="Contact rapide"
+            onMouseMove={(event) => {
+              const rect = event.currentTarget.getBoundingClientRect();
+              setCursorPos({ x: event.clientX - rect.left, y: event.clientY - rect.top });
+            }}
+            onMouseEnter={() => setShowCursorLabel(true)}
+            onMouseLeave={() => setShowCursorLabel(false)}
+          >
             <button
               type="button"
               className="hero-contact-circle-link"
@@ -195,6 +246,18 @@ export default function HeroSection() {
                 </svg>
               </div>
             </button>
+            <span
+              ref={cursorLabelRef}
+              className={`hero-contact-cursor-label${showCursorLabel ? " hero-contact-cursor-label--visible" : ""}`}
+              aria-hidden="true"
+              style={{ left: cursorPos.x, top: cursorPos.y }}
+            >
+              {"Cliquez pour faire apparaître le formulaire de contact".split("").map((letter, index) => (
+                <span key={index} className="hero-contact-cursor-letter" aria-hidden="true">
+                  {letter === " " ? "\u00A0" : letter}
+                </span>
+              ))}
+            </span>
           </div>
         </div>
 

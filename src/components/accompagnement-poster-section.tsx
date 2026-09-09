@@ -4,6 +4,29 @@ import { useEffect, useRef, useState } from "react";
 import styles from "@/app/accompagnement-poster/page.module.css";
 import PrismaticRibbonBandCanvas from "@/components/prismatic-ribbon-band-canvas";
 
+function useInView<T extends HTMLElement>(threshold = 0.1) {
+  const ref = useRef<T>(null);
+  const [isInView, setIsInView] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsInView(true);
+          observer.disconnect();
+        }
+      },
+      { threshold }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [threshold]);
+
+  return { ref, isInView };
+}
+
 const STEPS = [
   {
     ghost: "CONTACT",
@@ -53,6 +76,8 @@ export default function AccompagnementPosterSection() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [phase, setPhase] = useState<Phase>("idle");
   const timersRef = useRef<number[]>([]);
+  const { ref: introRef, isInView: introInView } = useInView<HTMLElement>(0.3);
+  const { ref: stageRef, isInView: stageInView } = useInView<HTMLElement>(0.15);
 
   useEffect(() => {
     return () => {
@@ -99,12 +124,16 @@ export default function AccompagnementPosterSection() {
         <PrismaticRibbonBandCanvas transparent className={styles.bandCanvas} />
       </div>
 
-      <section className={styles.intro} aria-label="Introduction a la section accompagnement">
+      <section
+        ref={introRef}
+        className={`${styles.intro} ${introInView ? styles.introVisible : ""}`}
+        aria-label="Introduction a la section accompagnement"
+      >
         <div className={styles.introInner}>
-          <p className={styles.introKicker}>Direction creative digitale</p>
+          <p className={`${styles.introKicker} ${styles.reveal}`}>Direction creative digitale</p>
 
           <h2
-            className={`${styles.introTitle}  `}
+            className={`${styles.introTitle} ${styles.reveal} ${styles.revealDelay1}  `}
             style={{ fontFamily: "'Playfair Display', 'Playfair Display Fallback', serif" }}
           >
             <span>
@@ -114,11 +143,13 @@ export default function AccompagnementPosterSection() {
             </span>
           </h2>
 
-          <p className={styles.introBaseline}>du premier echange a la mise en ligne.</p>
+          <p className={`${styles.introBaseline} ${styles.reveal} ${styles.revealDelay2}`}>
+            du premier echange a la mise en ligne.
+          </p>
 
-          <div className={styles.introSeparator} />
+          <div className={`${styles.introSeparator} ${styles.reveal} ${styles.revealDelay3}`} />
 
-          <p className={styles.introText}>
+          <p className={`${styles.introText} ${styles.reveal} ${styles.revealDelay4}`}>
             Chaque etape compte: cadrer le besoin, structurer les contenus,
             {/* designer avec justesse, developper proprement et deployer dans de
             bonnes conditions. Le carousel ci-dessous montre comment le projet
@@ -127,8 +158,12 @@ export default function AccompagnementPosterSection() {
         </div>
       </section>
 
-      <section className={styles.stage} aria-label="Poster visuel pour carrousel">
-        <article className={styles.poster}>
+      <section
+        ref={stageRef}
+        className={`${styles.stage} ${stageInView ? styles.stageVisible : ""}`}
+        aria-label="Poster visuel pour carrousel"
+      >
+        <article className={`${styles.poster} ${styles.reveal} ${styles.revealDelay1}`}>
           <div
             className={`imagenb ${styles.imageLayer} ${imageMotionClass}`}
             style={{

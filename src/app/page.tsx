@@ -5,6 +5,7 @@ import SiteFooter from "@/components/site-footer";
 import HeroPosterSection from "@/components/hero-poster-section";
 import LocationMapSection from "@/components/location-map-section";
 import PortfolioAccompagnementSections from "@/components/portfolio-accompagnement-sections";
+import TriangleConstellationSection from "@/components/triangle-constellation-section";
 import { HeroPreciseSection } from "@/app/hero-precise/page";
 
 export default function Home() {
@@ -19,6 +20,8 @@ export default function Home() {
       <HeroPreciseSection asSection />
 
       <PortfolioAccompagnementSections />
+
+      {/* <TriangleConstellationSection /> */}
 
       {/* <section className="home-section px-0 py-0" aria-label="Section 4 hero poster sans bandes">
         <HeroPosterSection />

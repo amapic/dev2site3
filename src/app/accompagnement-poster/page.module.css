@@ -112,6 +112,50 @@
   line-height: 1.62;
 }
 
+/* Reveal animation à l'apparition (même effet que HeroPreciseSection) */
+.reveal {
+  opacity: 0;
+  transform: translateY(50px);
+  filter: blur(12px);
+  transition:
+    opacity 1.5s cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 1.5s cubic-bezier(0.22, 0.61, 0.36, 1),
+    filter 1.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: opacity, transform, filter;
+}
+
+.introVisible .reveal,
+.stageVisible .reveal {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+
+.revealDelay1 {
+  transition-delay: 0.12s;
+}
+
+.revealDelay2 {
+  transition-delay: 0.24s;
+}
+
+.revealDelay3 {
+  transition-delay: 0.36s;
+}
+
+.revealDelay4 {
+  transition-delay: 0.48s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: none;
+  }
+}
+
 .poster {
   position: relative;
   overflow: visible;

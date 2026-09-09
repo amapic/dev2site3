@@ -13,7 +13,7 @@ const CONSENT_COOKIE_NAME = "dev2site3_cookie_consent";
 const COOKIE_TTL_DAYS = 180;
 
 function readConsentCookie(): ConsentPreferences | null {
-  if (typeof document === "undefined") {
+  if (typeof document === "undefined" || !document.cookie) {
     return null;
   }
 

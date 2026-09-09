@@ -1,0 +1,87 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
+:root {
+  --font-bebas: 'Bebas Neue', sans-serif;
+}
+
+.page {
+  font-family: var(--font-bebas), sans-serif;
+}
+
+.hero {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+/* position relative to allow absolutely positioned SVG */
+.hero {
+  position: relative;
+}
+
+
+
+.isVisible {
+  opacity: 1;
+  transition: opacity 0.5s ease-in;
+}
+
+.heroTitle {
+  font-family: var(--font-bebas), sans-serif;
+  font-size: 16rem;
+  align-self: flex-end;
+  text-align: right;
+  letter-spacing: 0.05em;
+  color: #F6C445;
+}
+
+.heroSubtitle {
+  font-size: 1.25rem;
+  margin-top: 0.5rem;
+  align-self: flex-end;
+  text-align: right;
+  letter-spacing: 0.05em;
+  color: #F6C445;
+}
+
+.navv ul li{
+    color: #F6C445;
+}
+
+.nav ul {
+  list-style: none;
+  margin: 0 0 2rem 0;
+}
+
+/* Nav item background reveal */
+.navItem {
+  position: relative;
+  overflow: hidden;
+}
+.navItemBg {
+  position: absolute;
+  inset: 0;
+  /* background-image: url('/atelier3pinceaux/accueil_transpa.webp'); */
+  /* agrandir l'image par défaut, puis zoomer au survol */
+  background-size: 120% auto;
+  background-position: center;
+  /* hidden by clipping from the left (right inset = 100%) */
+  clip-path: inset(-50px 100% -50px 0);
+  transition: clip-path 400ms linear, background-size 0ms linear;
+  z-index: 0;
+  pointer-events: none;
+}
+.navItemContent {
+  position: relative;
+  z-index: 1;
+  /* full visible by default */
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 400ms linear;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+/* Hover / keyboard focus effects removed for static nav items */
+/* Disabled the reveal/clip-path animations so list items do not change on hover */

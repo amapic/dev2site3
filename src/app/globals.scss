@@ -978,6 +978,33 @@ body {
   display: flex;
   align-items: center;
   z-index: 5;
+  cursor: none;
+}
+
+.hero-contact-cursor-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translate(1rem, 1rem);
+  pointer-events: none;
+  z-index: 20;
+  white-space: nowrap;
+  opacity: 0;
+  filter: blur(6px);
+  transition: opacity 220ms ease, filter 220ms ease, transform 80ms linear;
+}
+
+.hero-contact-cursor-label--visible {
+  opacity: 1;
+  filter: blur(0);
+}
+
+.hero-contact-cursor-letter {
+  display: inline-block;
+  font-weight: 900;
+  font-size: 0.92rem;
+  color: #111111e0;
+  will-change: opacity;
 }
 
 .hero-contact-link {
@@ -2186,7 +2213,7 @@ body {
 
 .hero-marquee-separator-badge {
   position: absolute;
-  bottom: calc(100% + 0.4rem);
+  // bottom: calc(100% + 1rem);
   left: 50%;
   transform: translateX(-50%);
   background: rgba(0, 61, 130, 0.95);
@@ -3475,4 +3502,259 @@ body {
 .prismatic-ribbon-canvas {
   position: absolute;
   inset: 0;
+}
+
+/* ==========================================================================
+   Triangle constellation section — avantages avec Three.js + GSAP ScrollTrigger
+   ========================================================================== */
+
+.triangle-constellation-section {
+  position: relative;
+  height: 200vh;
+  min-height: 200dvh;
+  overflow: clip;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.95), rgba(250, 251, 252, 0.92) 52%, rgba(245, 246, 244, 0.96) 100%),
+    radial-gradient(circle at 18% 22%, rgba(255, 200, 55, 0.18), transparent 38%),
+    radial-gradient(circle at 82% 78%, rgba(0, 212, 212, 0.14), transparent 36%);
+}
+
+.triangle-constellation-sticky {
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.triangle-constellation-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.triangle-constellation-canvas canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+.triangle-constellation-overlay {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding: clamp(1.5rem, 4vh, 3rem) clamp(1rem, 4vw, 4rem) clamp(1rem, 2vh, 1.5rem);
+}
+
+.triangle-constellation-header {
+  text-align: center;
+  max-width: 56rem;
+  margin: 0 auto;
+}
+
+.triangle-constellation-kicker {
+  margin: 0 0 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(15, 34, 70, 0.55);
+}
+
+.triangle-constellation-title {
+  margin: 0;
+  font-size: clamp(1.6rem, 4vw, 3rem);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  font-weight: 900;
+  color: rgba(15, 34, 70, 0.92);
+}
+
+.triangle-constellation-phases {
+  position: relative;
+  width: 100%;
+  max-width: 72rem;
+  margin: 0 auto;
+  height: 100%;
+}
+
+.triangle-constellation-phase {
+  position: absolute;
+  width: min(100%, 22rem);
+  padding: clamp(1rem, 2vw, 1.5rem);
+  border-radius: 1.25rem;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(15, 34, 70, 0.08);
+  box-shadow: 0 18px 50px rgba(15, 34, 70, 0.1);
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
+.triangle-constellation-phase--left {
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.triangle-constellation-phase--right {
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.triangle-constellation-phase--bottom {
+  left: 50%;
+  bottom: 6vh;
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+.triangle-constellation-phase__number {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--logo-yellow) 0%, var(--logo-blue) 100%);
+  color: white;
+}
+
+.triangle-constellation-phase__title {
+  margin: 0 0 0.45rem;
+  font-size: clamp(1.05rem, 1.8vw, 1.35rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  font-weight: 800;
+  color: rgba(15, 34, 70, 0.94);
+}
+
+.triangle-constellation-phase__description {
+  margin: 0;
+  font-size: clamp(0.82rem, 1.2vw, 0.98rem);
+  line-height: 1.55;
+  color: rgba(15, 34, 70, 0.7);
+}
+
+.triangle-constellation-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: rgba(15, 34, 70, 0.08);
+  transform-origin: left;
+  transform: scaleX(0);
+  will-change: transform;
+}
+
+.triangle-constellation-progress::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, var(--logo-yellow), var(--logo-cyan));
+}
+
+@media (max-width: 1023px) {
+  .triangle-constellation-section {
+    height: auto;
+    min-height: auto;
+    padding: 4rem 0;
+  }
+
+  .triangle-constellation-sticky {
+    position: relative;
+    height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  .triangle-constellation-phases {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    padding-top: 2rem;
+    height: auto;
+  }
+
+  .triangle-constellation-phase,
+  .triangle-constellation-phase--left,
+  .triangle-constellation-phase--right,
+  .triangle-constellation-phase--bottom {
+    position: relative;
+    left: auto;
+    right: auto;
+    top: auto;
+    bottom: auto;
+    transform: none;
+    width: 100%;
+    max-width: 32rem;
+    margin: 0 auto;
+    opacity: 1;
+    text-align: left;
+  }
+
+  .triangle-constellation-progress {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .triangle-constellation-overlay {
+    padding: 1.25rem 1rem;
+  }
+
+  .triangle-constellation-title {
+    font-size: clamp(1.35rem, 6vw, 1.8rem);
+  }
+
+  .triangle-constellation-phase {
+    padding: 1rem;
+    border-radius: 1rem;
+  }
+}
+
+/* Page de réservation */
+.reservation-details summary::-webkit-details-marker {
+  display: none;
+}
+
+.reservation-details > summary {
+  list-style: none;
+}
+
+.reservation-faq-answer {
+  animation: reservation-fade-in 220ms ease both;
+}
+
+@keyframes reservation-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reservation-faq-answer {
+    animation: none;
+  }
 }

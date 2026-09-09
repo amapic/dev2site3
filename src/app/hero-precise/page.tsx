@@ -2,7 +2,7 @@
 
 import styles from './page.module.css';
 import CrystalBurstCanvas from '@/components/crystal-burst-canvas';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 import localFont from 'next/font/local';
 
@@ -73,6 +73,29 @@ type HeroPreciseSectionProps = {
   asSection?: boolean;
 };
 
+function useInView<T extends HTMLElement>(threshold = 0.1) {
+  const ref = useRef<T>(null);
+  const [isInView, setIsInView] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsInView(true);
+          observer.disconnect();
+        }
+      },
+      { threshold }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [threshold]);
+
+  return { ref, isInView };
+}
+
 const INITIAL_CAMERA_INFO = {
   position: [-0.51, 0.24, 0.75],
   polar: 1.5,
@@ -81,9 +104,18 @@ const INITIAL_CAMERA_INFO = {
 
 export function HeroPreciseSection({ asSection = false }: HeroPreciseSectionProps) {
   const Wrapper = asSection ? 'section' : 'main';
+  const { ref: wrapperRef, isInView } = useInView<HTMLElement>(0.3);
   const [model, setModel] = useState<'crystal' | 'plant'>('crystal');
   const [framesUnlocked, setFramesUnlocked] = useState(false);
   const [isLoadingPlant, setIsLoadingPlant] = useState(false);
+  const [isChrome, setIsChrome] = useState(false);
+
+  useEffect(() => {
+    if (typeof navigator === 'undefined') return;
+    const ua = navigator.userAgent;
+    const chrome = /Chrome/.test(ua) && !/Edg|OPR|SamsungBrowser/.test(ua);
+    setIsChrome(chrome);
+  }, []);
 
   // Preload plant model on mount so it's ready when user switches
   useEffect(() => {
@@ -91,7 +123,7 @@ export function HeroPreciseSection({ asSection = false }: HeroPreciseSectionProp
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const { GLTFLoader } = require('three/examples/jsm/loaders/GLTFLoader');
     const loader = new GLTFLoader();
-    loader.preload?.('/PlantOrchid001_Blender_Cycles.glb') ?? loader.load('/PlantOrchid001_Blender_Cycles.glb', () => {});
+    loader.preload?.('/model/PlantOrchid001_Blender_Cyclesjjj.glb') ?? loader.load('/model/PlantOrchid001_Blender_Cyclesjjj.glb', () => {});
   }, []);
 
   // Disable page scroll when camera is unlocked
@@ -107,10 +139,10 @@ export function HeroPreciseSection({ asSection = false }: HeroPreciseSectionProp
   }, [framesUnlocked]);
 
   return (
-    <Wrapper className={styles.page}>
-      <section className={styles.hero}>
+    <Wrapper ref={wrapperRef} className={styles.page} id ="hellooo">
+      <section className={`${styles.hero} ${isInView ? styles.heroVisible : ''}`}>
           <CrystalBurstCanvas
-            className={styles.crystalBg}
+            className={`${styles.crystalBg} ${styles.revealCanvas}`}
             modelMode={model}
             animate={framesUnlocked}
             initialCameraPosition={[INITIAL_CAMERA_INFO.position[0], INITIAL_CAMERA_INFO.position[1], INITIAL_CAMERA_INFO.position[2]]}
@@ -148,7 +180,7 @@ export function HeroPreciseSection({ asSection = false }: HeroPreciseSectionProp
               `}</style>
             </div>
           ) : null}
-          <div className={styles.left}>
+          <div className={`${styles.left} ${styles.reveal}`}>
           <span className={styles.sideLabel}>Design - Developpence - Performance</span>
 
           <header className={styles.brand}>
@@ -163,14 +195,14 @@ export function HeroPreciseSection({ asSection = false }: HeroPreciseSectionProp
           <h1 className={`${styles.title} ${playfair.className} `}>
             {model === 'plant' ? (
               <>
-                <span className={`${playfair.className}`}>Un </span>
+                <span className={isChrome ? playfair.className : ''}>Un </span>
                 <span className={styles.titleGradient}>site</span>
                 <br />
                 <span className={styles.titleGradient}>responsable</span>
               </>
             ) : (
               <>
-                <span className={`${playfair.className}`}>Un </span>
+                <span className={isChrome ? playfair.className : ''}>Un </span>
                 <span className={styles.titleGradient}>site</span>
                 <br />
                 <span className={styles.titleGradient}>efficace...</span>
@@ -214,7 +246,7 @@ export function HeroPreciseSection({ asSection = false }: HeroPreciseSectionProp
         </div>
 
         <aside className={styles.right}>
-          <div className={styles.rightTag}>
+          <div className={`${styles.rightTag} ${styles.reveal} ${styles.revealDelay1}`}>
             Des sites qui font
             <strong>la difference.</strong>
 
@@ -253,7 +285,7 @@ export function HeroPreciseSection({ asSection = false }: HeroPreciseSectionProp
           <div className={styles.rightLines} />
         </aside>
 
-        <div className={styles.bottomStrip}>
+        <div className={`${styles.bottomStrip} ${styles.reveal} ${styles.revealDelay2}`}>
           <article className={styles.feature}>
             <FeatureIcon kind="design" />
             <div>

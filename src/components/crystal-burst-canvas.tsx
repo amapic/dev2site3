@@ -420,18 +420,20 @@ export default function CrystalBurstCanvas({
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     renderer.setSize(w, h);
-    renderer.domElement.style.pointerEvents = 'auto';
+    renderer.domElement.style.pointerEvents = modelMode === 'plant' ? 'none' : 'auto';
     container.appendChild(renderer.domElement);
 
-    // Add FlyControls for free camera movement
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // Add FlyControls for free camera movement (disabled in plant mode)
+    // eslint-disable-next-line @typescript/no-var-requires
     const { FlyControls } = require('three/examples/jsm/controls/FlyControls');
-    const controls = new FlyControls(camera, renderer.domElement);
+    const controls = modelMode === 'plant' ? null : new FlyControls(camera, renderer.domElement);
     controlsRef.current = controls;
-    controls.movementSpeed = 0.5;
-    controls.rollSpeed = Math.PI / 6;
-    controls.dragToLook = true;
-    controls.autoForward = false;
+    if (controls) {
+      controls.movementSpeed = 0.5;
+      controls.rollSpeed = Math.PI / 6;
+      controls.dragToLook = true;
+      controls.autoForward = false;
+    }
 
     // Compute spherical angles from camera orientation
     const getCameraState = () => {
@@ -449,8 +451,9 @@ export default function CrystalBurstCanvas({
     // Camera info display (disabled by default)
     // setCameraInfo(getCameraState());
 
-    // Reset camera to look at origin when pressing 'R'
+    // Reset camera to look at origin when pressing 'R' (disabled in plant mode)
     const handleKeyDown = (event: KeyboardEvent) => {
+      if (modelMode === 'plant') return;
       if (event.key.toLowerCase() === 'r') {
         camera.lookAt(0, 0, 0);
       }
@@ -524,9 +527,12 @@ export default function CrystalBurstCanvas({
     });
 
     let modelRoot: THREE.Object3D | null = null;
+    let plantBones: THREE.Bone[] = [];
     let time = 0;
     const windUniformsRef = { current: [] as WindShaderUniforms[] };
     let startTime = Date.now();
+    let tuteurImpulseZ = 0;
+    let tuteurImpulseX = 0;
 
     const renderScene = () => {
       // Update wind uniforms
@@ -535,8 +541,43 @@ export default function CrystalBurstCanvas({
         uniforms.uTime.value = elapsed;
       });
 
+      // Animate armature bones for wind effect.
+      // Tuteur1 is a separate support armature and only moves when the stem pushes it.
+      const tigeBones = ['Bone', 'Bone.001', 'Bone.002', 'Bone.003', 'Bone.004'];
+      let tigeDeviation = 0;
+      plantBones.forEach((bone) => {
+        if (bone.name === 'Tuteur1') return;
+        const idx = tigeBones.indexOf(bone.name);
+        if (idx === -1) return;
+        const phase = idx * 0.6;
+        const ampZ = (0.006 + idx * 0.004) / 5;
+        const ampX = ampZ * 0.5;
+        const dz = Math.sin(elapsed * 1.2 + phase) * ampZ;
+        const dx = Math.cos(elapsed * 0.9 + phase * 0.7) * ampX;
+        bone.rotation.z += dz;
+        bone.rotation.x += dx;
+        tigeDeviation += Math.abs(dz) + Math.abs(dx);
+      });
+
+      const tuteur = plantBones.find((b) => b.name === 'Tuteur1');
+      if (tuteur) {
+        const threshold = 0.004;
+        const maxExcess = 0.004;
+        if (tigeDeviation > threshold) {
+          const excess = Math.min(tigeDeviation - threshold, maxExcess);
+          const shake = Math.sin(elapsed * 7.0 + Math.floor(elapsed * 3) * 1.7) * excess * 0.5;
+          tuteurImpulseZ = shake;
+          tuteurImpulseX = Math.cos(elapsed * 5.5) * excess * 0.3;
+        } else {
+          tuteurImpulseZ *= 0.92;
+          tuteurImpulseX *= 0.92;
+        }
+        tuteur.rotation.z += tuteurImpulseZ * 0.25;
+        tuteur.rotation.x += tuteurImpulseX * 0.25;
+      }
+
       const delta = 1 / 60;
-      controls.update(delta);
+      controls?.update(delta);
       // setCameraInfo(getCameraState());
       renderer.render(scene, camera);
       if (animate && modelMode === 'plant') {
@@ -565,7 +606,7 @@ export default function CrystalBurstCanvas({
       const { GLTFLoader } = require('three/examples/jsm/loaders/GLTFLoader');
       // enable interactive canvas while keeping the same transparent background as the crystal canvas
       const loader = new GLTFLoader();
-      const MODEL_PATH = '/PlantOrchid001_Blender_Cycles.glb';
+      const MODEL_PATH = '/model/PlantOrchid001_Blender_Cyclesjjj.glb';
 
       const ambient = new THREE.AmbientLight(0xffffff, 0.5);
       scene.add(ambient);
@@ -604,8 +645,15 @@ export default function CrystalBurstCanvas({
         (gltf: any) => {
           const loaded = gltf.scene as THREE.Object3D;
           
-          // Apply wind to materials
+          // Collect rigged bones for stem wind animation; skip shader wind on skinned meshes
+          const bones: THREE.Bone[] = [];
           loaded.traverse((obj: any) => {
+            if (obj.isSkinnedMesh) {
+              obj.castShadow = true;
+              obj.receiveShadow = true;
+              bones.push(...obj.skeleton.bones);
+              return;
+            }
             if (obj.isMesh) {
               obj.castShadow = true;
               obj.receiveShadow = true;
@@ -673,6 +721,7 @@ export default function CrystalBurstCanvas({
           loaded.position.set(0, 0, 0);
           scene.add(loaded);
           modelRoot = loaded;
+          plantBones = bones;
 
           onLoadingChange?.(false);
 
@@ -724,7 +773,7 @@ export default function CrystalBurstCanvas({
           }
         });
       }
-      controls.dispose();
+      controls?.dispose();
       renderer.dispose();
       renderer.domElement.remove();
     };
