@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Démo — animation au survol</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#EDEAE3;
+    --ink-dim:#93A0A3;
+    --bg-0:#0E1A1F;
+    --bg-1:#122229;
+    --grid-line: rgba(237,234,227,0.05);
+    --icon-color:#FFC837;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ height:100%; }
+  body{
+    margin:0; min-height:100vh;
+    display:flex; align-items:center; justify-content:center;
+    background: radial-gradient(circle at 50% 40%, var(--bg-1), var(--bg-0) 70%);
+    font-family:'Space Grotesk', system-ui, sans-serif;
+    color:var(--ink);
+    padding: 40px 20px;
+  }
+  .field{
+    position:fixed; inset:0;
+    background-image:
+      repeating-linear-gradient(0deg, var(--grid-line) 0 1px, transparent 1px 64px),
+      repeating-linear-gradient(90deg, var(--grid-line) 0 1px, transparent 1px 64px);
+    mask-image: radial-gradient(circle at 50% 40%, black 0%, transparent 72%);
+    -webkit-mask-image: radial-gradient(circle at 50% 40%, black 0%, transparent 72%);
+    pointer-events:none;
+  }
+  .wrap{ position:relative; text-align:center; }
+  h1{
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+    margin: 0 0 36px;
+  }
+  .cards{
+    display:flex;
+    gap: 56px;
+    flex-wrap: wrap;
+    justify-content:center;
+  }
+  .card{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:20px;
+  }
+  .stage{
+    position:relative;
+    width: 120px; height: 120px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .iconWrap{
+    width: 60px; height: 60px;
+    display:flex; align-items:center; justify-content:center;
+    cursor:default;
+  }
+  .iconWrap svg{ width: 60px; height: 60px; overflow: visible; }
+
+  /* Couleur figée : jamais modifiée par l'animation */
+  .featureRing, .featureLine, .featureLineSoft, .featureFill{
+    transform-box: view-box;
+    transform-origin: 18px 18px;
+  }
+  .featureRing{ fill:none; stroke: var(--icon-color); stroke-width: 1.6; }
+  .featureLine{ fill:none; stroke: var(--icon-color); stroke-width: 1.6; stroke-linecap: round; }
+  .featureLineSoft{ fill:none; stroke: var(--icon-color); stroke-width: 1.2; stroke-linecap: round; }
+  .featureFill{ fill: var(--icon-color); }
+
+  .hint{
+    margin-top: 36px;
+    font-size: 13px;
+    color: var(--ink-dim);
+    max-width: 420px;
+    text-align:center;
+    line-height:1.5;
+  }
+</style>
+</head>
+<body>
+
+<div class="field" aria-hidden="true"></div>
+
+<div class="wrap">
+  <h1>Survolez / touchez une icône</h1>
+  <div class="cards">
+
+    <!-- Icône 1 : cible / capteur -->
+    <div class="card">
+      <div class="stage">
+        <div class="iconWrap" id="hoverTarget">
+          <svg viewBox="0 0 36 36" class="featureIconSvg">
+            <circle cx="18" cy="18" r="15" class="featureRing" id="ringTarget"></circle>
+            <circle cx="18" cy="18" r="8" class="featureLine" id="innerTarget"></circle>
+            <path d="M18 6v5M18 25v5M6 18h5M25 18h5" class="featureLine" id="ticksTarget"></path>
+            <circle cx="18" cy="18" r="2.5" class="featureFill" id="dotTarget"></circle>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Icône 2 : code -->
+    <div class="card">
+      <div class="stage">
+        <div class="iconWrap" id="hoverCode">
+          <svg viewBox="0 0 36 36" class="featureIconSvg">
+            <circle cx="18" cy="18" r="15" class="featureRing" id="ringCode"></circle>
+            <path d="M14 11l-5 7 5 7M22 11l5 7-5 7" class="featureLine" id="bracketsCode"></path>
+            <path d="M19.5 10l-3 16" class="featureLineSoft" id="slashCode"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="hint">Survolez (ou tapez sur mobile) une icône pour déclencher l'animation une fois. La couleur reste toujours celle d'origine.</p>
+</div>
+
+<script>
+(function(){
+  // easings approximant ceux utilisés précédemment, en cubic-bezier natif
+  var EASE_OUT   = 'cubic-bezier(0.22, 0.61, 0.36, 1)';   // power2.out
+  var EASE_IN    = 'cubic-bezier(0.55, 0.06, 0.68, 0.19)'; // power2.in
+  var EASE_INOUT = 'cubic-bezier(0.65, 0, 0.35, 1)';        // power3.inOut
+  var EASE_BOUNCE = 'cubic-bezier(0.34, 1.56, 0.64, 1)';    // léger rebond (proche d'un elastic.out)
+
+  function animate(el, keyframes, duration, easing, delay){
+    if (!el) return null;
+    return el.animate(keyframes, {
+      duration: duration,
+      easing: easing,
+      delay: delay || 0,
+      fill: 'none'
+    });
+  }
+
+  // ---------- Icône 1 : cible ----------
+  (function targetIcon(){
+    var wrap = document.getElementById('hoverTarget');
+    var ring = document.getElementById('ringTarget');
+    var inner = document.getElementById('innerTarget');
+    var ticks = document.getElementById('ticksTarget');
+    var current = [];
+
+    function play(){
+      current.forEach(function(a){ a && a.cancel(); });
+      current = [];
+
+      current.push(animate(ring,
+        [{ transform: 'scale(1)' }, { transform: 'scale(1.06)' }],
+        150, EASE_OUT, 0));
+      current.push(animate(ring,
+        [{ transform: 'scale(1.06)' }, { transform: 'scale(1)' }],
+        350, EASE_BOUNCE, 150));
+
+      current.push(animate(inner,
+        [{ transform: 'scale(1)' }, { transform: 'scale(1.15)' }],
+        150, EASE_OUT, 60));
+      current.push(animate(inner,
+        [{ transform: 'scale(1.15)' }, { transform: 'scale(1)' }],
+        400, EASE_BOUNCE, 210));
+
+      // la croix fait un tour complet et retombe pile sur sa position d'origine
+      current.push(animate(ticks,
+        [{ transform: 'rotate(0deg)' }, { transform: 'rotate(360deg)' }],
+        550, EASE_INOUT, 50));
+    }
+
+    wrap.addEventListener('mouseenter', play);
+    wrap.addEventListener('click', play);
+  })();
+
+  // ---------- Icône 2 : code ----------
+  (function codeIcon(){
+    var wrap = document.getElementById('hoverCode');
+    var ring = document.getElementById('ringCode');
+    var brackets = document.getElementById('bracketsCode');
+    var slash = document.getElementById('slashCode');
+    var current = [];
+
+    function play(){
+      current.forEach(function(a){ a && a.cancel(); });
+      current = [];
+
+      current.push(animate(ring,
+        [{ transform: 'scale(1)' }, { transform: 'scale(1.06)' }],
+        150, EASE_OUT, 0));
+      current.push(animate(ring,
+        [{ transform: 'scale(1.06)' }, { transform: 'scale(1)' }],
+        350, EASE_BOUNCE, 150));
+
+      current.push(animate(brackets,
+        [{ transform: 'scaleX(1)' }, { transform: 'scaleX(0.85)' }],
+        120, EASE_IN, 50));
+      current.push(animate(brackets,
+        [{ transform: 'scaleX(0.85)' }, { transform: 'scaleX(1.12)' }],
+        140, EASE_OUT, 170));
+      current.push(animate(brackets,
+        [{ transform: 'scaleX(1.12)' }, { transform: 'scaleX(1)' }],
+        350, EASE_BOUNCE, 310));
+
+      current.push(animate(slash,
+        [{ transform: 'scaleY(1)' }, { transform: 'scaleY(1.18)' }],
+        140, EASE_OUT, 220));
+      current.push(animate(slash,
+        [{ transform: 'scaleY(1.18)' }, { transform: 'scaleY(1)' }],
+        350, EASE_BOUNCE, 360));
+    }
+
+    wrap.addEventListener('mouseenter', play);
+    wrap.addEventListener('click', play);
+  })();
+
+})();
+</script>
+
+</body>
+</html>

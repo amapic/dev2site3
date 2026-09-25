@@ -160,27 +160,49 @@
 
 .description {
   margin: 0;
-  max-width: 30ch;
-  font-size: 1.02rem;
-  line-height: 1.6;
-  color: rgba(16, 24, 40, 0.9);
+  max-width: 44ch;
+  font-size: clamp(1.12rem, 1.7vw, 1.42rem);
+  line-height: 1.65;
+  font-weight: 500;
+  color: #0b1222;
 }
 
 .description strong {
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .highlightBlue {
-  color: var(--em-blue);
-  font-weight: 700;
+  color: #005f8a;
+  font-weight: 800;
+  background: rgba(0, 169, 198, 0.14);
+  padding: 2px 7px;
+  border-radius: 6px;
 }
 
 .highlightYellow {
-  font-weight: 700;
+  font-weight: 800;
+  background: rgba(255, 200, 55, 0.26);
+  padding: 2px 7px;
+  border-radius: 6px;
   text-decoration: underline;
-  text-decoration-thickness: 2px;
-  text-underline-offset: 6px;
-  text-decoration-color: rgba(255, 200, 55, 0.82);
+  text-decoration-thickness: 3px;
+  text-underline-offset: 5px;
+  text-decoration-color: rgba(255, 170, 0, 0.92);
+}
+
+.greenHosting {
+  display: block;
+  width: max-content;
+  max-width: none;
+  margin-top: 12px;
+  margin-left:-10px;
+  font-size: 1.5em;
+  font-weight: 700;
+  color: #137a3e;
+  background: rgba(22, 163, 74, 0.11);
+  padding: 6px 14px;
+  border-radius: 999px;
+  white-space: nowrap;
 }
 
 .cta {
@@ -275,8 +297,8 @@
 }
 
 .featureIcon {
-  width: 36px;
-  height: 36px;
+  width: 72px;
+  height: 72px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -284,8 +306,8 @@
 }
 
 .featureIconSvg {
-  width: 36px;
-  height: 36px;
+  width: 72px;
+  height: 72px;
 }
 
 .iconRing,
@@ -321,8 +343,21 @@
   color: var(--em-yellow);
 }
 
+.featureIconDesignAnimated {
+  position: relative;
+}
+
+.featurePulseRing {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1.5px solid #ff9a44;
+  opacity: 0;
+  pointer-events: none;
+}
+
 .featureIconTech {
-  color: #0b5fb0;
+  color: #8a5dd6;
 }
 
 .featureIconPerformance {
@@ -343,56 +378,6 @@
   color: #1a233b;
 }
 
-/* Detail panel that appears on hover */
-.featureDetail {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 100%;
-  margin-bottom: 17px;
-  /* background: var(--background); */
-  background: rgba(255, 255, 255, 0.72);
-  color: #0f1118;
-  padding: 8px 112px 8px 48px;
-  border: 1px solid rgba(20, 30, 60, 0.08);
-  border-bottom: none; /* remove bottom border to hide line with bottomStrip */
-  border-radius: 8px 8px 0 0; /* rounded top corners, flat bottom to attach to bottomStrip */
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.2s ease, transform 0.2s ease;
-  pointer-events: none;
-  overflow: hidden;
-  overflow-y: auto;
-  z-index: 3;
-}
-
-.featureDetail p {
-  margin-left: 0;
-  padding-left: 0;
-}
-
-.featureDetailVideo {
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 80px;
-  height: 80px;
-  object-fit: cover;
-  border-radius: 4px;
-  transform: translate(30%, -50%);
-}
-
-/* Slight upward shift of the detail panel when the title (h3) is hovered */
-.featureTitle:hover + .featureDetail {
-  transform: translateY(5px);
-}
-
-.feature:hover .featureDetail {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-
 .featureText {
   margin: 4px 0 0;
   font-size: 0.78rem;
@@ -401,11 +386,6 @@
 }
 
 @media (max-width: 1100px) {
-  .featureDetail {
-    max-height: 38vh;
-    overflow-y: auto;
-  }
-
   .hero {
     grid-template-columns: 1fr;
     padding-bottom: clamp(120px, 16vw, 180px);
@@ -441,19 +421,10 @@
   .crystalBg {
     display: none;
   }
-
-  /* Désactive l'apparition au hover des détails en dessous de 1024px */
-  .feature:hover .featureDetail,
-  .featureTitle:hover + .featureDetail,
-  .feature:focus-within .featureDetail {
-    opacity: 0;
-    transform: translateY(10px);
-    pointer-events: none;
-  }
 }
 
 @media (max-width: 640px) {
-  
+
   .title {
     font-size: clamp(2.6rem, 16vw, 5.1rem);
   }
@@ -465,9 +436,51 @@
   .bottomStrip {
     grid-template-columns: 1fr;
   }
+}
 
-  .featureDetail {
-    display: none;
+.progressBar {
+  width: 100%;
+  height: 8px;
+  margin-top: 12px;
+  background: rgba(255, 255, 255, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 999px;
+  overflow: visible;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.12);
+  position: relative;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #00d4d4 0%, #00a9c6 55%, #0077b6 100%);
+  border-radius: 999px;
+  box-shadow: 0 0 8px rgba(0, 169, 198, 0.55);
+  position: relative;
+}
+
+.progressFill::after {
+  content: "✦";
+  position: absolute;
+  right: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: #ffffff;
+  text-shadow:
+    0 0 4px #00d4d4,
+    0 0 10px #00a9c6,
+    0 0 18px #0077b6;
+  animation: starPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes starPulse {
+  0%, 100% {
+    transform: translateY(-50%) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-50%) scale(1.35);
+    opacity: 0.85;
   }
 }
 

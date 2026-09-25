@@ -3,6 +3,10 @@
 import styles from './page.module.css';
 import CrystalBurstCanvas from '@/components/crystal-burst-canvas';
 import { useState, useEffect, useRef } from 'react';
+import FeatureIconTarget_2 from '../../../public/svg/FeatureIconTarget_2';
+import FeatureIconCode_2 from '../../../public/svg/FeatureIconCode_2';
+import FeatureIconGrowth_2 from '../../../public/svg/FeatureIconGrowth_2';
+import FeatureIconSupport_2 from '../../../public/svg/FeatureIconSupport_2';
 
 import localFont from 'next/font/local';
 
@@ -14,55 +18,20 @@ const playfair = localFont({
 
 type FeatureKind = 'design' | 'tech' | 'performance' | 'support';
 
-function FeatureIcon({ kind }: { kind: FeatureKind }) {
+function FeatureIcon({ kind, isHovered }: { kind: FeatureKind; isHovered?: boolean }) {
   if (kind === 'design') {
-    return (
-      <span className={`${styles.featureIcon} ${styles.featureIconDesign}`} aria-hidden="true">
-        <svg viewBox="0 0 40 40" className={styles.featureIconSvg}>
-          <circle cx="20" cy="20" r="16" className={styles.iconRing} />
-          <circle cx="20" cy="20" r="7.5" className={styles.iconLine} />
-          <path d="M20 6v5M20 29v5M6 20h5M29 20h5" className={styles.iconLine} />
-          <circle cx="20" cy="20" r="2.6" className={styles.iconFill} />
-        </svg>
-      </span>
-    );
+    return <FeatureIconTarget_2 active={isHovered ?? false} color="var(--em-yellow, #e9a506)" />;
   }
 
   if (kind === 'tech') {
-    return (
-      <span className={`${styles.featureIcon} ${styles.featureIconTech}`} aria-hidden="true">
-        <svg viewBox="0 0 40 40" className={styles.featureIconSvg}>
-          <circle cx="20" cy="20" r="16" className={styles.iconRing} />
-          <path d="M16 12l-5 8 5 8M24 12l5 8-5 8" className={styles.iconLine} />
-          <path d="M21.5 11l-3 18" className={styles.iconLineSoft} />
-        </svg>
-      </span>
-    );
+    return <FeatureIconCode_2 active={isHovered ?? false} color="#8a5dd6" />;
   }
 
   if (kind === 'performance') {
-    return (
-      <span className={`${styles.featureIcon} ${styles.featureIconPerformance}`} aria-hidden="true">
-        <svg viewBox="0 0 40 40" className={styles.featureIconSvg}>
-          <circle cx="20" cy="20" r="16" className={styles.iconRing} />
-          <path d="M13 27v-5M20 27v-9M27 27V14" className={styles.iconLine} />
-          <path d="M12 16l6-4 5 3 7-5" className={styles.iconLine} />
-          <path d="M26.5 9.5H31v4.5" className={styles.iconLineSoft} />
-        </svg>
-      </span>
-    );
+    return <FeatureIconGrowth_2 active={isHovered ?? false} color="var(--em-blue, #003d82)" />;
   }
 
-  return (
-    <span className={`${styles.featureIcon} ${styles.featureIconSupport}`} aria-hidden="true">
-      <svg viewBox="0 0 40 40" className={styles.featureIconSvg}>
-        <circle cx="20" cy="20" r="16" className={styles.iconRing} />
-        <circle cx="20" cy="15" r="4.4" className={styles.iconLine} />
-        <path d="M11.5 30c1.8-4.2 5.1-6.2 8.5-6.2s6.7 2 8.5 6.2" className={styles.iconLine} />
-        <path d="M30 13l2.4 2.4 3.6-4.2" className={styles.iconLineSoft} />
-      </svg>
-    </span>
-  );
+  return <FeatureIconSupport_2 active={isHovered ?? false} color="var(--em-cyan, #05d9e8)" tickColor="#7ed321" />;
 }
 
 export default function HeroPrecisePage() {
@@ -72,6 +41,24 @@ export default function HeroPrecisePage() {
 type HeroPreciseSectionProps = {
   asSection?: boolean;
 };
+
+function FeatureCard({ kind, title, text }: { kind: FeatureKind; title: string; text: string }) {
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <article
+      className={styles.feature}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <FeatureIcon kind={kind} isHovered={isHovered} />
+      <div>
+        <h3 className={styles.featureTitle}>{title}</h3>
+        <p className={styles.featureText}>{text}</p>
+      </div>
+    </article>
+  );
+}
 
 function useInView<T extends HTMLElement>(threshold = 0.1) {
   const ref = useRef<T>(null);
@@ -109,12 +96,18 @@ export function HeroPreciseSection({ asSection = false }: HeroPreciseSectionProp
   const [framesUnlocked, setFramesUnlocked] = useState(false);
   const [isLoadingPlant, setIsLoadingPlant] = useState(false);
   const [isChrome, setIsChrome] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     if (typeof navigator === 'undefined') return;
     const ua = navigator.userAgent;
     const chrome = /Chrome/.test(ua) && !/Edg|OPR|SamsungBrowser/.test(ua);
     setIsChrome(chrome);
+  }, []);
+
+  // Auto-switch panel disabled: the canvas stays on the model chosen by the user.
+  useEffect(() => {
+    setProgress(0);
   }, []);
 
   // Preload plant model on mount so it's ready when user switches
@@ -227,18 +220,20 @@ export function HeroPreciseSection({ asSection = false }: HeroPreciseSectionProp
           <div className={styles.separator} />
 
           {model === 'plant' ? (
-            <p className={styles.description}>
-              Depuis <span className={styles.highlightBlue}>5 ans</span>, je concois des sites sur mesure,
-              pensés pour être <strong>légers, durables et respectueux</strong> de
-              <span className={styles.highlightYellow}> l'environnement</span>.
-              <br />
-              Hébergement 100 % énergie renouvelable — Green Web Foundation : 94/100.
-            </p>
+            <>
+              <p className={styles.description}>
+                Depuis <span className={styles.highlightBlue}>5 ans</span>, je concois des sites sur mesure,
+                pensés pour être <strong>légers, durables et respectueux</strong> de
+                <span className={styles.highlightYellow}> l'environnement</span>.
+              </p>
+              <p className={styles.greenHosting}>
+                Hébergement 100 % énergie renouvelable — Green Web Foundation : 94/100.
+              </p>
+            </>
           ) : (
             <p className={styles.description}>
-              Depuis <span className={styles.highlightBlue}>5 ans</span>, je concois des sites sur mesure,
-              penses pour <strong>attirer, convaincre et generer</strong> des
-              <span className={styles.highlightYellow}> resultats concrets</span>.
+              Chaque projet est pensé sur mesure pour <strong>attirer, convaincre et générer</strong> des
+              <span className={styles.highlightYellow}> résultats concrets</span>.
             </p>
           )}
 
@@ -286,73 +281,26 @@ export function HeroPreciseSection({ asSection = false }: HeroPreciseSectionProp
         </aside>
 
         <div className={`${styles.bottomStrip} ${styles.reveal} ${styles.revealDelay2}`}>
-          <article className={styles.feature}>
-            <FeatureIcon kind="design" />
-            <div>
-              <h3 className={styles.featureTitle}>Design sur mesure</h3>
-              <p className={styles.featureText}>Des interfaces uniques, pensees pour votre identite.</p>
-              <div className={styles.featureDetail}>
-                <img
-                  className={styles.featureDetailVideo}
-                  src="/515443-PIOR9O-202.png"
-                  alt=""
-                  aria-hidden="true"
-                />
-                <p>Processus créatif, maquettes, prototypes et livrables détaillés.</p>
-              </div>
-            </div>
-          </article>
-
-          <article className={styles.feature}>
-            <FeatureIcon kind="tech" />
-            <div>
-              <h3 className={styles.featureTitle}>Technologies modernes</h3>
-              <p className={styles.featureText}>Des sites rapides, securises et optimises pour durer.</p>
-              <div className={styles.featureDetail}>
-                <img
-                  className={styles.featureDetailVideo}
-                  src="/515443-PIOR9O-202.png"
-                  alt=""
-                  aria-hidden="true"
-                />
-                <p>Utilisation de React, Next.js, optimisation SEO et performances.</p>
-              </div>
-            </div>
-          </article>
-
-          <article className={styles.feature}>
-            <FeatureIcon kind="performance" />
-            <div>
-              <h3 className={styles.featureTitle}>Oriente performance</h3>
-              <p className={styles.featureText}>Chaque detail est pense pour maximiser vos conversions.</p>
-              <div className={styles.featureDetail}>
-                <img
-                  className={styles.featureDetailVideo}
-                  src="/515443-PIOR9O-202.png"
-                  alt=""
-                  aria-hidden="true"
-                />
-                <p>Analyse de performance, temps de chargement, Core Web Vitals.</p>
-              </div>
-            </div>
-          </article>
-
-          <article className={styles.feature}>
-            <FeatureIcon kind="support" />
-            <div>
-              <h3 className={styles.featureTitle}>Accompagnement personnalise</h3>
-              <p className={styles.featureText}>A vos cotes a chaque etape, meme apres la mise en ligne.</p>
-              <div className={styles.featureDetail}>
-                <img
-                  className={styles.featureDetailVideo}
-                  src="/515443-PIOR9O-202.png"
-                  alt=""
-                  aria-hidden="true"
-                />
-                <p>Support continu, maintenance, evolutions et conseils post‑lancement.</p>
-              </div>
-            </div>
-          </article>
+          <FeatureCard
+            kind="design"
+            title="Design sur mesure"
+            text="Desss interfaces uniques, pensees pour votre identite."
+          />
+          <FeatureCard
+            kind="tech"
+            title="Technologies modernes"
+            text="Des sites rapides, securises et optimises pour durer."
+          />
+          <FeatureCard
+            kind="performance"
+            title="Oriente performance"
+            text="Chaque detail est pense pour maximiser vos conversions."
+          />
+          <FeatureCard
+            kind="support"
+            title="Accompagnement personnalise"
+            text="A vos cotes a chaque etape, meme apres la mise en ligne."
+          />
         </div>
       </section>
     </Wrapper>

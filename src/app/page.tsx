@@ -1,3 +1,5 @@
+'use client';
+
 import HeroSection from "@/components/hero-section";
 import SignatureAmauryPichat from "@/components/signature-amaury-pichat";
 import YellowLines from "@/components/yellow-lines";

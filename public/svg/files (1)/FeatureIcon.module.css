@@ -1,0 +1,34 @@
+.featureIconSvg {
+  width: 34px;
+  height: 34px;
+  overflow: visible;
+}
+
+.featureRing,
+.featureLine,
+.featureLineSoft {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.featureRing {
+  stroke: currentColor;
+  stroke-width: 1.6;
+  opacity: 0.72;
+}
+
+.featureLine {
+  stroke: currentColor;
+  stroke-width: 1.9;
+}
+
+.featureLineSoft {
+  stroke: currentColor;
+  stroke-width: 1.6;
+  opacity: 0.72;
+}
+
+.featureFill {
+  fill: currentColor;
+}

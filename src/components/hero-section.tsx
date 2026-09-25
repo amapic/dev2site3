@@ -162,7 +162,6 @@ export default function HeroSection() {
 
             <h1
               className={`box-logo box-logo--gradient w-fit ${archivoBlack.className}`}
-              aria-label="Titre style skate inspire"
             >
               Dev2Site
             </h1>
@@ -310,10 +309,10 @@ export default function HeroSection() {
               ))}
             </div>
 
-            <div className="hero-hud-signal">
+            {/* <div className="hero-hud-signal">
               <span className="hero-hud-signal__dot" />
               <span>SEO multi-canaux, prêt pour la navigation agentique</span>
-            </div>
+            </div> */}
           </article>
 
           <article className="hero-hud-card hero-hud-card--pies">
