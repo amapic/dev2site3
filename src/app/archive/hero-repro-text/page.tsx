@@ -103,7 +103,8 @@ function FeatureIcon({ kind }: { kind: FeatureIconKind }) {
     return (
       <span className={`${styles.featureIcon} ${styles.featureIconPerformance}`} aria-hidden="true">
         <svg viewBox="0 0 36 36" className={styles.featureIconSvg}>
-          <circle cx="18" cy="18" r="15" className={styles.featureRing} />
+          {/* <circle cx="18" cy="18" r="15" className={styles.featureRing} /> */}
+          <path d="M 7,18 A 11,11 0 0,1 25,29" fill="none" stroke="black" strokeWidth="5" className={styles.featureRing} />
           <path d="M11 24v-4M18 24v-8M25 24v-11" className={styles.featureLine} />
           <path d="M10 14l5-4 5 3 6-5" className={styles.featureLine} />
           <path d="M24.5 8H28v3.5" className={styles.featureLineSoft} />

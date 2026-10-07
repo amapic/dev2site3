@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
-import styles from './FeatureIcon.module.css';
+import { useEffect, useRef } from "react";
+import styles from "./FeatureIcon.module.css";
 
 interface FeatureIconSupportProps {
   /** true = joue l'animation, false = retour à l'état de repos */
@@ -10,7 +10,11 @@ interface FeatureIconSupportProps {
   tickColor?: string;
 }
 
-export default function FeatureIconSupport_2({ active = false, color = 'var(--em-cyan, #05d9e8)', tickColor = '#7ed321' }: FeatureIconSupportProps) {
+export default function FeatureIconSupport_2({
+  active = false,
+  color = "var(--em-cyan, #05d9e8)",
+  tickColor = "#7ed321",
+}: FeatureIconSupportProps) {
   const ringRef = useRef<SVGCircleElement>(null);
   const headRef = useRef<SVGCircleElement>(null);
   const shouldersRef = useRef<SVGPathElement>(null);
@@ -28,22 +32,22 @@ export default function FeatureIconSupport_2({ active = false, color = 'var(--em
     animsRef.current.forEach((a) => a.cancel());
     animsRef.current = [];
 
-    const EASE_OUT = 'cubic-bezier(0.22, 0.61, 0.36, 1)';
-    const EASE_BOUNCE = 'cubic-bezier(0.34, 1.56, 0.64, 1)';
-    const EASE_IN_OUT = 'cubic-bezier(0.65, 0, 0.35, 1)';
+    const EASE_OUT = "cubic-bezier(0.22, 0.61, 0.36, 1)";
+    const EASE_BOUNCE = "cubic-bezier(0.34, 1.56, 0.64, 1)";
+    const EASE_IN_OUT = "cubic-bezier(0.65, 0, 0.35, 1)";
 
     function animate(
       el: Element,
       keyframes: Keyframe[],
       duration: number,
       easing: string,
-      delay = 0
+      delay = 0,
     ): Animation {
       const anim = el.animate(keyframes, {
         duration,
         easing,
         delay,
-        fill: 'none',
+        fill: "none",
       });
       animsRef.current.push(anim);
       return anim;
@@ -51,7 +55,7 @@ export default function FeatureIconSupport_2({ active = false, color = 'var(--em
 
     function getPathLength(el: SVGPathElement | SVGCircleElement): number {
       if (el instanceof SVGCircleElement) {
-        return 2 * Math.PI * Number(el.getAttribute('r') ?? 0);
+        return 2 * Math.PI * Number(el.getAttribute("r") ?? 0);
       }
       return el.getTotalLength();
     }
@@ -61,22 +65,22 @@ export default function FeatureIconSupport_2({ active = false, color = 'var(--em
       animate(
         ring,
         [
-          { transform: 'scale(1)', transformOrigin: '20px 20px' },
-          { transform: 'scale(1.06)', transformOrigin: '20px 20px' },
+          { transform: "scale(1)", transformOrigin: "20px 20px" },
+          { transform: "scale(1.06)", transformOrigin: "20px 20px" },
         ],
         180,
         EASE_OUT,
-        0
+        0,
       );
       animate(
         ring,
         [
-          { transform: 'scale(1.06)', transformOrigin: '20px 20px' },
-          { transform: 'scale(1)', transformOrigin: '20px 20px' },
+          { transform: "scale(1.06)", transformOrigin: "20px 20px" },
+          { transform: "scale(1)", transformOrigin: "20px 20px" },
         ],
         420,
         EASE_BOUNCE,
-        180
+        180,
       );
 
       // Tête : remplissage depuis 0
@@ -84,12 +88,16 @@ export default function FeatureIconSupport_2({ active = false, color = 'var(--em
       animate(
         head,
         [
-          { strokeDasharray: `${headLength}`, strokeDashoffset: headLength, opacity: 0.5 },
+          {
+            strokeDasharray: `${headLength}`,
+            strokeDashoffset: headLength,
+            opacity: 0.5,
+          },
           { strokeDasharray: `${headLength}`, strokeDashoffset: 0, opacity: 1 },
         ],
         400,
         EASE_IN_OUT,
-        120
+        120,
       );
 
       // Épaules : remplissage depuis 0
@@ -97,12 +105,20 @@ export default function FeatureIconSupport_2({ active = false, color = 'var(--em
       animate(
         shoulders,
         [
-          { strokeDasharray: `${shouldersLength}`, strokeDashoffset: shouldersLength, opacity: 0.5 },
-          { strokeDasharray: `${shouldersLength}`, strokeDashoffset: 0, opacity: 1 },
+          {
+            strokeDasharray: `${shouldersLength}`,
+            strokeDashoffset: shouldersLength,
+            opacity: 0.5,
+          },
+          {
+            strokeDasharray: `${shouldersLength}`,
+            strokeDashoffset: 0,
+            opacity: 1,
+          },
         ],
         450,
         EASE_IN_OUT,
-        260
+        260,
       );
 
       // Tick : remplissage depuis 0 + petit scale
@@ -110,23 +126,29 @@ export default function FeatureIconSupport_2({ active = false, color = 'var(--em
       animate(
         tick,
         [
-          { strokeDasharray: `${tickLength}`, strokeDashoffset: tickLength, opacity: 0 },
+          {
+            strokeDasharray: `${tickLength}`,
+            strokeDashoffset: tickLength,
+            opacity: 0,
+          },
+          // { transform: 'translateX(-50px)', transformOrigin: '20px 20px', opacity: 0 },
           { strokeDasharray: `${tickLength}`, strokeDashoffset: 0, opacity: 1 },
         ],
         350,
         EASE_IN_OUT,
-        450
+        450,
       );
       animate(
         tick,
         [
-          { transform: 'scale(0.8)', transformOrigin: '20px 20px', opacity: 0 },
-          { transform: 'scale(1.1)', transformOrigin: '20px 20px', opacity: 1 },
-          { transform: 'scale(1)', transformOrigin: '20px 20px', opacity: 1 },
+          { transform: "translate(-22px, 0) scale(0.7)", transformOrigin: "20px 20px", opacity: 0 },
+          { transform: "translate(-10px, -3px) scale(0.82)", transformOrigin: "20px 20px", opacity: 1 },
+          { transform: "translate(-3px, 1px) scale(0.94)", transformOrigin: "20px 20px", opacity: 1 },
+          { transform: "translate(0, 0) scale(1)", transformOrigin: "20px 20px", opacity: 1 },
         ],
-        420,
+        520,
         EASE_BOUNCE,
-        450
+        420,
       );
     }
 
@@ -138,30 +160,49 @@ export default function FeatureIconSupport_2({ active = false, color = 'var(--em
 
   return (
     <span className={styles.stage} aria-hidden="true">
-      <svg viewBox="0 0 40 40" className={styles.featureIconSvg} style={{ color }}>
-        <circle ref={ringRef} cx="20" cy="20" r="16" className={styles.featureRing} />
+      <svg
+        viewBox="0 0 40 40"
+        className={styles.featureIconSvg}
+        style={{ color }}
+      >
+        <circle
+          ref={ringRef}
+          cx="20"
+          cy="20"
+          r="16"
+          className={styles.featureRing}
+        />
         <circle
           ref={headRef}
           cx="20"
           cy="15"
           r="4.4"
           className={styles.featureLine}
-          style={{ transformBox: 'view-box', transformOrigin: '20px 20px' }}
+          style={{ transformBox: "view-box", transformOrigin: "20px 20px" }}
         />
         <path
           ref={shouldersRef}
           d="M11.5 30c1.8-4.2 5.1-6.2 8.5-6.2s6.7 2 8.5 6.2"
           className={styles.featureLine}
-          style={{ transformBox: 'view-box', transformOrigin: '20px 20px' }}
+          style={{ transformBox: "view-box", transformOrigin: "20px 20px" }}
         />
         {/* Tick déplacé plus en bas et à gauche à l'intérieur du cercle */}
         <path
           ref={tickRef}
-          d="M12.5 22.5l3.5 3.5 7-8"
+          d="M25.5 19.5l2.1 2.1 4.2-4.8"
           className={styles.featureLine}
-          style={{ transformBox: 'view-box', transformOrigin: '20px 20px', color: tickColor }}
-          transform="translate(10, -2) scale(0.6)"
+          style={{ color: tickColor }}
         />
+        {/* <path
+          ref={tickRef}
+          d="M17.5 11.5l2.1 2.1 4.2 -4.8"
+          className={styles.featureLine}
+          style={{
+            transformBox: "view-box",
+            transformOrigin: "20px 20px",
+            color: tickColor,
+          }}
+        /> */}
       </svg>
     </span>
   );
