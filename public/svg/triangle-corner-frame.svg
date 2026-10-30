@@ -1,0 +1,10 @@
+<svg width="1200" height="720" viewBox="0 0 1200 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path
+    d="M60 660 V328 L96 304 L44 278 L110 250 L38 222 L118 194 L42 166 L124 136 L52 108 L130 82 L72 52 L144 36 L176 74 L210 30 L244 78 L282 36 L320 82 L356 60 H1140 V660 H60"
+    stroke="#111111"
+    stroke-width="1"
+    stroke-linecap="square"
+    stroke-linejoin="miter"
+    vector-effect="non-scaling-stroke"
+  />
+</svg>

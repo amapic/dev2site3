@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
+  <title id="title">Disque glitch colorimetrique</title>
+  <desc id="desc">Trame de points cyan, magenta et jaune avec leger decalage anime et densite accentuee au centre.</desc>
+
+  <defs>
+    <radialGradient id="density" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="white" stop-opacity="1" />
+      <stop offset="55%" stop-color="white" stop-opacity="0.95" />
+      <stop offset="78%" stop-color="white" stop-opacity="0.58" />
+      <stop offset="100%" stop-color="white" stop-opacity="0" />
+    </radialGradient>
+
+    <mask id="diskMask" maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse" x="0" y="0" width="1024" height="1024">
+      <rect width="1024" height="1024" fill="black" />
+      <circle cx="512" cy="512" r="454" fill="url(#density)" />
+    </mask>
+
+    <clipPath id="diskClip">
+      <circle cx="512" cy="512" r="460" />
+    </clipPath>
+
+    <pattern id="dots-c" x="0" y="0" width="26" height="26" patternUnits="userSpaceOnUse">
+      <circle cx="13" cy="13" r="4.8" fill="#00d4d4" />
+    </pattern>
+
+    <pattern id="dots-m" x="0" y="0" width="26" height="26" patternUnits="userSpaceOnUse" patternTransform="translate(4 2)">
+      <circle cx="13" cy="13" r="4.5" fill="#003d82" />
+    </pattern>
+
+    <pattern id="dots-y" x="0" y="0" width="26" height="26" patternUnits="userSpaceOnUse" patternTransform="translate(-3 4)">
+      <circle cx="13" cy="13" r="4.35" fill="#ffc837" />
+    </pattern>
+
+  </defs>
+
+  <g clip-path="url(#diskClip)" shape-rendering="geometricPrecision">
+    <g mask="url(#diskMask)">
+      <rect x="52" y="52" width="920" height="920" fill="url(#dots-c)" opacity="0.82" />
+      <rect x="52" y="52" width="920" height="920" fill="url(#dots-m)" opacity="0.74" />
+      <rect x="52" y="52" width="920" height="920" fill="url(#dots-y)" opacity="0.7" />
+    </g>
+  </g>
+</svg>

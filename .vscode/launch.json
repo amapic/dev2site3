@@ -1,0 +1,47 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Next.js: debug full stack",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": ["run", "dev"],
+            "env": {
+                "NODE_OPTIONS": "--inspect=9230"
+            },
+            "skipFiles": ["<node_internals>/**"],
+            "serverReadyAction": {
+                "pattern": "Ready in|started server on",
+                "uriFormat": "http://localhost:3000",
+                "action": "debugWithChrome"
+            }
+        },
+        {
+            "name": "Next.js: debug server-side",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": ["run", "dev"],
+            "env": {
+                "NODE_OPTIONS": "--inspect=9230"
+            },
+            "skipFiles": ["<node_internals>/**"]
+        },
+        {
+            "name": "Next.js: debug client-side",
+            "type": "chrome",
+            "request": "launch",
+            "url": "http://localhost:3000",
+            "webRoot": "${workspaceFolder}",
+            "sourceMaps": true,
+            "sourceMapPathOverrides": {
+                "webpack://_N_E/*": "${webRoot}/*",
+                "webpack:///./*": "${webRoot}/*"
+            }
+        }
+    ]
+}

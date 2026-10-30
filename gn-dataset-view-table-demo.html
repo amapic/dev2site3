@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Démo gn-dataset-view-table</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f1f1f8;
+      font-family: Inter, sans-serif;
+      color: #333;
+    }
+    .wrapper {
+      width: min(1200px, 100%);
+      padding: 32px;
+      box-sizing: border-box;
+    }
+    h1 {
+      margin: 0 0 24px;
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2rem, 3vw, 3rem);
+      color: #0f4395;
+      text-align: center;
+    }
+    .notice {
+      margin: 0 0 24px;
+      padding: 16px;
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: 0 10px 30px rgba(15, 67, 149, 0.08);
+      color: #333;
+      line-height: 1.6;
+    }
+    gn-dataset-view-table {
+      display: block;
+      width: 100%;
+      min-height: 600px;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.08);
+      background: #fdfbff;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <h1>Visualisation Geonetwork</h1>
+    <div class="notice">
+      <strong>Astuce :</strong> Le composant se charge directement depuis <code>cdn.jsdelivr.net</code>. Vérifie que tu as accès à Internet et que les requêtes vers <code>https://data.geopf.fr/catalog</code> sont autorisées.
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/gh/geonetwork/geonetwork-ui@wc-dist-main/gn-wc.js"></script>
+
+    <gn-dataset-view-table
+      api-url="https://data.geopf.fr/catalog"
+      dataset-id="IGNF_NUAGES-DE-POINTS-LIDAR-HD"
+      primary-color="#0f4395"
+      secondary-color="#8bc832"
+      main-color="#555"
+      background-color="#fdfbff"
+      main-font="'Inter', sans-serif"
+      title-font="'DM Serif Display', serif"
+    ></gn-dataset-view-table>
+  </div>
+</body>
+</html>

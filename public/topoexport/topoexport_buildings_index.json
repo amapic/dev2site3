@@ -1,0 +1,1877 @@
+{
+  "count": 234,
+  "buildings": [
+    {
+      "index": 1,
+      "id": "bat_001",
+      "handle": "2809",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 2,
+      "id": "bat_002",
+      "handle": "2810",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 3,
+      "id": "bat_003",
+      "handle": "2817",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 4,
+      "id": "bat_004",
+      "handle": "2821",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 7
+    },
+    {
+      "index": 5,
+      "id": "bat_005",
+      "handle": "2828",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 6,
+      "id": "bat_006",
+      "handle": "282F",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 7,
+      "id": "bat_007",
+      "handle": "2837",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 5
+    },
+    {
+      "index": 8,
+      "id": "bat_008",
+      "handle": "2847",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 13
+    },
+    {
+      "index": 9,
+      "id": "bat_009",
+      "handle": "284F",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 5
+    },
+    {
+      "index": 10,
+      "id": "bat_010",
+      "handle": "2857",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 5
+    },
+    {
+      "index": 11,
+      "id": "bat_011",
+      "handle": "285F",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 5
+    },
+    {
+      "index": 12,
+      "id": "bat_012",
+      "handle": "2867",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 5
+    },
+    {
+      "index": 13,
+      "id": "bat_013",
+      "handle": "286D",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 3
+    },
+    {
+      "index": 14,
+      "id": "bat_014",
+      "handle": "2876",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 6
+    },
+    {
+      "index": 15,
+      "id": "bat_015",
+      "handle": "2885",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 12
+    },
+    {
+      "index": 16,
+      "id": "bat_016",
+      "handle": "288C",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 17,
+      "id": "bat_017",
+      "handle": "2892",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 3
+    },
+    {
+      "index": 18,
+      "id": "bat_018",
+      "handle": "289C",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 7
+    },
+    {
+      "index": 19,
+      "id": "bat_019",
+      "handle": "28A5",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 6
+    },
+    {
+      "index": 20,
+      "id": "bat_020",
+      "handle": "28AC",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 21,
+      "id": "bat_021",
+      "handle": "28B7",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 8
+    },
+    {
+      "index": 22,
+      "id": "bat_022",
+      "handle": "28BE",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 23,
+      "id": "bat_023",
+      "handle": "28CC",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 11
+    },
+    {
+      "index": 24,
+      "id": "bat_024",
+      "handle": "28DB",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 12
+    },
+    {
+      "index": 25,
+      "id": "bat_025",
+      "handle": "28E6",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 8
+    },
+    {
+      "index": 26,
+      "id": "bat_026",
+      "handle": "28F5",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 12
+    },
+    {
+      "index": 27,
+      "id": "bat_027",
+      "handle": "2900",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 8
+    },
+    {
+      "index": 28,
+      "id": "bat_028",
+      "handle": "2907",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 29,
+      "id": "bat_029",
+      "handle": "290E",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 30,
+      "id": "bat_030",
+      "handle": "2915",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 31,
+      "id": "bat_031",
+      "handle": "291C",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 32,
+      "id": "bat_032",
+      "handle": "2923",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 33,
+      "id": "bat_033",
+      "handle": "292C",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 6
+    },
+    {
+      "index": 34,
+      "id": "bat_034",
+      "handle": "2933",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 35,
+      "id": "bat_035",
+      "handle": "293A",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 36,
+      "id": "bat_036",
+      "handle": "2945",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 8
+    },
+    {
+      "index": 37,
+      "id": "bat_037",
+      "handle": "2952",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 10
+    },
+    {
+      "index": 38,
+      "id": "bat_038",
+      "handle": "295A",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 5
+    },
+    {
+      "index": 39,
+      "id": "bat_039",
+      "handle": "2961",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 40,
+      "id": "bat_040",
+      "handle": "2969",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 5
+    },
+    {
+      "index": 41,
+      "id": "bat_041",
+      "handle": "2978",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 12
+    },
+    {
+      "index": 42,
+      "id": "bat_042",
+      "handle": "297F",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 43,
+      "id": "bat_043",
+      "handle": "299B",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 25
+    },
+    {
+      "index": 44,
+      "id": "bat_044",
+      "handle": "29AA",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 12
+    },
+    {
+      "index": 45,
+      "id": "bat_045",
+      "handle": "29CD",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 32
+    },
+    {
+      "index": 46,
+      "id": "bat_046",
+      "handle": "29D9",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 9
+    },
+    {
+      "index": 47,
+      "id": "bat_047",
+      "handle": "29E0",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 48,
+      "id": "bat_048",
+      "handle": "29E7",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 49,
+      "id": "bat_049",
+      "handle": "29EE",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 50,
+      "id": "bat_050",
+      "handle": "29F8",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 7
+    },
+    {
+      "index": 51,
+      "id": "bat_051",
+      "handle": "2A00",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 5
+    },
+    {
+      "index": 52,
+      "id": "bat_052",
+      "handle": "2A0A",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 7
+    },
+    {
+      "index": 53,
+      "id": "bat_053",
+      "handle": "2A13",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 6
+    },
+    {
+      "index": 54,
+      "id": "bat_054",
+      "handle": "2A1A",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 55,
+      "id": "bat_055",
+      "handle": "2A21",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 56,
+      "id": "bat_056",
+      "handle": "2A28",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 57,
+      "id": "bat_057",
+      "handle": "2A2F",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 58,
+      "id": "bat_058",
+      "handle": "2A36",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 59,
+      "id": "bat_059",
+      "handle": "2A3D",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 60,
+      "id": "bat_060",
+      "handle": "2A49",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 9
+    },
+    {
+      "index": 61,
+      "id": "bat_061",
+      "handle": "2A50",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 62,
+      "id": "bat_062",
+      "handle": "2A57",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 63,
+      "id": "bat_063",
+      "handle": "2A5E",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 64,
+      "id": "bat_064",
+      "handle": "2A66",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 5
+    },
+    {
+      "index": 65,
+      "id": "bat_065",
+      "handle": "2A72",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 9
+    },
+    {
+      "index": 66,
+      "id": "bat_066",
+      "handle": "2A79",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 67,
+      "id": "bat_067",
+      "handle": "2A90",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 20
+    },
+    {
+      "index": 68,
+      "id": "bat_068",
+      "handle": "2A97",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 69,
+      "id": "bat_069",
+      "handle": "2AA4",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 10
+    },
+    {
+      "index": 70,
+      "id": "bat_070",
+      "handle": "2AAF",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 8
+    },
+    {
+      "index": 71,
+      "id": "bat_071",
+      "handle": "2AB6",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 72,
+      "id": "bat_072",
+      "handle": "2ABF",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 6
+    },
+    {
+      "index": 73,
+      "id": "bat_073",
+      "handle": "2ACA",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 8
+    },
+    {
+      "index": 74,
+      "id": "bat_074",
+      "handle": "2AD1",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 75,
+      "id": "bat_075",
+      "handle": "2AD8",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 76,
+      "id": "bat_076",
+      "handle": "2AEA",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 15
+    },
+    {
+      "index": 77,
+      "id": "bat_077",
+      "handle": "2AF3",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 6
+    },
+    {
+      "index": 78,
+      "id": "bat_078",
+      "handle": "2AFE",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 8
+    },
+    {
+      "index": 79,
+      "id": "bat_079",
+      "handle": "2B07",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 6
+    },
+    {
+      "index": 80,
+      "id": "bat_080",
+      "handle": "2B0E",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 81,
+      "id": "bat_081",
+      "handle": "2B44",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 51
+    },
+    {
+      "index": 82,
+      "id": "bat_082",
+      "handle": "2B4C",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 5
+    },
+    {
+      "index": 83,
+      "id": "bat_083",
+      "handle": "2B55",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 6
+    },
+    {
+      "index": 84,
+      "id": "bat_084",
+      "handle": "2B7A",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 34
+    },
+    {
+      "index": 85,
+      "id": "bat_085",
+      "handle": "2B82",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 5
+    },
+    {
+      "index": 86,
+      "id": "bat_086",
+      "handle": "2B89",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 87,
+      "id": "bat_087",
+      "handle": "2B90",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 88,
+      "id": "bat_088",
+      "handle": "2B97",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 89,
+      "id": "bat_089",
+      "handle": "2BA4",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 10
+    },
+    {
+      "index": 90,
+      "id": "bat_090",
+      "handle": "2BB0",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 9
+    },
+    {
+      "index": 91,
+      "id": "bat_091",
+      "handle": "2BB8",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 5
+    },
+    {
+      "index": 92,
+      "id": "bat_092",
+      "handle": "2BC1",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 6
+    },
+    {
+      "index": 93,
+      "id": "bat_093",
+      "handle": "2BD3",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 15
+    },
+    {
+      "index": 94,
+      "id": "bat_094",
+      "handle": "2BDF",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 9
+    },
+    {
+      "index": 95,
+      "id": "bat_095",
+      "handle": "2BE6",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 96,
+      "id": "bat_096",
+      "handle": "2BEE",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 5
+    },
+    {
+      "index": 97,
+      "id": "bat_097",
+      "handle": "2BF5",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 98,
+      "id": "bat_098",
+      "handle": "2C04",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 12
+    },
+    {
+      "index": 99,
+      "id": "bat_099",
+      "handle": "2C10",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 9
+    },
+    {
+      "index": 100,
+      "id": "bat_100",
+      "handle": "2C1F",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 12
+    },
+    {
+      "index": 101,
+      "id": "bat_101",
+      "handle": "2C26",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 102,
+      "id": "bat_102",
+      "handle": "2C2D",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 103,
+      "id": "bat_103",
+      "handle": "2C41",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 17
+    },
+    {
+      "index": 104,
+      "id": "bat_104",
+      "handle": "2C48",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 105,
+      "id": "bat_105",
+      "handle": "2C51",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 6
+    },
+    {
+      "index": 106,
+      "id": "bat_106",
+      "handle": "2C58",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 107,
+      "id": "bat_107",
+      "handle": "2C69",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 14
+    },
+    {
+      "index": 108,
+      "id": "bat_108",
+      "handle": "2C72",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 6
+    },
+    {
+      "index": 109,
+      "id": "bat_109",
+      "handle": "2C79",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 110,
+      "id": "bat_110",
+      "handle": "2C80",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 111,
+      "id": "bat_111",
+      "handle": "2C88",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 5
+    },
+    {
+      "index": 112,
+      "id": "bat_112",
+      "handle": "2C8F",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 113,
+      "id": "bat_113",
+      "handle": "2C96",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 114,
+      "id": "bat_114",
+      "handle": "2C9D",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 115,
+      "id": "bat_115",
+      "handle": "2CA4",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 116,
+      "id": "bat_116",
+      "handle": "2CAB",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 117,
+      "id": "bat_117",
+      "handle": "2CB7",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 9
+    },
+    {
+      "index": 118,
+      "id": "bat_118",
+      "handle": "2CC6",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 12
+    },
+    {
+      "index": 119,
+      "id": "bat_119",
+      "handle": "2CCD",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 120,
+      "id": "bat_120",
+      "handle": "2CEA",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 26
+    },
+    {
+      "index": 121,
+      "id": "bat_121",
+      "handle": "2CF3",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 6
+    },
+    {
+      "index": 122,
+      "id": "bat_122",
+      "handle": "2CFA",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 123,
+      "id": "bat_123",
+      "handle": "2D01",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 124,
+      "id": "bat_124",
+      "handle": "2D11",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 13
+    },
+    {
+      "index": 125,
+      "id": "bat_125",
+      "handle": "2D1B",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 7
+    },
+    {
+      "index": 126,
+      "id": "bat_126",
+      "handle": "2D22",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 127,
+      "id": "bat_127",
+      "handle": "2D2F",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 10
+    },
+    {
+      "index": 128,
+      "id": "bat_128",
+      "handle": "2D38",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 6
+    },
+    {
+      "index": 129,
+      "id": "bat_129",
+      "handle": "2D3F",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 130,
+      "id": "bat_130",
+      "handle": "2D46",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 131,
+      "id": "bat_131",
+      "handle": "2D4E",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 5
+    },
+    {
+      "index": 132,
+      "id": "bat_132",
+      "handle": "2D56",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 5
+    },
+    {
+      "index": 133,
+      "id": "bat_133",
+      "handle": "2D60",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 7
+    },
+    {
+      "index": 134,
+      "id": "bat_134",
+      "handle": "2D71",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 14
+    },
+    {
+      "index": 135,
+      "id": "bat_135",
+      "handle": "2D82",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 14
+    },
+    {
+      "index": 136,
+      "id": "bat_136",
+      "handle": "2D89",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 137,
+      "id": "bat_137",
+      "handle": "2D90",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 138,
+      "id": "bat_138",
+      "handle": "2D98",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 5
+    },
+    {
+      "index": 139,
+      "id": "bat_139",
+      "handle": "2D9F",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 140,
+      "id": "bat_140",
+      "handle": "2DA6",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 141,
+      "id": "bat_141",
+      "handle": "2DAD",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 142,
+      "id": "bat_142",
+      "handle": "2DB4",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 143,
+      "id": "bat_143",
+      "handle": "2DBC",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 5
+    },
+    {
+      "index": 144,
+      "id": "bat_144",
+      "handle": "2DC3",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 145,
+      "id": "bat_145",
+      "handle": "2DCA",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 146,
+      "id": "bat_146",
+      "handle": "2DD1",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 147,
+      "id": "bat_147",
+      "handle": "2DD8",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 148,
+      "id": "bat_148",
+      "handle": "2DDF",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 149,
+      "id": "bat_149",
+      "handle": "2DE7",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 5
+    },
+    {
+      "index": 150,
+      "id": "bat_150",
+      "handle": "2DF6",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 12
+    },
+    {
+      "index": 151,
+      "id": "bat_151",
+      "handle": "2E07",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 14
+    },
+    {
+      "index": 152,
+      "id": "bat_152",
+      "handle": "2E10",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 6
+    },
+    {
+      "index": 153,
+      "id": "bat_153",
+      "handle": "2E17",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 154,
+      "id": "bat_154",
+      "handle": "2E1E",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 155,
+      "id": "bat_155",
+      "handle": "2E25",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 156,
+      "id": "bat_156",
+      "handle": "2E2D",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 5
+    },
+    {
+      "index": 157,
+      "id": "bat_157",
+      "handle": "2E36",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 6
+    },
+    {
+      "index": 158,
+      "id": "bat_158",
+      "handle": "2E3E",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 5
+    },
+    {
+      "index": 159,
+      "id": "bat_159",
+      "handle": "2E4D",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 12
+    },
+    {
+      "index": 160,
+      "id": "bat_160",
+      "handle": "2E54",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 161,
+      "id": "bat_161",
+      "handle": "2E60",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 9
+    },
+    {
+      "index": 162,
+      "id": "bat_162",
+      "handle": "2E67",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 163,
+      "id": "bat_163",
+      "handle": "2E6E",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 164,
+      "id": "bat_164",
+      "handle": "2E75",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 165,
+      "id": "bat_165",
+      "handle": "2E7C",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 166,
+      "id": "bat_166",
+      "handle": "2E92",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 19
+    },
+    {
+      "index": 167,
+      "id": "bat_167",
+      "handle": "2E99",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 168,
+      "id": "bat_168",
+      "handle": "2EA1",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 5
+    },
+    {
+      "index": 169,
+      "id": "bat_169",
+      "handle": "2EAC",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 8
+    },
+    {
+      "index": 170,
+      "id": "bat_170",
+      "handle": "2EBE",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 15
+    },
+    {
+      "index": 171,
+      "id": "bat_171",
+      "handle": "2ECF",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 14
+    },
+    {
+      "index": 172,
+      "id": "bat_172",
+      "handle": "2ED6",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 173,
+      "id": "bat_173",
+      "handle": "2EDD",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 174,
+      "id": "bat_174",
+      "handle": "2EE5",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 5
+    },
+    {
+      "index": 175,
+      "id": "bat_175",
+      "handle": "2EF0",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 8
+    },
+    {
+      "index": 176,
+      "id": "bat_176",
+      "handle": "2EF7",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 177,
+      "id": "bat_177",
+      "handle": "2EFE",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 178,
+      "id": "bat_178",
+      "handle": "2F08",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 7
+    },
+    {
+      "index": 179,
+      "id": "bat_179",
+      "handle": "2F10",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 5
+    },
+    {
+      "index": 180,
+      "id": "bat_180",
+      "handle": "2F17",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 181,
+      "id": "bat_181",
+      "handle": "2F1E",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 182,
+      "id": "bat_182",
+      "handle": "2F25",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 183,
+      "id": "bat_183",
+      "handle": "2F2E",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 6
+    },
+    {
+      "index": 184,
+      "id": "bat_184",
+      "handle": "2F48",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 23
+    },
+    {
+      "index": 185,
+      "id": "bat_185",
+      "handle": "2F51",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 6
+    },
+    {
+      "index": 186,
+      "id": "bat_186",
+      "handle": "2F59",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 5
+    },
+    {
+      "index": 187,
+      "id": "bat_187",
+      "handle": "2F64",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 8
+    },
+    {
+      "index": 188,
+      "id": "bat_188",
+      "handle": "2F72",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 11
+    },
+    {
+      "index": 189,
+      "id": "bat_189",
+      "handle": "2F79",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 190,
+      "id": "bat_190",
+      "handle": "2F80",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 191,
+      "id": "bat_191",
+      "handle": "2F88",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 5
+    },
+    {
+      "index": 192,
+      "id": "bat_192",
+      "handle": "2F92",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 7
+    },
+    {
+      "index": 193,
+      "id": "bat_193",
+      "handle": "2FA0",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 11
+    },
+    {
+      "index": 194,
+      "id": "bat_194",
+      "handle": "2FA7",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 195,
+      "id": "bat_195",
+      "handle": "2FB4",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 10
+    },
+    {
+      "index": 196,
+      "id": "bat_196",
+      "handle": "2FBB",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 197,
+      "id": "bat_197",
+      "handle": "2FC2",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 198,
+      "id": "bat_198",
+      "handle": "2FD0",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 11
+    },
+    {
+      "index": 199,
+      "id": "bat_199",
+      "handle": "2FD9",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 6
+    },
+    {
+      "index": 200,
+      "id": "bat_200",
+      "handle": "2FE0",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 201,
+      "id": "bat_201",
+      "handle": "2FE9",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 6
+    },
+    {
+      "index": 202,
+      "id": "bat_202",
+      "handle": "2FF0",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 203,
+      "id": "bat_203",
+      "handle": "2FF7",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 204,
+      "id": "bat_204",
+      "handle": "2FFE",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 205,
+      "id": "bat_205",
+      "handle": "3005",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 206,
+      "id": "bat_206",
+      "handle": "3010",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 8
+    },
+    {
+      "index": 207,
+      "id": "bat_207",
+      "handle": "3017",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 208,
+      "id": "bat_208",
+      "handle": "301E",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 209,
+      "id": "bat_209",
+      "handle": "302F",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 14
+    },
+    {
+      "index": 210,
+      "id": "bat_210",
+      "handle": "3036",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 211,
+      "id": "bat_211",
+      "handle": "303E",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 5
+    },
+    {
+      "index": 212,
+      "id": "bat_212",
+      "handle": "3049",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 8
+    },
+    {
+      "index": 213,
+      "id": "bat_213",
+      "handle": "3050",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 214,
+      "id": "bat_214",
+      "handle": "3057",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 215,
+      "id": "bat_215",
+      "handle": "3063",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 9
+    },
+    {
+      "index": 216,
+      "id": "bat_216",
+      "handle": "306A",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 217,
+      "id": "bat_217",
+      "handle": "3071",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 218,
+      "id": "bat_218",
+      "handle": "3084",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 16
+    },
+    {
+      "index": 219,
+      "id": "bat_219",
+      "handle": "308B",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 220,
+      "id": "bat_220",
+      "handle": "3092",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 221,
+      "id": "bat_221",
+      "handle": "3099",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 222,
+      "id": "bat_222",
+      "handle": "30A4",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 8
+    },
+    {
+      "index": 223,
+      "id": "bat_223",
+      "handle": "30B2",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 11
+    },
+    {
+      "index": 224,
+      "id": "bat_224",
+      "handle": "30BA",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 5
+    },
+    {
+      "index": 225,
+      "id": "bat_225",
+      "handle": "30C1",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 226,
+      "id": "bat_226",
+      "handle": "30C9",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 5
+    },
+    {
+      "index": 227,
+      "id": "bat_227",
+      "handle": "30D0",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 228,
+      "id": "bat_228",
+      "handle": "30D7",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 229,
+      "id": "bat_229",
+      "handle": "30E4",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 10
+    },
+    {
+      "index": 230,
+      "id": "bat_230",
+      "handle": "30F1",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 10
+    },
+    {
+      "index": 231,
+      "id": "bat_231",
+      "handle": "30F8",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 232,
+      "id": "bat_232",
+      "handle": "30FF",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 233,
+      "id": "bat_233",
+      "handle": "3106",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    },
+    {
+      "index": 234,
+      "id": "bat_234",
+      "handle": "310D",
+      "layer": "TPX_BATIMENTS",
+      "closed": true,
+      "vertex_count": 4
+    }
+  ]
+}

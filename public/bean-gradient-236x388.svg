@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="236" height="388" viewBox="0 0 236 388" role="img" aria-labelledby="title desc">
+  <title id="title">Gradient beans 236x388</title>
+  <desc id="desc">Rectangle 236 par 388 avec le meme degrade lineaire que les beans de la hero.</desc>
+  <defs>
+    <linearGradient id="beanGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffc837" />
+      <stop offset="52%" stop-color="#003d82" />
+      <stop offset="100%" stop-color="#00d4d4" />
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="236" height="388" fill="url(#beanGradient)" />
+</svg>

@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Remplacement sur zones noires</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --bg: #f3f5f8;
+      --panel: #ffffff;
+      --ink: #0f172a;
+      --muted: #64748b;
+      --accent: #003d82;
+      --accent-2: #00d4d4;
+      --line: #dbe2ea;
+    }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--ink);
+      background: radial-gradient(circle at 20% 0%, #ffffff, var(--bg) 42%);
+      min-height: 100vh;
+      padding: 22px;
+    }
+    .wrap {
+      max-width: 1250px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 18px;
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 6px 20px rgba(15, 23, 42, 0.06);
+    }
+    h1 {
+      margin: 0 0 10px;
+      font-size: 20px;
+      letter-spacing: 0.2px;
+    }
+    .help {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+    .field {
+      margin-bottom: 12px;
+    }
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin: 0 0 6px;
+    }
+    input[type="file"] {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+    input[type="range"] {
+      width: 100%;
+    }
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+    .check {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      font-size: 13px;
+      color: var(--ink);
+      margin-top: 8px;
+    }
+    .btns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-weight: 700;
+      cursor: pointer;
+      color: #fff;
+      background: linear-gradient(120deg, var(--accent), #0a5fc4);
+    }
+    button.secondary {
+      background: linear-gradient(120deg, #334155, #1e293b);
+    }
+    button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+    .status {
+      margin-top: 10px;
+      min-height: 20px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .status.error {
+      color: #b42318;
+    }
+    .preview {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(220px, 1fr));
+      gap: 10px;
+    }
+    .card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px;
+      min-height: 230px;
+    }
+    .card h2 {
+      margin: 0 0 8px;
+      font-size: 13px;
+      letter-spacing: 0.2px;
+      color: #334155;
+      text-transform: uppercase;
+    }
+    .canvas-wrap {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background-image:
+        linear-gradient(45deg, #f1f5f9 25%, transparent 25%),
+        linear-gradient(-45deg, #f1f5f9 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #f1f5f9 75%),
+        linear-gradient(-45deg, transparent 75%, #f1f5f9 75%);
+      background-size: 14px 14px;
+      background-position: 0 0, 0 7px, 7px -7px, -7px 0;
+      overflow: auto;
+      max-height: 72vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+    }
+    #sourceCanvas,
+    #maskCanvas {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      background: transparent;
+    }
+    .result-card {
+      grid-column: 1 / -1;
+      min-height: 64vh;
+    }
+    .result-wrap {
+      max-height: 80vh;
+      align-items: flex-start;
+      justify-content: flex-start;
+      padding: 10px;
+    }
+    #resultCanvas {
+      max-width: none;
+      height: auto;
+      display: block;
+      background: transparent;
+      transform-origin: top left;
+      image-rendering: auto;
+    }
+    @media (max-width: 980px) {
+      .wrap {
+        grid-template-columns: 1fr;
+      }
+      .preview {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="panel">
+      <h1>Remplacer les zones noires</h1>
+      <p class="help">
+        Principe: l'image 2 remplace l'image 1 uniquement là où l'image 1 est suffisamment noire.
+        Ailleurs, l'image 1 reste intacte.
+      </p>
+
+      <div class="field">
+        <label for="sourceInput">Image 1 (base)</label>
+        <input id="sourceInput" type="file" accept="image/*" />
+      </div>
+
+      <div class="field">
+        <label for="maskInput">Image 2 (remplacement)</label>
+        <input id="maskInput" type="file" accept="image/*" />
+      </div>
+
+      <div class="field">
+        <label for="threshold">Seuil de noir</label>
+        <input id="threshold" type="range" min="0" max="255" value="45" />
+        <div class="row">
+          <span>Noir strict</span>
+          <strong id="thresholdValue">45</strong>
+          <span>Noir tolérant</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="softness">Lissage des contours</label>
+        <input id="softness" type="range" min="0" max="80" value="18" />
+        <div class="row">
+          <span>Net</span>
+          <strong id="softnessValue">18</strong>
+          <span>Doux</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="neighborRadius">Lissage voisinage (px)</label>
+        <input id="neighborRadius" type="range" min="0" max="10" value="2" />
+        <div class="row">
+          <span>Sans voisins</span>
+          <strong id="neighborRadiusValue">2</strong>
+          <span>Très lisse</span>
+        </div>
+      </div>
+
+      <label class="check">
+        <input id="strictSize" type="checkbox" checked />
+        Exiger exactement les mêmes dimensions
+      </label>
+
+      <div class="btns">
+        <button id="applyBtn" disabled>Appliquer le masque</button>
+        <button id="downloadBtn" class="secondary" disabled>Télécharger PNG</button>
+      </div>
+
+      <div class="field" style="margin-top: 12px;">
+        <label for="previewZoom">Zoom aperçu résultat (%)</label>
+        <input id="previewZoom" type="range" min="100" max="500" value="220" step="10" />
+        <div class="row">
+          <span>100%</span>
+          <strong id="previewZoomValue">220%</strong>
+          <span>500%</span>
+        </div>
+      </div>
+
+      <div id="status" class="status"></div>
+    </section>
+
+    <section class="preview">
+      <article class="card">
+        <h2>Image 1</h2>
+        <div class="canvas-wrap"><canvas id="sourceCanvas"></canvas></div>
+      </article>
+      <article class="card">
+        <h2>Image 2 (remplacement)</h2>
+        <div class="canvas-wrap"><canvas id="maskCanvas"></canvas></div>
+      </article>
+      <article class="card result-card">
+        <h2>Résultat</h2>
+        <div class="canvas-wrap result-wrap"><canvas id="resultCanvas"></canvas></div>
+      </article>
+    </section>
+  </div>
+
+  <script>
+    const sourceInput = document.getElementById('sourceInput');
+    const maskInput = document.getElementById('maskInput');
+    const thresholdInput = document.getElementById('threshold');
+    const thresholdValue = document.getElementById('thresholdValue');
+    const softnessInput = document.getElementById('softness');
+    const softnessValue = document.getElementById('softnessValue');
+    const neighborRadiusInput = document.getElementById('neighborRadius');
+    const neighborRadiusValue = document.getElementById('neighborRadiusValue');
+    const previewZoomInput = document.getElementById('previewZoom');
+    const previewZoomValue = document.getElementById('previewZoomValue');
+    const strictSizeInput = document.getElementById('strictSize');
+    const applyBtn = document.getElementById('applyBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const statusEl = document.getElementById('status');
+
+    const sourceCanvas = document.getElementById('sourceCanvas');
+    const maskCanvas = document.getElementById('maskCanvas');
+    const resultCanvas = document.getElementById('resultCanvas');
+
+    const sourceCtx = sourceCanvas.getContext('2d', { alpha: true });
+    const maskCtx = maskCanvas.getContext('2d', { alpha: true });
+    const resultCtx = resultCanvas.getContext('2d', { alpha: true });
+
+    let sourceImg = null;
+    let maskImg = null;
+
+    function updateResultPreviewZoom() {
+      const zoomPercent = Number(previewZoomInput.value);
+      const scale = zoomPercent / 100;
+      previewZoomValue.textContent = `${zoomPercent}%`;
+      if (resultCanvas.width > 0) {
+        resultCanvas.style.width = `${Math.round(resultCanvas.width * scale)}px`;
+        resultCanvas.style.height = 'auto';
+      }
+    }
+
+    function setStatus(message, isError) {
+      statusEl.textContent = message || '';
+      statusEl.className = isError ? 'status error' : 'status';
+    }
+
+    function luminance(r, g, b) {
+      return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    }
+
+    function clamp01(value) {
+      return Math.max(0, Math.min(1, value));
+    }
+
+    function smoothstep(edge0, edge1, x) {
+      if (edge0 === edge1) {
+        return x < edge0 ? 0 : 1;
+      }
+      const t = clamp01((x - edge0) / (edge1 - edge0));
+      return t * t * (3 - 2 * t);
+    }
+
+    function blurFloatMap(src, width, height, radius) {
+      if (radius <= 0) {
+        return src;
+      }
+
+      const temp = new Float32Array(src.length);
+      const dst = new Float32Array(src.length);
+
+      for (let y = 0; y < height; y += 1) {
+        const rowOffset = y * width;
+        let acc = 0;
+        let count = 0;
+
+        for (let x = -radius; x <= radius; x += 1) {
+          if (x >= 0 && x < width) {
+            acc += src[rowOffset + x];
+            count += 1;
+          }
+        }
+
+        for (let x = 0; x < width; x += 1) {
+          temp[rowOffset + x] = count > 0 ? acc / count : 0;
+
+          const removeX = x - radius;
+          const addX = x + radius + 1;
+
+          if (removeX >= 0 && removeX < width) {
+            acc -= src[rowOffset + removeX];
+            count -= 1;
+          }
+          if (addX >= 0 && addX < width) {
+            acc += src[rowOffset + addX];
+            count += 1;
+          }
+        }
+      }
+
+      for (let x = 0; x < width; x += 1) {
+        let acc = 0;
+        let count = 0;
+
+        for (let y = -radius; y <= radius; y += 1) {
+          if (y >= 0 && y < height) {
+            acc += temp[y * width + x];
+            count += 1;
+          }
+        }
+
+        for (let y = 0; y < height; y += 1) {
+          dst[y * width + x] = count > 0 ? acc / count : 0;
+
+          const removeY = y - radius;
+          const addY = y + radius + 1;
+
+          if (removeY >= 0 && removeY < height) {
+            acc -= temp[removeY * width + x];
+            count -= 1;
+          }
+          if (addY >= 0 && addY < height) {
+            acc += temp[addY * width + x];
+            count += 1;
+          }
+        }
+      }
+
+      return dst;
+    }
+
+    function drawImageToCanvas(img, canvas, ctx) {
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0);
+    }
+
+    function canApply() {
+      return Boolean(sourceImg && maskImg);
+    }
+
+    function syncButtonState() {
+      applyBtn.disabled = !canApply();
+      if (!canApply()) {
+        downloadBtn.disabled = true;
+      }
+    }
+
+    function readImage(file) {
+      return new Promise((resolve, reject) => {
+        const fr = new FileReader();
+        fr.onload = () => {
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = () => reject(new Error('Impossible de lire cette image.'));
+          img.src = fr.result;
+        };
+        fr.onerror = () => reject(new Error('Erreur de lecture du fichier.'));
+        fr.readAsDataURL(file);
+      });
+    }
+
+    async function onPickSource(file) {
+      if (!file) return;
+      try {
+        sourceImg = await readImage(file);
+        drawImageToCanvas(sourceImg, sourceCanvas, sourceCtx);
+        setStatus('Image 1 chargée.');
+        syncButtonState();
+      } catch (err) {
+        setStatus(err.message, true);
+      }
+    }
+
+    async function onPickMask(file) {
+      if (!file) return;
+      try {
+        maskImg = await readImage(file);
+        drawImageToCanvas(maskImg, maskCanvas, maskCtx);
+        setStatus('Image 2 de remplacement chargée.');
+        syncButtonState();
+      } catch (err) {
+        setStatus(err.message, true);
+      }
+    }
+
+    function applyMask() {
+      if (!sourceImg || !maskImg) {
+        setStatus('Charge les deux images avant.', true);
+        return;
+      }
+
+      const strictSize = strictSizeInput.checked;
+      const sameSize = sourceImg.width === maskImg.width && sourceImg.height === maskImg.height;
+
+      if (strictSize && !sameSize) {
+        setStatus('Dimensions différentes: décoche l\'option stricte ou utilise deux images de même taille.', true);
+        return;
+      }
+
+      const outW = sourceImg.width;
+      const outH = sourceImg.height;
+      resultCanvas.width = outW;
+      resultCanvas.height = outH;
+
+      const workMaskCanvas = document.createElement('canvas');
+      workMaskCanvas.width = outW;
+      workMaskCanvas.height = outH;
+      const workMaskCtx = workMaskCanvas.getContext('2d', { alpha: true });
+      workMaskCtx.clearRect(0, 0, outW, outH);
+      workMaskCtx.drawImage(maskImg, 0, 0, outW, outH);
+
+      const srcData = sourceCtx.getImageData(0, 0, outW, outH);
+      const replacementData = workMaskCtx.getImageData(0, 0, outW, outH);
+      const outData = resultCtx.createImageData(outW, outH);
+
+      const threshold = Number(thresholdInput.value);
+      const softness = Number(softnessInput.value);
+      const neighborRadius = Number(neighborRadiusInput.value);
+      const s = srcData.data;
+      const r = replacementData.data;
+      const o = outData.data;
+
+      const pixelCount = outW * outH;
+      const replaceMap = new Float32Array(pixelCount);
+
+      for (let p = 0; p < pixelCount; p += 1) {
+        const i = p * 4;
+        const gray = luminance(s[i], s[i + 1], s[i + 2]);
+        const sourceAlpha = s[i + 3] / 255;
+        const blend = 1 - smoothstep(threshold - softness, threshold + softness, gray);
+        replaceMap[p] = blend * sourceAlpha;
+      }
+
+      const smoothedReplaceMap = blurFloatMap(replaceMap, outW, outH, neighborRadius);
+
+      for (let i = 0; i < s.length; i += 4) {
+        const p = i / 4;
+        const sourceAlpha = s[i + 3] / 255;
+        const replacementAlpha = r[i + 3] / 255;
+        const replace = clamp01(smoothedReplaceMap[p]);
+        const srcWeight = 1 - replace;
+        const repWeight = replace * replacementAlpha;
+        const outAlpha = clamp01(sourceAlpha * srcWeight + repWeight);
+
+        if (outAlpha > 0) {
+          const srcPremulR = (s[i] / 255) * sourceAlpha * srcWeight;
+          const srcPremulG = (s[i + 1] / 255) * sourceAlpha * srcWeight;
+          const srcPremulB = (s[i + 2] / 255) * sourceAlpha * srcWeight;
+          const repPremulR = (r[i] / 255) * repWeight;
+          const repPremulG = (r[i + 1] / 255) * repWeight;
+          const repPremulB = (r[i + 2] / 255) * repWeight;
+
+          o[i] = Math.round(((srcPremulR + repPremulR) / outAlpha) * 255);
+          o[i + 1] = Math.round(((srcPremulG + repPremulG) / outAlpha) * 255);
+          o[i + 2] = Math.round(((srcPremulB + repPremulB) / outAlpha) * 255);
+          o[i + 3] = Math.round(outAlpha * 255);
+        } else {
+          o[i] = 0;
+          o[i + 1] = 0;
+          o[i + 2] = 0;
+          o[i + 3] = 0;
+        }
+      }
+
+      resultCtx.clearRect(0, 0, outW, outH);
+      resultCtx.putImageData(outData, 0, 0);
+      updateResultPreviewZoom();
+      downloadBtn.disabled = false;
+      setStatus('Remplacement terminé. Les contours sont adoucis avec les pixels voisins.');
+    }
+
+    sourceInput.addEventListener('change', (e) => onPickSource(e.target.files[0]));
+    maskInput.addEventListener('change', (e) => onPickMask(e.target.files[0]));
+
+    thresholdInput.addEventListener('input', () => {
+      thresholdValue.textContent = thresholdInput.value;
+      if (!downloadBtn.disabled) {
+        applyMask();
+      }
+    });
+
+    softnessInput.addEventListener('input', () => {
+      softnessValue.textContent = softnessInput.value;
+      if (!downloadBtn.disabled) {
+        applyMask();
+      }
+    });
+
+    neighborRadiusInput.addEventListener('input', () => {
+      neighborRadiusValue.textContent = neighborRadiusInput.value;
+      if (!downloadBtn.disabled) {
+        applyMask();
+      }
+    });
+
+    previewZoomInput.addEventListener('input', () => {
+      updateResultPreviewZoom();
+    });
+
+    applyBtn.addEventListener('click', applyMask);
+
+    downloadBtn.addEventListener('click', () => {
+      const link = document.createElement('a');
+      link.href = resultCanvas.toDataURL('image/png');
+      link.download = 'replace-black-zones.png';
+      link.click();
+    });
+
+    thresholdValue.textContent = thresholdInput.value;
+    softnessValue.textContent = softnessInput.value;
+    neighborRadiusValue.textContent = neighborRadiusInput.value;
+    updateResultPreviewZoom();
+  </script>
+</body>
+</html>

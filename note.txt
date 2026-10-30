@@ -1,0 +1,8 @@
+=> menu
+ presentation : cours de peinture (présentaino éuiep)
+ enfant (principe, prix)
+ adulte (principe, prix)
+
+
+dev2site, liste des fonctionnalités (performance, seo, instagram...), gris transpoarent comme la banderoel ?
+ 

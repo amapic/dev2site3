@@ -1,0 +1,3 @@
+turn the camera to the easel and show the picture on it which must be 4:3 format and fully white
+
+move the camera to the easel we see on the reference image and show the picture on it which must be 4:3 format (not square) and fully white.  Zoom the camera on this painting canvas for it to take the whole last frame on this current video you are making. 

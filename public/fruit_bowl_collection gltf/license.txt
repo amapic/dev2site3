@@ -1,0 +1,11 @@
+Model Information:
+* title:	Fruit bowl collection
+* source:	https://sketchfab.com/3d-models/fruit-bowl-collection-d89f6311cb0c4c37b0bf9cdd1e5abcb3
+* author:	vertexgrocer (https://sketchfab.com/vertexgrocer)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Fruit bowl collection" (https://sketchfab.com/3d-models/fruit-bowl-collection-d89f6311cb0c4c37b0bf9cdd1e5abcb3) by vertexgrocer (https://sketchfab.com/vertexgrocer) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

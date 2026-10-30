@@ -1,0 +1,21 @@
+{
+  "width": 4000,
+  "height": 5000,
+  "demFile": "curis-lidar-1m-dem.bil",
+  "elevation": {
+    "min": 161.7666015625,
+    "max": 549.83154296875,
+    "mean": 267.19091796875
+  },
+  "grid": {
+    "tileSizeMeters": 1000,
+    "sourceResolutionMeters": 0.5,
+    "targetResolutionMeters": 1.0,
+    "tiles": {
+      "xMin": 839,
+      "xMax": 842,
+      "yMin": 6530,
+      "yMax": 6534
+    }
+  }
+}

@@ -1,0 +1,36 @@
+<?xml version="1.0" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="-10 0 699 820" role="img">
+<title>U Playfair Display Bold avec motif Art Déco dans la jambe gauche</title>
+<desc>Lettre U en Playfair Display Bold. La jambe gauche contient un motif géométrique de losanges dorés.</desc>
+
+<defs>
+  <clipPath id="jambe-gauche">
+    <path d="M 88,92 L 210,92 L 210,688 Q 175,700 140,688 Q 105,660 95,600 L 88,92 Z"/>
+  </clipPath>
+
+  <pattern id="losanges" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+    <polygon points="20,2 38,20 20,38 2,20" fill="none" stroke="#fff" stroke-width="1.2"/>
+    <polygon points="20,9 31,20 20,31 9,20" fill="#fff" fill-opacity="0.18" stroke="#fff" stroke-width="0.6"/>
+    <circle cx="20" cy="20" r="2.2" fill="#fff" fill-opacity="0.7"/>
+    <line x1="20" y1="2" x2="20" y2="9" stroke="#fff" stroke-width="0.6"/>
+    <line x1="38" y1="20" x2="31" y2="20" stroke="#fff" stroke-width="0.6"/>
+    <line x1="20" y1="31" x2="20" y2="38" stroke="#fff" stroke-width="0.6"/>
+    <line x1="2" y1="20" x2="9" y2="20" stroke="#fff" stroke-width="0.6"/>
+  </pattern>
+</defs>
+
+<!-- Lettre U noire -->
+<g transform="matrix(1 0 0 -1 0 800)">
+  <path fill="#1a1a1a" d="M671 708v-20q-32 -4 -48.5 -16.5t-21.5 -39.5t-5 -76v-265q0 -65 -9 -119t-32 -93q-26 -43 -76 -68t-127 -25q-46 0 -94 10.5t-86 39.5q-32 27 -49 61t-23 80.5t-6 110.5v314q0 37 -5.5 54.5t-21.5 24t-48 7.5v20q25 -1 67.5 -2t88.5 -1t88.5 1t70.5 2v-20q-34 -1 -51.5 -7.5t-23.5 -24t-6 -54.5v-377q0 -50 6.5 -88.5t22 -64t42.5 -38.5t67 -13q70 0 109.5 33t56 91.5t16.5 134.5v264q0 55 -7 84.5t-27.5 42.5t-62.5 17v20q19 -1 50 -2t58 -1q24 0 47.5 1t39.5 2z"/>
+</g>
+
+<!-- Motif losanges clippé à la jambe gauche -->
+<rect x="-10" y="92" width="720" height="620" fill="url(#losanges)" clip-path="url(#jambe-gauche)"/>
+
+<!-- Contour doré de la lettre entière -->
+<!-- <g transform="matrix(1 0 0 -1 0 800)"> -->
+  <!-- <path fill="none" stroke="#c9a84c" stroke-width="1.5" -->
+    <!-- d="M671 708v-20q-32 -4 -48.5 -16.5t-21.5 -39.5t-5 -76v-265q0 -65 -9 -119t-32 -93q-26 -43 -76 -68t-127 -25q-46 0 -94 10.5t-86 39.5q-32 27 -49 61t-23 80.5t-6 110.5v314q0 37 -5.5 54.5t-21.5 24t-48 7.5v20q25 -1 67.5 -2t88.5 -1t88.5 1t70.5 2v-20q-34 -1 -51.5 -7.5t-23.5 -24t-6 -54.5v-377q0 -50 6.5 -88.5t22 -64t42.5 -38.5t67 -13q70 0 109.5 33t56 91.5t16.5 134.5v264q0 55 -7 84.5t-27.5 42.5t-62.5 17v20q19 -1 50 -2t58 -1q24 0 47.5 1t39.5 2z"/> -->
+<!-- </g> -->
+
+</svg>
